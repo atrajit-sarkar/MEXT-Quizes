@@ -797,6 +797,122 @@
             border-color: var(--primary);
             box-shadow: 0 0 0 2px rgba(26, 54, 93, 0.3);
         }
+
+        /* Trial Mode Styles */
+        .trial-btn {
+            padding: 18px 48px;
+            background: linear-gradient(135deg, var(--warning) 0%, #dd6b20 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-left: 16px;
+        }
+
+        .trial-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 40px rgba(192, 86, 33, 0.4);
+        }
+
+        .start-buttons {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .trial-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, var(--warning) 0%, #dd6b20 100%);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .check-answer-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 10px 20px;
+            background: linear-gradient(135deg, var(--accent) 0%, var(--primary) 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-top: 12px;
+        }
+
+        .check-answer-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        .check-answer-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .check-answer-btn.checked {
+            background: var(--success);
+        }
+
+        .question-block.answer-revealed .explanation-box {
+            display: block;
+        }
+
+        .question-block.answer-revealed .option-label.correct {
+            border-color: var(--success);
+            background: rgba(39, 103, 73, 0.1);
+        }
+
+        .question-block.answer-revealed .option-label.correct .option-letter {
+            background: var(--success);
+            color: white;
+        }
+
+        .question-block.answer-revealed .option-label.incorrect {
+            border-color: var(--secondary);
+            background: rgba(197, 48, 48, 0.1);
+        }
+
+        .question-block.answer-revealed .option-label.incorrect .option-letter {
+            background: var(--secondary);
+            color: white;
+        }
+
+        .q-nav-btn.checked {
+            background: var(--success);
+            color: white;
+            border-color: var(--success);
+        }
+
+        .q-nav-btn.checked-wrong {
+            background: var(--secondary);
+            color: white;
+            border-color: var(--secondary);
+        }
+
+        @media (max-width: 768px) {
+            .start-buttons {
+                flex-direction: column;
+            }
+            
+            .trial-btn {
+                margin-left: 0;
+            }
+        }
     </style>
 </head>
 
@@ -842,7 +958,11 @@
                 </ul>
             </div>
 
-            <button class="start-btn" onclick="startQuiz()">Start Examination →</button>
+            <div class="start-buttons">
+                <button class="start-btn" onclick="startQuiz(false)">Start Examination →</button>
+                <button class="trial-btn" onclick="startQuiz(true)">📝 Trial Mode</button>
+            </div>
+            <p style="margin-top: 16px; color: var(--text-muted); font-size: 0.9rem;">Trial Mode: No timer, check answers as you go!</p>
         </div>
 
         <!-- Quiz Screen -->
@@ -856,6 +976,10 @@
                     <div class="timer-box" id="timerBox">
                         <span class="timer-icon">⏱️</span>
                         <span class="timer-display" id="timerDisplay">60:00</span>
+                    </div>
+                    <div class="trial-badge hidden" id="trialBadge">
+                        <span>📝</span>
+                        <span>Trial Mode</span>
                     </div>
                     <div class="review-score hidden" id="reviewScorePill">
                         <span class="label">Total Score</span>
@@ -2386,6 +2510,8 @@
         let timeLeft = 60 * 60; // 60 minutes in seconds
         let timerInterval;
         let isReviewMode = false;
+        let isTrialMode = false;
+        let checkedAnswers = {}; // Track which answers have been checked in trial mode
 
         // DOM Elements
         const startScreen = document.getElementById('startScreen');
@@ -2394,6 +2520,7 @@
         const quizContent = document.getElementById('quizContent');
         const timerDisplay = document.getElementById('timerDisplay');
         const timerBox = document.getElementById('timerBox');
+        const trialBadge = document.getElementById('trialBadge');
         const answeredCount = document.getElementById('answeredCount');
         const progressFill = document.getElementById('progressFill');
         const reviewScorePill = document.getElementById('reviewScorePill');
@@ -2404,10 +2531,22 @@
         const questionNav = document.getElementById('questionNav');
 
         // Initialize
-        function startQuiz() {
+        function startQuiz(trialMode = false) {
+            isTrialMode = trialMode;
             startScreen.classList.add('hidden');
             quizScreen.classList.remove('hidden');
-            startTimer();
+            
+            if (isTrialMode) {
+                // Trial mode: hide timer, show trial badge
+                timerBox.style.display = 'none';
+                trialBadge.classList.remove('hidden');
+            } else {
+                // Normal mode: show timer, start countdown
+                timerBox.style.display = 'flex';
+                trialBadge.classList.add('hidden');
+                startTimer();
+            }
+            
             renderSection(1);
             renderQuestionNav();
             setupSectionNav();
@@ -2522,14 +2661,18 @@
 
         function renderQuestion(question, sectionId) {
             const selectedAnswer = answers[question.id];
+            const isChecked = checkedAnswers[question.id];
 
             let questionText = question.text;
             if (sectionId !== 3) { // Not error identification
                 questionText = question.text.replace('_______', '<span class="blank">_______</span>');
             }
 
+            // Add class if answer has been revealed in trial mode
+            const revealedClass = isChecked ? 'answer-revealed' : '';
+
             let html = `
-                <div class="question-block">
+                <div class="question-block ${revealedClass}" data-question-id="${question.id}">
                     <div class="question-text">
                         <span class="question-number">${question.id}</span>
                         ${questionText}
@@ -2543,15 +2686,17 @@
                 const isCorrect = index === question.correct;
 
                 let extraClass = '';
-                if (isReviewMode) {
+                if (isReviewMode || isChecked) {
                     if (isCorrect) extraClass = 'correct';
                     else if (isSelected && !isCorrect) extraClass = 'incorrect';
                 }
 
+                const isDisabled = isReviewMode || isChecked;
+
                 html += `
                     <label class="option-label ${extraClass}">
                         <input type="radio" name="q${question.id}" value="${index}" 
-                            ${isSelected ? 'checked' : ''} ${isReviewMode ? 'disabled' : ''}>
+                            ${isSelected ? 'checked' : ''} ${isDisabled ? 'disabled' : ''}>
                         <span class="option-letter">${letters[index]}</span>
                         <span class="option-text">${option}</span>
                     </label>
@@ -2559,6 +2704,18 @@
             });
 
             html += `</div>`;
+
+            // Add Check Answer button for trial mode
+            if (isTrialMode && !isReviewMode) {
+                const btnClass = isChecked ? 'check-answer-btn checked' : 'check-answer-btn';
+                const btnText = isChecked ? '✓ Answer Checked' : '🔍 Check Answer';
+                const btnDisabled = isChecked ? 'disabled' : '';
+                html += `
+                    <button class="${btnClass}" onclick="checkAnswer(${question.id})" ${btnDisabled}>
+                        ${btnText}
+                    </button>
+                `;
+            }
 
             // Add explanation for review mode
             html += `
@@ -2585,6 +2742,55 @@
             renderQuestionNav();
         }
 
+        // Check answer function for trial mode
+        function checkAnswer(questionId) {
+            // Must have selected an answer first
+            if (answers[questionId] === undefined) {
+                alert('Please select an answer first!');
+                return;
+            }
+
+            // Mark as checked
+            checkedAnswers[questionId] = true;
+
+            // Find the question data to check if correct
+            let question = null;
+            for (const section of quizData.sections) {
+                question = section.questions.find(q => q.id === questionId);
+                if (question) break;
+            }
+
+            // Update the question block UI
+            const questionBlock = document.querySelector(`.question-block[data-question-id="${questionId}"]`);
+            if (questionBlock) {
+                questionBlock.classList.add('answer-revealed');
+                
+                // Update option labels
+                const optionLabels = questionBlock.querySelectorAll('.option-label');
+                optionLabels.forEach((label, index) => {
+                    const input = label.querySelector('input');
+                    input.disabled = true;
+                    
+                    if (index === question.correct) {
+                        label.classList.add('correct');
+                    } else if (input.checked) {
+                        label.classList.add('incorrect');
+                    }
+                });
+
+                // Update the check answer button
+                const checkBtn = questionBlock.querySelector('.check-answer-btn');
+                if (checkBtn) {
+                    checkBtn.classList.add('checked');
+                    checkBtn.innerHTML = '✓ Answer Checked';
+                    checkBtn.disabled = true;
+                }
+            }
+
+            // Update question navigator
+            renderQuestionNav();
+        }
+
         function updateProgress() {
             const count = Object.keys(answers).length;
             answeredCount.textContent = count;
@@ -2597,8 +2803,20 @@
 
             section.questions.forEach(q => {
                 const isAnswered = answers[q.id] !== undefined;
+                const isChecked = checkedAnswers[q.id];
+                
+                let btnClass = 'q-nav-btn';
+                if (isChecked) {
+                    // Find if the answer was correct
+                    const question = section.questions.find(sq => sq.id === q.id);
+                    const isCorrect = answers[q.id] === question.correct;
+                    btnClass += isCorrect ? ' checked' : ' checked-wrong';
+                } else if (isAnswered) {
+                    btnClass += ' answered';
+                }
+                
                 html += `
-                    <button class="q-nav-btn ${isAnswered ? 'answered' : ''}" 
+                    <button class="${btnClass}" 
                             onclick="scrollToQuestion(${q.id})">
                         ${q.id}
                     </button>
@@ -2787,24 +3005,25 @@
 
             // Reset state
             answers = {};
+            checkedAnswers = {};
             timeLeft = 60 * 60;
             currentSection = 1;
             isReviewMode = false;
+            isTrialMode = false;
 
             // Reset UI
             timerBox.style.display = 'flex';
+            trialBadge.classList.add('hidden');
             timerBox.classList.remove('warning', 'danger');
             clearReviewScore();
             updateTimerDisplay();
             updateProgress();
 
-            // Show quiz
+            // Show start screen to choose mode again
             resultsScreen.classList.add('hidden');
-            quizScreen.classList.remove('hidden');
+            quizScreen.classList.add('hidden');
+            startScreen.classList.remove('hidden');
             quizContent.classList.remove('review-mode');
-
-            startTimer();
-            renderSection(1);
         }
 
         function goToDashboard() {
