@@ -606,16 +606,108 @@
         }
 
         .explanation-box {
-            background: #e6fffa;
+            background: linear-gradient(135deg, #e6fffa 0%, #f0fff4 100%);
             border-left: 4px solid var(--success);
-            padding: 16px;
+            padding: 20px;
             margin-top: 16px;
-            border-radius: 0 8px 8px 0;
+            border-radius: 0 12px 12px 0;
             display: none;
+            font-size: 0.95rem;
+            line-height: 1.7;
         }
 
         .review-mode .explanation-box {
             display: block;
+        }
+
+        .explanation-box .explanation-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+            padding-bottom: 10px;
+            border-bottom: 1px dashed #9ae6b4;
+        }
+
+        .explanation-box .correct-answer-badge {
+            background: var(--success);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+
+        .explanation-box .explanation-title {
+            font-weight: 600;
+            color: var(--success);
+            font-size: 1rem;
+        }
+
+        .explanation-box .explanation-content {
+            color: var(--text-dark);
+        }
+
+        .explanation-box .explanation-section {
+            margin-bottom: 12px;
+        }
+
+        .explanation-box .explanation-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .explanation-box .section-label {
+            font-weight: 600;
+            color: var(--primary);
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+
+        .explanation-box .example-box {
+            background: rgba(255, 255, 255, 0.7);
+            border: 1px solid #c6f6d5;
+            border-radius: 8px;
+            padding: 12px;
+            margin-top: 8px;
+            font-style: italic;
+        }
+
+        .explanation-box .example-box code {
+            background: #fef3c7;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-style: normal;
+            font-family: inherit;
+            color: var(--warning);
+        }
+
+        .explanation-box .tip-box {
+            background: #fef3c7;
+            border-left: 3px solid var(--warning);
+            padding: 10px 12px;
+            margin-top: 10px;
+            border-radius: 0 8px 8px 0;
+            font-size: 0.9rem;
+        }
+
+        .explanation-box .tip-box::before {
+            content: "💡 ";
+        }
+
+        .explanation-box .wrong-options {
+            margin-top: 10px;
+            padding: 10px;
+            background: rgba(197, 48, 48, 0.05);
+            border-radius: 8px;
+            font-size: 0.9rem;
+        }
+
+        .explanation-box .wrong-options .label {
+            font-weight: 600;
+            color: var(--secondary);
+            margin-bottom: 4px;
         }
 
         /* Hidden */
@@ -705,6 +797,122 @@
             border-color: var(--primary);
             box-shadow: 0 0 0 2px rgba(26, 54, 93, 0.3);
         }
+
+        /* Trial Mode Styles */
+        .trial-btn {
+            padding: 18px 48px;
+            background: linear-gradient(135deg, var(--warning) 0%, #dd6b20 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-left: 16px;
+        }
+
+        .trial-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 40px rgba(192, 86, 33, 0.4);
+        }
+
+        .start-buttons {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .trial-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, var(--warning) 0%, #dd6b20 100%);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .check-answer-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 10px 20px;
+            background: linear-gradient(135deg, var(--accent) 0%, var(--primary) 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-top: 12px;
+        }
+
+        .check-answer-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        .check-answer-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .check-answer-btn.checked {
+            background: var(--success);
+        }
+
+        .question-block.answer-revealed .explanation-box {
+            display: block;
+        }
+
+        .question-block.answer-revealed .option-label.correct {
+            border-color: var(--success);
+            background: rgba(39, 103, 73, 0.1);
+        }
+
+        .question-block.answer-revealed .option-label.correct .option-letter {
+            background: var(--success);
+            color: white;
+        }
+
+        .question-block.answer-revealed .option-label.incorrect {
+            border-color: var(--secondary);
+            background: rgba(197, 48, 48, 0.1);
+        }
+
+        .question-block.answer-revealed .option-label.incorrect .option-letter {
+            background: var(--secondary);
+            color: white;
+        }
+
+        .q-nav-btn.checked {
+            background: var(--success);
+            color: white;
+            border-color: var(--success);
+        }
+
+        .q-nav-btn.checked-wrong {
+            background: var(--secondary);
+            color: white;
+            border-color: var(--secondary);
+        }
+
+        @media (max-width: 768px) {
+            .start-buttons {
+                flex-direction: column;
+            }
+            
+            .trial-btn {
+                margin-left: 0;
+            }
+        }
     </style>
 </head>
 
@@ -750,7 +958,11 @@
                 </ul>
             </div>
 
-            <button class="start-btn" onclick="startQuiz()">Start Examination →</button>
+            <div class="start-buttons">
+                <button class="start-btn" onclick="startQuiz(false)">Start Examination →</button>
+                <button class="trial-btn" onclick="startQuiz(true)">📝 Trial Mode</button>
+            </div>
+            <p style="margin-top: 16px; color: var(--text-muted); font-size: 0.9rem;">Trial Mode: No timer, check answers as you go!</p>
         </div>
 
         <!-- Quiz Screen -->
@@ -764,6 +976,10 @@
                     <div class="timer-box" id="timerBox">
                         <span class="timer-icon">⏱️</span>
                         <span class="timer-display" id="timerDisplay">60:00</span>
+                    </div>
+                    <div class="trial-badge hidden" id="trialBadge">
+                        <span>📝</span>
+                        <span>Trial Mode</span>
                     </div>
                     <div class="review-score hidden" id="reviewScorePill">
                         <span class="label">Total Score</span>
@@ -852,70 +1068,230 @@
                             text: "The scientist's hypothesis was _______ when subsequent experiments failed to replicate her initial results.",
                             options: ["validated", "nullified", "endorsed", "amplified"],
                             correct: 1,
-                            explanation: "'Nullified' means made invalid or void, which fits when experiments fail to support a hypothesis."
+                            explanation: `
+                                <div class="explanation-section">
+                                    <div class="section-label">📖 Why "nullified" is correct:</div>
+                                    <div><strong>Nullified</strong> means made invalid, void, or without legal force. When experiments fail to replicate results, they invalidate or nullify the original hypothesis.</div>
+                                </div>
+                                <div class="explanation-section">
+                                    <div class="section-label">📝 Example:</div>
+                                    <div class="example-box">"The court's decision was <code>nullified</code> when new evidence emerged proving procedural errors."</div>
+                                </div>
+                                <div class="wrong-options">
+                                    <div class="label">Why other options are wrong:</div>
+                                    • <strong>Validated</strong> - Means confirmed or proven correct (opposite meaning!)<br>
+                                    • <strong>Endorsed</strong> - Means supported or approved<br>
+                                    • <strong>Amplified</strong> - Means increased or strengthened
+                                </div>
+                                <div class="tip-box">Context clue: "failed to replicate" is negative, so you need a negative outcome word. Only "nullified" fits!</div>
+                            `
                         },
                         {
                             id: 2,
                             text: "The diplomat's _______ approach to negotiations helped defuse tensions between the two nations.",
                             options: ["belligerent", "caustic", "diplomatic", "conciliatory"],
                             correct: 3,
-                            explanation: "'Conciliatory' means intended to placate or pacify, appropriate for defusing tensions."
+                            explanation: `
+                                <div class="explanation-section">
+                                    <div class="section-label">📖 Why "conciliatory" is correct:</div>
+                                    <div><strong>Conciliatory</strong> means intended to placate, pacify, or reconcile. The context clue "defuse tensions" indicates a peaceful, harmonizing approach.</div>
+                                </div>
+                                <div class="explanation-section">
+                                    <div class="section-label">📝 Example:</div>
+                                    <div class="example-box">"After the argument, she made a <code>conciliatory</code> gesture by offering to compromise on the disputed issues."</div>
+                                </div>
+                                <div class="wrong-options">
+                                    <div class="label">Why other options are wrong:</div>
+                                    • <strong>Belligerent</strong> - Means hostile and aggressive (would increase tensions!)<br>
+                                    • <strong>Caustic</strong> - Means harsh and biting (would worsen relations)<br>
+                                    • <strong>Diplomatic</strong> - While related, it's redundant with "diplomat's" and less specific than conciliatory
+                                </div>
+                                <div class="tip-box">Root word: "Conciliate" comes from Latin meaning "to bring together" - perfect for defusing tensions!</div>
+                            `
                         },
                         {
                             id: 3,
                             text: "Despite the company's financial troubles, the CEO remained _______ about its future prospects.",
                             options: ["pessimistic", "sanguine", "indifferent", "skeptical"],
                             correct: 1,
-                            explanation: "'Sanguine' means optimistic or positive, especially in a difficult situation."
+                            explanation: `
+                                <div class="explanation-section">
+                                    <div class="section-label">📖 Why "sanguine" is correct:</div>
+                                    <div><strong>Sanguine</strong> means optimistic or positive, especially in a difficult situation. "Despite...troubles" signals a contrast - the CEO stayed positive despite problems.</div>
+                                </div>
+                                <div class="explanation-section">
+                                    <div class="section-label">📝 Example:</div>
+                                    <div class="example-box">"Even after losing the first set, the tennis player remained <code>sanguine</code> about winning the match."</div>
+                                </div>
+                                <div class="wrong-options">
+                                    <div class="label">Why other options are wrong:</div>
+                                    • <strong>Pessimistic</strong> - Means expecting the worst (no contrast with "despite")<br>
+                                    • <strong>Indifferent</strong> - Means not caring (doesn't fit the context of remaining hopeful)<br>
+                                    • <strong>Skeptical</strong> - Means doubtful (negative, doesn't provide the expected contrast)
+                                </div>
+                                <div class="tip-box">"Sanguine" comes from Latin "sanguis" (blood) - historically, having lots of blood was associated with cheerfulness!</div>
+                            `
                         },
                         {
                             id: 4,
                             text: "The ancient manuscript was so _______ that scholars could barely decipher the faded text.",
                             options: ["pristine", "illegible", "legible", "transparent"],
                             correct: 1,
-                            explanation: "'Illegible' means not clear enough to read, fitting for faded text that is hard to decipher."
+                            explanation: `
+                                <div class="explanation-section">
+                                    <div class="section-label">📖 Why "illegible" is correct:</div>
+                                    <div><strong>Illegible</strong> means not clear enough to read. The key context clue is "barely decipher the faded text" - this tells us the text was hard to read.</div>
+                                </div>
+                                <div class="explanation-section">
+                                    <div class="section-label">📝 Example:</div>
+                                    <div class="example-box">"The doctor's handwriting was so <code>illegible</code> that the pharmacist had to call for clarification."</div>
+                                </div>
+                                <div class="wrong-options">
+                                    <div class="label">Why other options are wrong:</div>
+                                    • <strong>Pristine</strong> - Means in perfect condition (opposite - wouldn't be hard to read)<br>
+                                    • <strong>Legible</strong> - Means easy to read (exact opposite!)<br>
+                                    • <strong>Transparent</strong> - Means see-through or clear (doesn't describe readability)
+                                </div>
+                                <div class="tip-box">Prefix "il-" means "not" - illegible = not legible = cannot be read!</div>
+                            `
                         },
                         {
                             id: 5,
                             text: "Her _______ comments during the meeting offended several colleagues.",
                             options: ["tactful", "diplomatic", "acerbic", "benevolent"],
                             correct: 2,
-                            explanation: "'Acerbic' means sharp and harsh, suitable for comments that cause offense."
+                            explanation: `
+                                <div class="explanation-section">
+                                    <div class="section-label">📖 Why "acerbic" is correct:</div>
+                                    <div><strong>Acerbic</strong> means sharp, harsh, and biting in tone. The context clue "offended several colleagues" indicates the comments were harsh and hurtful.</div>
+                                </div>
+                                <div class="explanation-section">
+                                    <div class="section-label">📝 Example:</div>
+                                    <div class="example-box">"The critic was known for his <code>acerbic</code> reviews that left many actors in tears."</div>
+                                </div>
+                                <div class="wrong-options">
+                                    <div class="label">Why other options are wrong:</div>
+                                    • <strong>Tactful</strong> - Means considerate and diplomatic (wouldn't cause offense)<br>
+                                    • <strong>Diplomatic</strong> - Means careful to avoid offense (opposite effect)<br>
+                                    • <strong>Benevolent</strong> - Means kind and well-meaning (wouldn't offend people)
+                                </div>
+                                <div class="tip-box">"Acerbic" comes from Latin "acerbus" meaning sour or bitter - like the taste of unripe fruit!</div>
+                            `
                         },
                         {
                             id: 6,
                             text: "The professor's lectures were known for their _______, covering complex topics in remarkable depth.",
                             options: ["brevity", "superficiality", "prolixity", "erudition"],
                             correct: 3,
-                            explanation: "'Erudition' means extensive knowledge or learning, appropriate for in-depth coverage."
+                            explanation: `
+                                <div class="explanation-section">
+                                    <div class="section-label">📖 Why "erudition" is correct:</div>
+                                    <div><strong>Erudition</strong> means extensive knowledge or learning. "Covering complex topics in remarkable depth" describes deep scholarly knowledge.</div>
+                                </div>
+                                <div class="explanation-section">
+                                    <div class="section-label">📝 Example:</div>
+                                    <div class="example-box">"The historian's <code>erudition</code> was evident in his ability to connect events across different civilizations and eras."</div>
+                                </div>
+                                <div class="wrong-options">
+                                    <div class="label">Why other options are wrong:</div>
+                                    • <strong>Brevity</strong> - Means shortness or conciseness (doesn't fit "remarkable depth")<br>
+                                    • <strong>Superficiality</strong> - Means shallow coverage (opposite of "depth")<br>
+                                    • <strong>Prolixity</strong> - Means using too many words, long-winded (not about knowledge depth)
+                                </div>
+                                <div class="tip-box">"Erudite" and "erudition" come from Latin "erudire" meaning to instruct or educate!</div>
+                            `
                         },
                         {
                             id: 7,
                             text: "The politician's _______ regarding the scandal only fueled public suspicion.",
                             options: ["candor", "transparency", "reticence", "forthrightness"],
                             correct: 2,
-                            explanation: "'Reticence' means reluctance to speak freely, which would increase suspicion during a scandal."
+                            explanation: `
+                                <div class="explanation-section">
+                                    <div class="section-label">📖 Why "reticence" is correct:</div>
+                                    <div><strong>Reticence</strong> means reluctance to speak freely or reveal information. During a scandal, staying silent would naturally increase suspicion.</div>
+                                </div>
+                                <div class="explanation-section">
+                                    <div class="section-label">📝 Example:</div>
+                                    <div class="example-box">"His <code>reticence</code> about his past made everyone curious about what he was hiding."</div>
+                                </div>
+                                <div class="wrong-options">
+                                    <div class="label">Why other options are wrong:</div>
+                                    • <strong>Candor</strong> - Means openness and honesty (would reduce suspicion)<br>
+                                    • <strong>Transparency</strong> - Means being open and clear (would reduce suspicion)<br>
+                                    • <strong>Forthrightness</strong> - Means being direct and straightforward (would reduce suspicion)
+                                </div>
+                                <div class="tip-box">Only silence/secrecy (reticence) would "fuel suspicion" - all other options describe openness!</div>
+                            `
                         },
                         {
                             id: 8,
                             text: "The evidence presented was entirely _______, based on speculation rather than fact.",
                             options: ["empirical", "conjectural", "substantiated", "verifiable"],
                             correct: 1,
-                            explanation: "'Conjectural' means based on conjecture or speculation, not proven facts."
+                            explanation: `
+                                <div class="explanation-section">
+                                    <div class="section-label">📖 Why "conjectural" is correct:</div>
+                                    <div><strong>Conjectural</strong> means based on conjecture or speculation, not proven facts. The phrase "based on speculation rather than fact" directly defines this word!</div>
+                                </div>
+                                <div class="explanation-section">
+                                    <div class="section-label">📝 Example:</div>
+                                    <div class="example-box">"The theory about the extinction of dinosaurs remained <code>conjectural</code> until scientists found the impact crater."</div>
+                                </div>
+                                <div class="wrong-options">
+                                    <div class="label">Why other options are wrong:</div>
+                                    • <strong>Empirical</strong> - Means based on observation and evidence (opposite!)<br>
+                                    • <strong>Substantiated</strong> - Means supported by evidence (opposite!)<br>
+                                    • <strong>Verifiable</strong> - Means able to be checked or proven (opposite!)
+                                </div>
+                                <div class="tip-box">"Conjecture" = an educated guess. All other options relate to proven facts!</div>
+                            `
                         },
                         {
                             id: 9,
                             text: "The orchestra's _______ performance received a standing ovation from the audience.",
                             options: ["mediocre", "lackluster", "virtuoso", "amateur"],
                             correct: 2,
-                            explanation: "'Virtuoso' means showing exceptional skill, deserving of a standing ovation."
+                            explanation: `
+                                <div class="explanation-section">
+                                    <div class="section-label">📖 Why "virtuoso" is correct:</div>
+                                    <div><strong>Virtuoso</strong> means showing exceptional technical skill in music or another artistic pursuit. A standing ovation indicates an outstanding performance.</div>
+                                </div>
+                                <div class="explanation-section">
+                                    <div class="section-label">📝 Example:</div>
+                                    <div class="example-box">"The pianist gave a <code>virtuoso</code> performance of Chopin's most difficult pieces, leaving the audience speechless."</div>
+                                </div>
+                                <div class="wrong-options">
+                                    <div class="label">Why other options are wrong:</div>
+                                    • <strong>Mediocre</strong> - Means average or ordinary (wouldn't earn standing ovation)<br>
+                                    • <strong>Lackluster</strong> - Means lacking brilliance or vitality (negative)<br>
+                                    • <strong>Amateur</strong> - Means non-professional (wouldn't typically earn standing ovation)
+                                </div>
+                                <div class="tip-box">A "virtuoso" is a master performer - the word comes from Italian meaning "skilled"!</div>
+                            `
                         },
                         {
                             id: 10,
                             text: "The treaty was designed to _______ long-standing hostilities between the neighboring countries.",
                             options: ["exacerbate", "perpetuate", "ameliorate", "intensify"],
                             correct: 2,
-                            explanation: "'Ameliorate' means to make better or improve, fitting for reducing hostilities."
+                            explanation: `
+                                <div class="explanation-section">
+                                    <div class="section-label">📖 Why "ameliorate" is correct:</div>
+                                    <div><strong>Ameliorate</strong> means to make better or improve a bad situation. Treaties are designed to improve relations and reduce hostilities.</div>
+                                </div>
+                                <div class="explanation-section">
+                                    <div class="section-label">📝 Example:</div>
+                                    <div class="example-box">"The new policies were intended to <code>ameliorate</code> the living conditions in impoverished neighborhoods."</div>
+                                </div>
+                                <div class="wrong-options">
+                                    <div class="label">Why other options are wrong:</div>
+                                    • <strong>Exacerbate</strong> - Means to make worse (opposite purpose of a treaty)<br>
+                                    • <strong>Perpetuate</strong> - Means to continue indefinitely (treaties aim to end hostilities)<br>
+                                    • <strong>Intensify</strong> - Means to increase in strength (would worsen conflict)
+                                </div>
+                                <div class="tip-box">"Ameliorate" comes from Latin "melior" meaning better - related to "meliorate" and "improve"!</div>
+                            `
                         }
                     ]
                 },
@@ -929,70 +1305,271 @@
                             text: "Not until the results were published _______ the true extent of the problem.",
                             options: ["the public realized", "did the public realize", "the public did realize", "realized the public"],
                             correct: 1,
-                            explanation: "'Not until' at the beginning requires inversion: 'did the public realize.'"
+                            explanation: `
+                                <div class="explanation-section">
+                                    <div class="section-label">📖 Why "did the public realize" is correct:</div>
+                                    <div>When a sentence begins with negative expressions like <strong>"Not until," "Never," "Seldom," "Rarely,"</strong> etc., we must use <strong>inversion</strong> (auxiliary verb before subject).</div>
+                                </div>
+                                <div class="explanation-section">
+                                    <div class="section-label">📝 Structure:</div>
+                                    <div class="example-box">
+                                        Not until + clause + <code>did/had/was + subject + verb</code><br><br>
+                                        ✓ "Not until I arrived <code>did I realize</code> the party had started."<br>
+                                        ✓ "Never <code>have I seen</code> such beauty."
+                                    </div>
+                                </div>
+                                <div class="wrong-options">
+                                    <div class="label">Why other options are wrong:</div>
+                                    • <strong>"the public realized"</strong> - No inversion (required after "Not until")<br>
+                                    • <strong>"the public did realize"</strong> - Wrong order (auxiliary must come before subject)<br>
+                                    • <strong>"realized the public"</strong> - Incorrect structure entirely
+                                </div>
+                                <div class="tip-box">Negative adverbs at the start = INVERSION! "Not until" needs "did + subject + verb"</div>
+                            `
                         },
                         {
                             id: 12,
                             text: "The manager demanded that the report _______ before the end of the day.",
                             options: ["is completed", "be completed", "will be completed", "was completed"],
                             correct: 1,
-                            explanation: "After 'demand,' use subjunctive mood: 'be completed.'"
+                            explanation: `
+                                <div class="explanation-section">
+                                    <div class="section-label">📖 Why "be completed" is correct:</div>
+                                    <div>After verbs like <strong>"demand," "insist," "suggest," "recommend," "require,"</strong> we use the <strong>subjunctive mood</strong> - the base form of the verb (without "to").</div>
+                                </div>
+                                <div class="explanation-section">
+                                    <div class="section-label">📝 Subjunctive Pattern:</div>
+                                    <div class="example-box">
+                                        demand/insist/suggest + that + subject + <code>base verb</code><br><br>
+                                        ✓ "She demanded that he <code>leave</code> immediately."<br>
+                                        ✓ "I suggest that she <code>be</code> more careful."<br>
+                                        ✓ "The doctor recommended that he <code>take</code> vitamins."
+                                    </div>
+                                </div>
+                                <div class="wrong-options">
+                                    <div class="label">Why other options are wrong:</div>
+                                    • <strong>"is completed"</strong> - Indicative mood, not subjunctive<br>
+                                    • <strong>"will be completed"</strong> - Future tense, not subjunctive<br>
+                                    • <strong>"was completed"</strong> - Past tense, not subjunctive
+                                </div>
+                                <div class="tip-box">Subjunctive "be" looks strange but is correct! It's the same for all subjects: he be, she be, it be, they be</div>
+                            `
                         },
                         {
                             id: 13,
                             text: "_______ to the conference, I would have presented my research findings.",
                             options: ["Had I been invited", "If I would be invited", "Was I invited", "Should I be invited"],
                             correct: 0,
-                            explanation: "'Had I been invited' is the inverted form for third conditional."
+                            explanation: `
+                                <div class="explanation-section">
+                                    <div class="section-label">📖 Why "Had I been invited" is correct:</div>
+                                    <div>This is a <strong>Third Conditional</strong> (unreal past) with inversion. "Would have presented" in the main clause tells us we need past perfect in the if-clause.</div>
+                                </div>
+                                <div class="explanation-section">
+                                    <div class="section-label">📝 Third Conditional Inversion:</div>
+                                    <div class="example-box">
+                                        Normal: If + had + past participle → would have + past participle<br>
+                                        Inverted: <code>Had + subject + past participle</code> → would have + pp<br><br>
+                                        ✓ "<code>Had I known</code>, I would have helped." (= If I had known...)<br>
+                                        ✓ "<code>Had she studied</code>, she would have passed."
+                                    </div>
+                                </div>
+                                <div class="wrong-options">
+                                    <div class="label">Why other options are wrong:</div>
+                                    • <strong>"If I would be invited"</strong> - Never use "would" in the if-clause!<br>
+                                    • <strong>"Was I invited"</strong> - Wrong tense for third conditional<br>
+                                    • <strong>"Should I be invited"</strong> - First conditional inversion, doesn't match "would have"
+                                </div>
+                                <div class="tip-box">Key signal: "would have + past participle" → needs "Had + subject + past participle"</div>
+                            `
                         },
                         {
                             id: 14,
                             text: "Neither the teacher nor the students _______ aware of the schedule change.",
                             options: ["was", "were", "is", "has been"],
                             correct: 1,
-                            explanation: "With 'neither...nor,' the verb agrees with the nearest subject: 'students' (plural), so 'were.'"
+                            explanation: `
+                                <div class="explanation-section">
+                                    <div class="section-label">📖 Why "were" is correct:</div>
+                                    <div>With <strong>"neither...nor"</strong> and <strong>"either...or"</strong>, the verb agrees with the <strong>NEAREST subject</strong>. "Students" is plural and closest to the verb, so use "were."</div>
+                                </div>
+                                <div class="explanation-section">
+                                    <div class="section-label">📝 Proximity Rule:</div>
+                                    <div class="example-box">
+                                        Neither A nor <code>B</code> + verb agrees with B<br><br>
+                                        ✓ "Neither the teacher nor the <code>students were</code> ready." (students = plural)<br>
+                                        ✓ "Neither the students nor the <code>teacher was</code> ready." (teacher = singular)
+                                    </div>
+                                </div>
+                                <div class="wrong-options">
+                                    <div class="label">Why other options are wrong:</div>
+                                    • <strong>"was"</strong> - Would be correct if "teacher" was nearest, but "students" is<br>
+                                    • <strong>"is"</strong> - Present tense doesn't fit context; also singular<br>
+                                    • <strong>"has been"</strong> - Singular form, doesn't agree with "students"
+                                </div>
+                                <div class="tip-box">Neither...nor / Either...or → Look at the NEAREST subject to the verb!</div>
+                            `
                         },
                         {
                             id: 15,
                             text: "It is high time we _______ about climate change.",
                             options: ["do something", "did something", "have done something", "will do something"],
                             correct: 1,
-                            explanation: "'It is high time' is followed by past simple: 'did something.'"
+                            explanation: `
+                                <div class="explanation-section">
+                                    <div class="section-label">📖 Why "did something" is correct:</div>
+                                    <div><strong>"It is high time"</strong> is a fixed expression that requires the <strong>past simple tense</strong> to express urgency about a present or future action that should happen now.</div>
+                                </div>
+                                <div class="explanation-section">
+                                    <div class="section-label">📝 Pattern:</div>
+                                    <div class="example-box">
+                                        It is (high/about) time + subject + <code>past simple</code><br><br>
+                                        ✓ "It's high time you <code>got</code> a job." (= You should get a job NOW)<br>
+                                        ✓ "It's about time we <code>left</code>." (= We should leave NOW)
+                                    </div>
+                                </div>
+                                <div class="wrong-options">
+                                    <div class="label">Why other options are wrong:</div>
+                                    • <strong>"do something"</strong> - Present tense doesn't follow "It is high time"<br>
+                                    • <strong>"have done something"</strong> - Present perfect doesn't work here<br>
+                                    • <strong>"will do something"</strong> - Future tense doesn't follow this pattern
+                                </div>
+                                <div class="tip-box">The past tense after "It's high time" doesn't mean past - it expresses urgency about NOW!</div>
+                            `
                         },
                         {
                             id: 16,
                             text: "The professor, along with her assistants, _______ conducting the experiment.",
                             options: ["are", "is", "were", "have been"],
                             correct: 1,
-                            explanation: "'Along with' doesn't affect subject-verb agreement; 'professor' is singular, so 'is.'"
+                            explanation: `
+                                <div class="explanation-section">
+                                    <div class="section-label">📖 Why "is" is correct:</div>
+                                    <div>Phrases like <strong>"along with," "as well as," "together with," "in addition to"</strong> do NOT affect subject-verb agreement. The verb agrees with the FIRST subject only.</div>
+                                </div>
+                                <div class="explanation-section">
+                                    <div class="section-label">📝 Rule:</div>
+                                    <div class="example-box">
+                                        Subject 1, along with Subject 2, + <code>verb agrees with Subject 1</code><br><br>
+                                        ✓ "The <code>professor</code>, along with her assistants, <code>is</code> conducting..." (professor = singular)<br>
+                                        ✓ "The <code>students</code>, as well as the teacher, <code>are</code> ready." (students = plural)
+                                    </div>
+                                </div>
+                                <div class="wrong-options">
+                                    <div class="label">Why other options are wrong:</div>
+                                    • <strong>"are"</strong> - Would agree with "assistants" but main subject is "professor"<br>
+                                    • <strong>"were"</strong> - Past tense and plural, doesn't agree with singular "professor"<br>
+                                    • <strong>"have been"</strong> - Plural form, doesn't agree with "professor"
+                                </div>
+                                <div class="tip-box">"Along with" is like adding a side note - ignore it for verb agreement! Focus on the main subject.</div>
+                            `
                         },
                         {
                             id: 17,
                             text: "Only after the ceremony _______ to take photographs.",
                             options: ["the guests were allowed", "were the guests allowed", "the guests allowed", "did the guests allow"],
                             correct: 1,
-                            explanation: "'Only after' at the beginning requires inversion: 'were the guests allowed.'"
+                            explanation: `
+                                <div class="explanation-section">
+                                    <div class="section-label">📖 Why "were the guests allowed" is correct:</div>
+                                    <div>When <strong>"Only after/Only when/Only if"</strong> starts a sentence, we must use <strong>inversion</strong> in the main clause (auxiliary before subject).</div>
+                                </div>
+                                <div class="explanation-section">
+                                    <div class="section-label">📝 Pattern:</div>
+                                    <div class="example-box">
+                                        Only after/when/if + clause, + <code>auxiliary + subject + verb</code><br><br>
+                                        ✓ "Only after studying hard <code>did she pass</code> the exam."<br>
+                                        ✓ "Only when he arrived <code>could we start</code> the meeting."
+                                    </div>
+                                </div>
+                                <div class="wrong-options">
+                                    <div class="label">Why other options are wrong:</div>
+                                    • <strong>"the guests were allowed"</strong> - No inversion (required after "Only after")<br>
+                                    • <strong>"the guests allowed"</strong> - Missing auxiliary verb<br>
+                                    • <strong>"did the guests allow"</strong> - Active voice when passive is needed
+                                </div>
+                                <div class="tip-box">"Only" at the start with time expressions = INVERSION! Flip the auxiliary and subject.</div>
+                            `
                         },
                         {
                             id: 18,
                             text: "I wish I _______ a foreign language when I was younger.",
                             options: ["learned", "had learned", "have learned", "would learn"],
                             correct: 1,
-                            explanation: "'Wish' about past regret takes past perfect: 'had learned.'"
+                            explanation: `
+                                <div class="explanation-section">
+                                    <div class="section-label">📖 Why "had learned" is correct:</div>
+                                    <div><strong>"I wish"</strong> about a past situation that didn't happen requires <strong>past perfect</strong> (had + past participle). "When I was younger" confirms we're talking about the past.</div>
+                                </div>
+                                <div class="explanation-section">
+                                    <div class="section-label">📝 Wish Patterns:</div>
+                                    <div class="example-box">
+                                        • Wish about present: I wish + <code>past simple</code> ("I wish I knew")<br>
+                                        • Wish about past: I wish + <code>past perfect</code> ("I wish I had known")<br>
+                                        • Wish about future: I wish + <code>would</code> ("I wish you would stop")
+                                    </div>
+                                </div>
+                                <div class="wrong-options">
+                                    <div class="label">Why other options are wrong:</div>
+                                    • <strong>"learned"</strong> - Simple past is for wishes about present, not past<br>
+                                    • <strong>"have learned"</strong> - Present perfect doesn't work with "wish"<br>
+                                    • <strong>"would learn"</strong> - Used for wishes about annoying habits or future
+                                </div>
+                                <div class="tip-box">"When I was younger" = PAST situation → need PAST PERFECT after "wish"</div>
+                            `
                         },
                         {
                             id: 19,
                             text: "The evidence suggests that the suspect _______ at the scene of the crime.",
                             options: ["had been present", "has been present", "is being present", "will be present"],
                             correct: 0,
-                            explanation: "Past perfect 'had been present' correctly refers to a time before the evidence was found."
+                            explanation: `
+                                <div class="explanation-section">
+                                    <div class="section-label">📖 Why "had been present" is correct:</div>
+                                    <div>The crime happened in the past, and the suspect's presence was BEFORE the current evidence analysis. <strong>Past perfect</strong> shows this earlier past time.</div>
+                                </div>
+                                <div class="explanation-section">
+                                    <div class="section-label">📝 Timeline:</div>
+                                    <div class="example-box">
+                                        Past Perfect (earlier) ← Past Simple (later) ← Now<br><br>
+                                        "The evidence suggests (now) that the suspect <code>had been present</code> (earlier past)"
+                                    </div>
+                                </div>
+                                <div class="wrong-options">
+                                    <div class="label">Why other options are wrong:</div>
+                                    • <strong>"has been present"</strong> - Present perfect connects to now, but crime scene is past<br>
+                                    • <strong>"is being present"</strong> - Grammatically incorrect; "be present" doesn't use continuous<br>
+                                    • <strong>"will be present"</strong> - Future tense doesn't fit past crime scene
+                                </div>
+                                <div class="tip-box">Crime investigations need past perfect - the presence happened BEFORE the evidence was analyzed!</div>
+                            `
                         },
                         {
                             id: 20,
                             text: "_______ his lack of experience, he performed remarkably well.",
                             options: ["Despite of", "In spite", "Despite", "Although"],
                             correct: 2,
-                            explanation: "'Despite' is followed directly by a noun phrase without 'of.'"
+                            explanation: `
+                                <div class="explanation-section">
+                                    <div class="section-label">📖 Why "Despite" is correct:</div>
+                                    <div><strong>"Despite"</strong> is a preposition followed directly by a noun/noun phrase. It NEVER takes "of" after it.</div>
+                                </div>
+                                <div class="explanation-section">
+                                    <div class="section-label">📝 Despite vs In spite of vs Although:</div>
+                                    <div class="example-box">
+                                        • <code>Despite</code> + noun phrase: "Despite the rain, we went out."<br>
+                                        • <code>In spite of</code> + noun phrase: "In spite of the rain, we went out."<br>
+                                        • <code>Although</code> + clause: "Although it was raining, we went out."
+                                    </div>
+                                </div>
+                                <div class="wrong-options">
+                                    <div class="label">Why other options are wrong:</div>
+                                    • <strong>"Despite of"</strong> - WRONG! "Despite" never takes "of"<br>
+                                    • <strong>"In spite"</strong> - Incomplete; must be "In spite of"<br>
+                                    • <strong>"Although"</strong> - Needs a clause (subject + verb), not just a noun phrase
+                                </div>
+                                <div class="tip-box">NEVER say "despite of" - it's always just "despite" OR "in spite of" (with "of")!</div>
+                            `
                         }
                     ]
                 },
@@ -1006,70 +1583,276 @@
                             text: "The number of students <span class='error-part'>(A) who</span> has applied <span class='error-part'>(B) for</span> the scholarship <span class='error-part'>(C) has increased</span> <span class='error-part'>(D) dramatically</span>.",
                             options: ["A", "B", "C", "D"],
                             correct: 0,
-                            explanation: "Error in (A): 'The number' is singular, but 'who has applied' is awkward; should be 'who have applied' to agree with 'students.'"
+                            explanation: `
+                                <div class="explanation-section">
+                                    <div class="section-label">📖 Error in (A): "who has applied" should be "who have applied"</div>
+                                    <div>The relative pronoun "who" refers back to "students" (plural), so the verb in the relative clause must be plural: "who <strong>have</strong> applied."</div>
+                                </div>
+                                <div class="explanation-section">
+                                    <div class="section-label">📝 Understanding the Structure:</div>
+                                    <div class="example-box">
+                                        "The number of <code>students</code> who <code>have</code> applied..." (students have applied)<br>
+                                        vs.<br>
+                                        "The number...has increased" (the number has increased - correct!)
+                                    </div>
+                                </div>
+                                <div class="wrong-options">
+                                    <div class="label">Why other parts are correct:</div>
+                                    • <strong>(B) "for"</strong> - Correct preposition: "apply for" a scholarship<br>
+                                    • <strong>(C) "has increased"</strong> - Correct! "The number" is singular<br>
+                                    • <strong>(D) "dramatically"</strong> - Correct adverb modifying "increased"
+                                </div>
+                                <div class="tip-box">"Who" agrees with its antecedent (students), not with the main subject (number)!</div>
+                            `
                         },
                         {
                             id: 22,
                             text: "The museum <span class='error-part'>(A) contains</span> an <span class='error-part'>(B) unique</span> collection of <span class='error-part'>(C) ancient</span> <span class='error-part'>(D) artifacts</span>.",
                             options: ["A", "B", "C", "D"],
                             correct: 1,
-                            explanation: "Error in (B): Use 'a' before 'unique' because 'unique' starts with a consonant sound /juː/."
+                            explanation: `
+                                <div class="explanation-section">
+                                    <div class="section-label">📖 Error in (B): "an unique" should be "a unique"</div>
+                                    <div>Use "a" or "an" based on <strong>SOUND</strong>, not spelling. "Unique" starts with a consonant SOUND /juː/ (like "you"), so use "a."</div>
+                                </div>
+                                <div class="explanation-section">
+                                    <div class="section-label">📝 A vs An Rule:</div>
+                                    <div class="example-box">
+                                        Consonant SOUND → use "a": <code>a</code> university, <code>a</code> European, <code>a</code> one-time<br>
+                                        Vowel SOUND → use "an": <code>an</code> hour, <code>an</code> honest person, <code>an</code> MBA
+                                    </div>
+                                </div>
+                                <div class="wrong-options">
+                                    <div class="label">Why other parts are correct:</div>
+                                    • <strong>(A) "contains"</strong> - Correct verb form for singular "museum"<br>
+                                    • <strong>(C) "ancient"</strong> - Correct adjective<br>
+                                    • <strong>(D) "artifacts"</strong> - Correct noun
+                                </div>
+                                <div class="tip-box">Sound test: "unique" = "yoo-neek" starts with "Y" sound (consonant), so use "A"!</div>
+                            `
                         },
                         {
                             id: 23,
                             text: "Each of the <span class='error-part'>(A) participants</span> <span class='error-part'>(B) were given</span> a certificate <span class='error-part'>(C) at</span> the <span class='error-part'>(D) conclusion</span> of the workshop.",
                             options: ["A", "B", "C", "D"],
                             correct: 1,
-                            explanation: "Error in (B): 'Each' is singular and requires 'was given,' not 'were given.'"
+                            explanation: `
+                                <div class="explanation-section">
+                                    <div class="section-label">📖 Error in (B): "were given" should be "was given"</div>
+                                    <div><strong>"Each"</strong> is ALWAYS singular, regardless of what follows. The subject is "Each" (not "participants"), so use "was."</div>
+                                </div>
+                                <div class="explanation-section">
+                                    <div class="section-label">📝 Singular Indefinite Pronouns:</div>
+                                    <div class="example-box">
+                                        Each, Every, Either, Neither, Anyone, Everyone, Someone, Nobody<br>
+                                        → ALL take <code>singular</code> verbs!<br><br>
+                                        ✓ "Each of the students <code>was</code> given..."<br>
+                                        ✓ "Everyone <code>has</code> arrived."
+                                    </div>
+                                </div>
+                                <div class="wrong-options">
+                                    <div class="label">Why other parts are correct:</div>
+                                    • <strong>(A) "participants"</strong> - Correct plural noun after "of the"<br>
+                                    • <strong>(C) "at"</strong> - Correct preposition for time/point<br>
+                                    • <strong>(D) "conclusion"</strong> - Correct noun
+                                </div>
+                                <div class="tip-box">"Each" = "every single one" = ONE at a time = SINGULAR verb!</div>
+                            `
                         },
                         {
                             id: 24,
                             text: "The <span class='error-part'>(A) data</span> collected from the survey <span class='error-part'>(B) indicates</span> that most respondents <span class='error-part'>(C) prefer</span> <span class='error-part'>(D) online shopping</span>.",
                             options: ["A", "B", "C", "D"],
                             correct: 1,
-                            explanation: "Error in (B): 'Data' is plural (singular: datum), requiring 'indicate,' not 'indicates.'"
+                            explanation: `
+                                <div class="explanation-section">
+                                    <div class="section-label">📖 Error in (B): "indicates" should be "indicate"</div>
+                                    <div><strong>"Data"</strong> is traditionally PLURAL (singular: datum), so it should take "indicate" in formal/academic writing.</div>
+                                </div>
+                                <div class="explanation-section">
+                                    <div class="section-label">📝 Latin/Greek Plurals:</div>
+                                    <div class="example-box">
+                                        datum → data (plural) → "The data <code>indicate</code>..."<br>
+                                        criterion → criteria → "The criteria <code>are</code>..."<br>
+                                        phenomenon → phenomena → "These phenomena <code>show</code>..."
+                                    </div>
+                                </div>
+                                <div class="wrong-options">
+                                    <div class="label">Why other parts are correct:</div>
+                                    • <strong>(A) "data"</strong> - Correct noun (though plural)<br>
+                                    • <strong>(C) "prefer"</strong> - Correct plural verb for "respondents"<br>
+                                    • <strong>(D) "online shopping"</strong> - Correct noun phrase
+                                </div>
+                                <div class="tip-box">In MEXT exams, treat "data" as plural! "The data show/indicate/suggest..."</div>
+                            `
                         },
                         {
                             id: 25,
                             text: "The scientist <span class='error-part'>(A) has devoted</span> <span class='error-part'>(B) her</span> entire career <span class='error-part'>(C) to study</span> <span class='error-part'>(D) climate change</span>.",
                             options: ["A", "B", "C", "D"],
                             correct: 2,
-                            explanation: "Error in (C): After 'devoted...to,' use gerund: 'to studying,' not 'to study.'"
+                            explanation: `
+                                <div class="explanation-section">
+                                    <div class="section-label">📖 Error in (C): "to study" should be "to studying"</div>
+                                    <div>After <strong>"devoted to"</strong>, the "to" is a PREPOSITION (not infinitive marker), so it must be followed by a <strong>gerund (-ing form)</strong>.</div>
+                                </div>
+                                <div class="explanation-section">
+                                    <div class="section-label">📝 Preposition "to" + Gerund:</div>
+                                    <div class="example-box">
+                                        These phrases use "to" as a preposition:<br>
+                                        • devoted to <code>studying</code><br>
+                                        • look forward to <code>meeting</code><br>
+                                        • accustomed to <code>working</code><br>
+                                        • committed to <code>helping</code>
+                                    </div>
+                                </div>
+                                <div class="wrong-options">
+                                    <div class="label">Why other parts are correct:</div>
+                                    • <strong>(A) "has devoted"</strong> - Correct present perfect<br>
+                                    • <strong>(B) "her"</strong> - Correct possessive pronoun<br>
+                                    • <strong>(D) "climate change"</strong> - Correct noun phrase
+                                </div>
+                                <div class="tip-box">"Devoted to" / "look forward to" → The "to" is a preposition, so use -ING!</div>
+                            `
                         },
                         {
                             id: 26,
                             text: "The report <span class='error-part'>(A) suggests</span> that the company <span class='error-part'>(B) needs</span> to be <span class='error-part'>(C) more innovative</span> than <span class='error-part'>(D) their competitors</span>.",
                             options: ["A", "B", "C", "D"],
                             correct: 3,
-                            explanation: "Error in (D): 'Company' is singular, so pronoun should be 'its competitors,' not 'their.'"
+                            explanation: `
+                                <div class="explanation-section">
+                                    <div class="section-label">📖 Error in (D): "their competitors" should be "its competitors"</div>
+                                    <div><strong>"Company"</strong> is singular, so the pronoun referring to it must also be singular: <strong>"its"</strong> (not "their").</div>
+                                </div>
+                                <div class="explanation-section">
+                                    <div class="section-label">📝 Pronoun Agreement:</div>
+                                    <div class="example-box">
+                                        Singular noun → singular pronoun<br>
+                                        ✓ "The <code>company</code>...<code>its</code> competitors"<br>
+                                        ✓ "The <code>team</code>...<code>its</code> players" (American English)<br>
+                                        ✗ "The company...their" (pronoun disagreement)
+                                    </div>
+                                </div>
+                                <div class="wrong-options">
+                                    <div class="label">Why other parts are correct:</div>
+                                    • <strong>(A) "suggests"</strong> - Correct singular verb for "report"<br>
+                                    • <strong>(B) "needs"</strong> - Correct singular verb for "company"<br>
+                                    • <strong>(C) "more innovative"</strong> - Correct comparative form
+                                </div>
+                                <div class="tip-box">In formal writing, company/team/organization = "it/its" (singular), not "they/their"!</div>
+                            `
                         },
                         {
                             id: 27,
                             text: "Despite <span class='error-part'>(A) of</span> the heavy rain, the marathon <span class='error-part'>(B) proceeded</span> <span class='error-part'>(C) as</span> <span class='error-part'>(D) scheduled</span>.",
                             options: ["A", "B", "C", "D"],
                             correct: 0,
-                            explanation: "Error in (A): 'Despite' is not followed by 'of'; should be 'Despite the heavy rain.'"
+                            explanation: `
+                                <div class="explanation-section">
+                                    <div class="section-label">📖 Error in (A): "Despite of" should be "Despite"</div>
+                                    <div><strong>"Despite"</strong> is NEVER followed by "of." Use either "Despite" alone OR "In spite of."</div>
+                                </div>
+                                <div class="explanation-section">
+                                    <div class="section-label">📝 Correct Usage:</div>
+                                    <div class="example-box">
+                                        ✓ <code>Despite</code> the rain... (NO "of")<br>
+                                        ✓ <code>In spite of</code> the rain... (WITH "of")<br>
+                                        ✗ Despite of the rain... (WRONG!)
+                                    </div>
+                                </div>
+                                <div class="wrong-options">
+                                    <div class="label">Why other parts are correct:</div>
+                                    • <strong>(B) "proceeded"</strong> - Correct past tense verb<br>
+                                    • <strong>(C) "as"</strong> - Correct conjunction meaning "in the way that"<br>
+                                    • <strong>(D) "scheduled"</strong> - Correct past participle
+                                </div>
+                                <div class="tip-box">Memory trick: "Despite" has 7 letters (enough!). "In spite" needs "of" to be complete.</div>
+                            `
                         },
                         {
                             id: 28,
                             text: "The <span class='error-part'>(A) professor</span> insisted that <span class='error-part'>(B) each student</span> <span class='error-part'>(C) submits</span> their paper <span class='error-part'>(D) by</span> Friday.",
                             options: ["A", "B", "C", "D"],
                             correct: 2,
-                            explanation: "Error in (C): After 'insisted that,' use subjunctive 'submit,' not 'submits.'"
+                            explanation: `
+                                <div class="explanation-section">
+                                    <div class="section-label">📖 Error in (C): "submits" should be "submit"</div>
+                                    <div>After <strong>"insist that"</strong>, use the <strong>subjunctive mood</strong> - the base form of the verb without "s" or "ed."</div>
+                                </div>
+                                <div class="explanation-section">
+                                    <div class="section-label">📝 Subjunctive After Insist/Demand/Suggest:</div>
+                                    <div class="example-box">
+                                        insist/demand/suggest/recommend + that + subject + <code>base verb</code><br><br>
+                                        ✓ "I insist that he <code>be</code> present." (not "is")<br>
+                                        ✓ "She suggested that he <code>leave</code>." (not "leaves")<br>
+                                        ✓ "They demanded that she <code>apologize</code>." (not "apologizes")
+                                    </div>
+                                </div>
+                                <div class="wrong-options">
+                                    <div class="label">Why other parts are correct:</div>
+                                    • <strong>(A) "professor"</strong> - Correct noun<br>
+                                    • <strong>(B) "each student"</strong> - Correct singular subject<br>
+                                    • <strong>(D) "by"</strong> - Correct preposition for deadline
+                                </div>
+                                <div class="tip-box">After insist/demand/suggest/recommend + that → always use BASE VERB!</div>
+                            `
                         },
                         {
                             id: 29,
                             text: "The athlete <span class='error-part'>(A) trains</span> <span class='error-part'>(B) hardly</span> every day to <span class='error-part'>(C) prepare</span> for the <span class='error-part'>(D) championship</span>.",
                             options: ["A", "B", "C", "D"],
                             correct: 1,
-                            explanation: "Error in (B): 'Hardly' means 'barely'; should be 'hard' (adverb meaning with great effort)."
+                            explanation: `
+                                <div class="explanation-section">
+                                    <div class="section-label">📖 Error in (B): "hardly" should be "hard"</div>
+                                    <div><strong>"Hardly"</strong> means "barely" or "almost not." <strong>"Hard"</strong> (as an adverb) means "with great effort." Athletes train hard, not hardly!</div>
+                                </div>
+                                <div class="explanation-section">
+                                    <div class="section-label">📝 Hard vs Hardly:</div>
+                                    <div class="example-box">
+                                        <code>Hard</code> (adverb) = with great effort: "She works <code>hard</code>."<br>
+                                        <code>Hardly</code> (adverb) = barely, almost not: "I can <code>hardly</code> see."<br><br>
+                                        ✓ "He trains <code>hard</code>." (with effort)<br>
+                                        ✗ "He trains hardly." (= he barely trains!)
+                                    </div>
+                                </div>
+                                <div class="wrong-options">
+                                    <div class="label">Why other parts are correct:</div>
+                                    • <strong>(A) "trains"</strong> - Correct present tense for routine<br>
+                                    • <strong>(C) "prepare"</strong> - Correct infinitive after "to"<br>
+                                    • <strong>(D) "championship"</strong> - Correct noun
+                                </div>
+                                <div class="tip-box">Common trap! Hard = with effort | Hardly = barely/almost not. Similar words, opposite meanings!</div>
+                            `
                         },
                         {
                             id: 30,
                             text: "The <span class='error-part'>(A) equipment</span> <span class='error-part'>(B) are</span> being <span class='error-part'>(C) tested</span> <span class='error-part'>(D) thoroughly</span> before use.",
                             options: ["A", "B", "C", "D"],
                             correct: 1,
-                            explanation: "Error in (B): 'Equipment' is uncountable and singular, requiring 'is,' not 'are.'"
+                            explanation: `
+                                <div class="explanation-section">
+                                    <div class="section-label">📖 Error in (B): "are" should be "is"</div>
+                                    <div><strong>"Equipment"</strong> is an uncountable noun and ALWAYS singular. It cannot be pluralized and takes singular verbs.</div>
+                                </div>
+                                <div class="explanation-section">
+                                    <div class="section-label">📝 Uncountable Nouns (Always Singular):</div>
+                                    <div class="example-box">
+                                        equipment, information, advice, furniture, luggage, news, homework<br><br>
+                                        ✓ "The equipment <code>is</code> ready."<br>
+                                        ✓ "The information <code>was</code> helpful."<br>
+                                        ✗ "The equipments are..." (WRONG!)
+                                    </div>
+                                </div>
+                                <div class="wrong-options">
+                                    <div class="label">Why other parts are correct:</div>
+                                    • <strong>(A) "equipment"</strong> - Correct uncountable noun<br>
+                                    • <strong>(C) "tested"</strong> - Correct past participle in passive<br>
+                                    • <strong>(D) "thoroughly"</strong> - Correct adverb
+                                </div>
+                                <div class="tip-box">Uncountable nouns like equipment, furniture, information = ALWAYS singular verb!</div>
+                            `
                         }
                     ]
                 },
@@ -1089,70 +1872,266 @@
                             text: "Choose the best word for blank 31:",
                             options: ["originated", "emerged", "appeared", "started"],
                             correct: 0,
-                            explanation: "'Originated' best conveys the sense of the revolution beginning in a specific place."
+                            explanation: `
+                                <div class="explanation-section">
+                                    <div class="section-label">📖 Why "originated" is correct:</div>
+                                    <div><strong>"Originated in"</strong> is the best collocation for describing where something began or had its source. The Industrial Revolution "originated in" Britain.</div>
+                                </div>
+                                <div class="explanation-section">
+                                    <div class="section-label">📝 Collocations with "in Britain":</div>
+                                    <div class="example-box">
+                                        ✓ "The movement <code>originated in</code> Britain." (best for birthplace)<br>
+                                        △ "The movement emerged in Britain." (possible but less precise)<br>
+                                        △ "The movement started in Britain." (too casual for academic text)
+                                    </div>
+                                </div>
+                                <div class="wrong-options">
+                                    <div class="label">Why other options are less ideal:</div>
+                                    • <strong>Emerged</strong> - Better for gradual appearance, not specific origin<br>
+                                    • <strong>Appeared</strong> - Too vague, doesn't convey "origin"<br>
+                                    • <strong>Started</strong> - Too informal for academic writing
+                                </div>
+                                <div class="tip-box">"Originated in/from" = the BIRTHPLACE. Perfect for historical movements!</div>
+                            `
                         },
                         {
                             id: 32,
                             text: "Choose the best word for blank 32:",
                             options: ["while", "but", "so", "because"],
                             correct: 1,
-                            explanation: "'But' introduces the contrast between handmade production and machine manufacturing."
+                            explanation: `
+                                <div class="explanation-section">
+                                    <div class="section-label">📖 Why "but" is correct:</div>
+                                    <div>The sentence contrasts handmade production (BEFORE) with machine manufacturing (AFTER). <strong>"But"</strong> introduces this contrast.</div>
+                                </div>
+                                <div class="explanation-section">
+                                    <div class="section-label">📝 Sentence Logic:</div>
+                                    <div class="example-box">
+                                        "goods were produced by hand...<code>but</code> the revolution introduced machines"<br>
+                                        OLD method (hand) → CONTRAST → NEW method (machines)
+                                    </div>
+                                </div>
+                                <div class="wrong-options">
+                                    <div class="label">Why other options are wrong:</div>
+                                    • <strong>While</strong> - Indicates simultaneous events, not contrast here<br>
+                                    • <strong>So</strong> - Shows result, not contrast<br>
+                                    • <strong>Because</strong> - Shows cause, not contrast
+                                </div>
+                                <div class="tip-box">Look for contrast signals: old vs new, before vs after → use "but"!</div>
+                            `
                         },
                         {
                             id: 33,
                             text: "Choose the best word for blank 33:",
                             options: ["including", "particularly", "namely", "as"],
                             correct: 1,
-                            explanation: "'Particularly' emphasizes the importance of coal and iron as key resources."
+                            explanation: `
+                                <div class="explanation-section">
+                                    <div class="section-label">📖 Why "particularly" is correct:</div>
+                                    <div><strong>"Particularly"</strong> means "especially" and emphasizes the importance of coal and iron ore as KEY resources. It highlights these as the most significant examples.</div>
+                                </div>
+                                <div class="explanation-section">
+                                    <div class="section-label">📝 Word Choice:</div>
+                                    <div class="example-box">
+                                        "abundant natural resources, <code>particularly</code> coal and iron ore"<br>
+                                        = coal and iron were ESPECIALLY important among the resources
+                                    </div>
+                                </div>
+                                <div class="wrong-options">
+                                    <div class="label">Why other options are less ideal:</div>
+                                    • <strong>Including</strong> - Just lists items without emphasis<br>
+                                    • <strong>Namely</strong> - Used when listing ALL items, not highlighting key ones<br>
+                                    • <strong>As</strong> - Doesn't fit grammatically here
+                                </div>
+                                <div class="tip-box">"Particularly" = "especially" - use when highlighting the MOST important examples!</div>
+                            `
                         },
                         {
                             id: 34,
                             text: "Choose the best word for blank 34:",
                             options: ["exported", "manufactured", "imported", "traditional"],
                             correct: 1,
-                            explanation: "'Manufactured' goods logically follows the discussion of industrial production."
+                            explanation: `
+                                <div class="explanation-section">
+                                    <div class="section-label">📖 Why "manufactured" is correct:</div>
+                                    <div>The passage is about INDUSTRIALIZATION and MANUFACTURING. The colonial empire provided markets for <strong>manufactured goods</strong> - products made in British factories.</div>
+                                </div>
+                                <div class="explanation-section">
+                                    <div class="section-label">📝 Context:</div>
+                                    <div class="example-box">
+                                        Colonies → raw materials (INTO Britain)<br>
+                                        Britain → <code>manufactured goods</code> (OUT to colonies)<br>
+                                        This was the colonial trade pattern!
+                                    </div>
+                                </div>
+                                <div class="wrong-options">
+                                    <div class="label">Why other options are wrong:</div>
+                                    • <strong>Exported</strong> - Describes action, not type of goods<br>
+                                    • <strong>Imported</strong> - Wrong direction (colonies provided markets)<br>
+                                    • <strong>Traditional</strong> - Opposite of what industrialization produced
+                                </div>
+                                <div class="tip-box">Industrial Revolution = manufacturing → "manufactured goods" is the natural collocation!</div>
+                            `
                         },
                         {
                             id: 35,
                             text: "Choose the best word for blank 35:",
                             options: ["favorable", "opposed", "resistant", "harmful"],
                             correct: 0,
-                            explanation: "'Favorable' means conducive to economic innovation in this context."
+                            explanation: `
+                                <div class="explanation-section">
+                                    <div class="section-label">📖 Why "favorable" is correct:</div>
+                                    <div>The passage lists positive factors (stable politics, financial institutions) that HELPED industrialization. These created <strong>favorable conditions</strong> for innovation.</div>
+                                </div>
+                                <div class="explanation-section">
+                                    <div class="section-label">📝 Collocation:</div>
+                                    <div class="example-box">
+                                        "conditions <code>favorable</code> to economic innovation"<br>
+                                        = conditions that support/help innovation
+                                    </div>
+                                </div>
+                                <div class="wrong-options">
+                                    <div class="label">Why other options are wrong:</div>
+                                    • <strong>Opposed</strong> - Means against (negative)<br>
+                                    • <strong>Resistant</strong> - Means blocking (negative)<br>
+                                    • <strong>Harmful</strong> - Means damaging (negative)
+                                </div>
+                                <div class="tip-box">Context is positive (stable politics helped) → need positive word = "favorable"!</div>
+                            `
                         },
                         {
                             id: 36,
                             text: "Choose the best word for blank 36:",
                             options: ["preventing", "hindering", "triggering", "delaying"],
                             correct: 2,
-                            explanation: "'Triggering' means causing rapid urbanization to happen."
+                            explanation: `
+                                <div class="explanation-section">
+                                    <div class="section-label">📖 Why "triggering" is correct:</div>
+                                    <div>People migrating to cities CAUSED rapid urbanization. <strong>"Triggering"</strong> means causing something to happen or setting it off.</div>
+                                </div>
+                                <div class="explanation-section">
+                                    <div class="section-label">📝 Cause and Effect:</div>
+                                    <div class="example-box">
+                                        Cause: "Millions migrated to cities"<br>
+                                        Effect: "rapid urbanization"<br>
+                                        Connection: <code>triggering</code> (causing)
+                                    </div>
+                                </div>
+                                <div class="wrong-options">
+                                    <div class="label">Why other options are wrong:</div>
+                                    • <strong>Preventing</strong> - Means stopping (opposite meaning)<br>
+                                    • <strong>Hindering</strong> - Means slowing down (opposite)<br>
+                                    • <strong>Delaying</strong> - Means postponing (opposite)
+                                </div>
+                                <div class="tip-box">Migration CAUSED urbanization → need a word meaning "cause" = triggering!</div>
+                            `
                         },
                         {
                             id: 37,
                             text: "Choose the best word for blank 37:",
                             options: ["Therefore", "However", "Furthermore", "Meanwhile"],
                             correct: 1,
-                            explanation: "'However' introduces the contrasting positive outcome of labor movements."
+                            explanation: `
+                                <div class="explanation-section">
+                                    <div class="section-label">📖 Why "However" is correct:</div>
+                                    <div>The previous sentence describes harsh conditions (NEGATIVE). The next part mentions labor movements fighting for rights (POSITIVE outcome). <strong>"However"</strong> introduces this contrast.</div>
+                                </div>
+                                <div class="explanation-section">
+                                    <div class="section-label">📝 Transition Logic:</div>
+                                    <div class="example-box">
+                                        NEGATIVE: "harsh conditions, long hours, low wages"<br>
+                                        <code>However</code> (contrast)<br>
+                                        POSITIVE: "sparked labor movements that fought for workers' rights"
+                                    </div>
+                                </div>
+                                <div class="wrong-options">
+                                    <div class="label">Why other options are wrong:</div>
+                                    • <strong>Therefore</strong> - Shows result, not contrast<br>
+                                    • <strong>Furthermore</strong> - Adds similar information, not contrast<br>
+                                    • <strong>Meanwhile</strong> - Shows simultaneous events, not contrast
+                                </div>
+                                <div class="tip-box">Negative info → Positive outcome = CONTRAST → use "However"!</div>
+                            `
                         },
                         {
                             id: 38,
                             text: "Choose the best word for blank 38:",
                             options: ["prevented", "enabled", "limited", "discouraged"],
                             correct: 1,
-                            explanation: "'Enabled' indicates that the steam engine made many applications possible."
+                            explanation: `
+                                <div class="explanation-section">
+                                    <div class="section-label">📖 Why "enabled" is correct:</div>
+                                    <div>Watt's steam engine improvements made "countless applications" POSSIBLE. <strong>"Enabled"</strong> means made possible or gave the ability to do something.</div>
+                                </div>
+                                <div class="explanation-section">
+                                    <div class="section-label">📝 Sentence Meaning:</div>
+                                    <div class="example-box">
+                                        "Steam engine improvements <code>enabled</code> countless applications"<br>
+                                        = The improvements MADE POSSIBLE many uses (factories, transportation)
+                                    </div>
+                                </div>
+                                <div class="wrong-options">
+                                    <div class="label">Why other options are wrong:</div>
+                                    • <strong>Prevented</strong> - Means stopped (opposite meaning)<br>
+                                    • <strong>Limited</strong> - Means restricted (opposite meaning)<br>
+                                    • <strong>Discouraged</strong> - Means dissuaded (opposite meaning)
+                                </div>
+                                <div class="tip-box">"Countless applications" = many positive uses → need positive verb = "enabled"!</div>
+                            `
                         },
                         {
                             id: 39,
                             text: "Choose the best word for blank 39:",
                             options: ["restricted", "impeded", "facilitated", "complicated"],
                             correct: 2,
-                            explanation: "'Facilitated' means made easier the movement of goods and people."
+                            explanation: `
+                                <div class="explanation-section">
+                                    <div class="section-label">📖 Why "facilitated" is correct:</div>
+                                    <div>Railways made transportation EASIER and expanded networks. <strong>"Facilitated"</strong> means made easier or helped to happen.</div>
+                                </div>
+                                <div class="explanation-section">
+                                    <div class="section-label">📝 Positive Context:</div>
+                                    <div class="example-box">
+                                        "Railways <code>facilitated</code> the movement of goods and people"<br>
+                                        + "shrinking distances and expanding commercial networks"<br>
+                                        = Railways HELPED/MADE EASIER
+                                    </div>
+                                </div>
+                                <div class="wrong-options">
+                                    <div class="label">Why other options are wrong:</div>
+                                    • <strong>Restricted</strong> - Means limited (negative)<br>
+                                    • <strong>Impeded</strong> - Means blocked/hindered (negative)<br>
+                                    • <strong>Complicated</strong> - Means made difficult (negative)
+                                </div>
+                                <div class="tip-box">"Shrinking distances, expanding networks" = positive → need "facilitated" (made easier)!</div>
+                            `
                         },
                         {
                             id: 40,
                             text: "Choose the best word for blank 40:",
                             options: ["blocked", "paved", "closed", "hindered"],
                             correct: 1,
-                            explanation: "'Paved the path' is an idiomatic expression meaning to prepare the way for something."
+                            explanation: `
+                                <div class="explanation-section">
+                                    <div class="section-label">📖 Why "paved" is correct:</div>
+                                    <div><strong>"Paved the path/way"</strong> is an idiom meaning to prepare the way for something or make it possible. The Industrial Revolution made later revolutions possible.</div>
+                                </div>
+                                <div class="explanation-section">
+                                    <div class="section-label">📝 Idiom:</div>
+                                    <div class="example-box">
+                                        "<code>paved the path</code> for subsequent technological revolutions"<br>
+                                        = prepared the way for / made possible future revolutions<br><br>
+                                        Similar: "paved the way," "laid the groundwork"
+                                    </div>
+                                </div>
+                                <div class="wrong-options">
+                                    <div class="label">Why other options are wrong:</div>
+                                    • <strong>Blocked</strong> - Means prevented (opposite meaning)<br>
+                                    • <strong>Closed</strong> - Means shut (doesn't fit)<br>
+                                    • <strong>Hindered</strong> - Means obstructed (opposite meaning)
+                                </div>
+                                <div class="tip-box">"Paved the way/path" is a fixed idiom meaning "prepared for" or "made possible"!</div>
+                            `
                         }
                     ]
                 },
@@ -1189,7 +2168,25 @@
                                 "They are shared between different brain regions"
                             ],
                             correct: 1,
-                            explanation: "The passage states that 'information is transferred from short-term to long-term memory storage' during sleep."
+                            explanation: `
+                                <div class="explanation-section">
+                                    <div class="section-label">📖 Why "transferred from short-term to long-term storage" is correct:</div>
+                                    <div>The passage directly states this in paragraph 2.</div>
+                                </div>
+                                <div class="explanation-section">
+                                    <div class="section-label">📝 Passage Evidence:</div>
+                                    <div class="example-box">
+                                        "Information acquired during waking hours is <code>transferred from short-term to long-term memory storage</code>, strengthening neural connections..."
+                                    </div>
+                                </div>
+                                <div class="wrong-options">
+                                    <div class="label">Why other options are wrong:</div>
+                                    • <strong>Permanently erased</strong> - Passage says memories are PRESERVED, not erased<br>
+                                    • <strong>Become distorted</strong> - Not mentioned; passage says important ones are STRENGTHENED<br>
+                                    • <strong>Shared between regions</strong> - Not stated in the passage
+                                </div>
+                                <div class="tip-box">Reading tip: Look for DIRECT quotes from the passage to support your answer!</div>
+                            `
                         },
                         {
                             id: 42,
@@ -1201,7 +2198,25 @@
                                 "Controlling dream content"
                             ],
                             correct: 2,
-                            explanation: "The passage describes the glymphatic system as 'flushing toxins and metabolic waste products that accumulate during waking hours.'"
+                            explanation: `
+                                <div class="explanation-section">
+                                    <div class="section-label">📖 Why "flushing toxins and waste" is correct:</div>
+                                    <div>Paragraph 3 describes the glymphatic system's "housekeeping function."</div>
+                                </div>
+                                <div class="explanation-section">
+                                    <div class="section-label">📝 Passage Evidence:</div>
+                                    <div class="example-box">
+                                        "the glymphatic system—a waste clearance pathway—becomes highly active, <code>flushing toxins and metabolic waste products</code> that accumulate during waking hours"
+                                    </div>
+                                </div>
+                                <div class="wrong-options">
+                                    <div class="label">Why other options are wrong:</div>
+                                    • <strong>Creating memories</strong> - Memory consolidation is a SEPARATE process (paragraph 2)<br>
+                                    • <strong>Body temperature</strong> - Not mentioned in the passage<br>
+                                    • <strong>Dream content</strong> - Not mentioned in relation to glymphatic system
+                                </div>
+                                <div class="tip-box">"Glymphatic" = brain's cleaning/drainage system. Think "lymphatic" for the brain!</div>
+                            `
                         },
                         {
                             id: 43,
@@ -1213,7 +2228,25 @@
                                 "Faster reflexes"
                             ],
                             correct: 1,
-                            explanation: "The passage mentions that beta-amyloid proteins 'associated with Alzheimer's disease' accumulate when sleep is insufficient."
+                            explanation: `
+                                <div class="explanation-section">
+                                    <div class="section-label">📖 Why "Alzheimer's disease" is correct:</div>
+                                    <div>Paragraph 3 links sleep deprivation to Alzheimer's risk through beta-amyloid buildup.</div>
+                                </div>
+                                <div class="explanation-section">
+                                    <div class="section-label">📝 Passage Evidence:</div>
+                                    <div class="example-box">
+                                        "This includes beta-amyloid proteins <code>associated with Alzheimer's disease</code>, suggesting that chronic sleep deprivation <code>may increase dementia risk</code>."
+                                    </div>
+                                </div>
+                                <div class="wrong-options">
+                                    <div class="label">Why other options are wrong:</div>
+                                    • <strong>Improved performance</strong> - Sleep deprivation is NEGATIVE, not beneficial<br>
+                                    • <strong>Enhanced creativity</strong> - Not mentioned; passage focuses on harms<br>
+                                    • <strong>Faster reflexes</strong> - Opposite: sleep loss impairs cognitive function
+                                </div>
+                                <div class="tip-box">The passage discusses NEGATIVE effects of sleep deprivation - eliminate positive-sounding answers!</div>
+                            `
                         },
                         {
                             id: 44,
@@ -1225,7 +2258,25 @@
                                 "Increased physical activity"
                             ],
                             correct: 2,
-                            explanation: "The passage mentions 'artificial lighting, electronic devices, and demanding work schedules' as factors creating sleep deprivation."
+                            explanation: `
+                                <div class="explanation-section">
+                                    <div class="section-label">📖 Why "electronic devices and demanding work schedules" is correct:</div>
+                                    <div>The final paragraph lists factors that contribute to modern sleep problems.</div>
+                                </div>
+                                <div class="explanation-section">
+                                    <div class="section-label">📝 Passage Evidence:</div>
+                                    <div class="example-box">
+                                        "Artificial lighting, <code>electronic devices</code>, and <code>demanding work schedules</code> have created a culture of chronic sleep deprivation."
+                                    </div>
+                                </div>
+                                <div class="wrong-options">
+                                    <div class="label">Why other options are wrong:</div>
+                                    • <strong>Improved nutrition</strong> - Not mentioned as a cause of sleep problems<br>
+                                    • <strong>Reduced stress</strong> - Would HELP sleep, not harm it<br>
+                                    • <strong>Physical activity</strong> - Would generally IMPROVE sleep quality
+                                </div>
+                                <div class="tip-box">Modern sleep killers: screens (blue light), work demands, artificial light!</div>
+                            `
                         },
                         {
                             id: 45,
@@ -1237,7 +2288,29 @@
                                 "Compare human and animal sleep patterns"
                             ],
                             correct: 1,
-                            explanation: "The passage focuses on explaining why sleep is essential and its various biological functions."
+                            explanation: `
+                                <div class="explanation-section">
+                                    <div class="section-label">📖 Why "explain the importance and functions of sleep" is correct:</div>
+                                    <div>The passage systematically covers: memory consolidation, waste removal, health effects, and modern challenges.</div>
+                                </div>
+                                <div class="explanation-section">
+                                    <div class="section-label">📝 Passage Structure:</div>
+                                    <div class="example-box">
+                                        ¶1: Introduction - sleep is mysterious but essential<br>
+                                        ¶2: Function 1 - memory consolidation<br>
+                                        ¶3: Function 2 - brain cleaning (glymphatic)<br>
+                                        ¶4: Health consequences of sleep loss<br>
+                                        ¶5: Modern sleep challenges
+                                    </div>
+                                </div>
+                                <div class="wrong-options">
+                                    <div class="label">Why other options are wrong:</div>
+                                    • <strong>Criticize work culture</strong> - Only briefly mentioned at end, not main focus<br>
+                                    • <strong>Promote medications</strong> - No medications are mentioned<br>
+                                    • <strong>Compare human/animal</strong> - Only discusses human sleep
+                                </div>
+                                <div class="tip-box">"Main purpose" questions: Look at OVERALL structure, not just one paragraph!</div>
+                            `
                         },
                         {
                             id: 46,
@@ -1249,7 +2322,25 @@
                                 "Plastic designed for medical purposes"
                             ],
                             correct: 1,
-                            explanation: "The passage defines microplastics as plastic 'gradually fragmenting into smaller pieces called microplastics.'"
+                            explanation: `
+                                <div class="explanation-section">
+                                    <div class="section-label">📖 Why "plastic particles that have fragmented" is correct:</div>
+                                    <div>Paragraph 2 defines microplastics directly.</div>
+                                </div>
+                                <div class="explanation-section">
+                                    <div class="section-label">📝 Passage Evidence:</div>
+                                    <div class="example-box">
+                                        "plastic can persist in the environment for centuries, <code>gradually fragmenting into smaller pieces called microplastics</code>."
+                                    </div>
+                                </div>
+                                <div class="wrong-options">
+                                    <div class="label">Why other options are wrong:</div>
+                                    • <strong>Biodegradable</strong> - Opposite! Microplastics are HARMFUL, not eco-friendly<br>
+                                    • <strong>Organisms</strong> - Microplastics are plastic PIECES, not living things<br>
+                                    • <strong>Medical purposes</strong> - Not mentioned; context is pollution
+                                </div>
+                                <div class="tip-box">"Micro" = tiny + "plastics" = broken-down plastic fragments in the environment!</div>
+                            `
                         },
                         {
                             id: 47,
@@ -1261,7 +2352,25 @@
                                 "They are trying to clean the ocean"
                             ],
                             correct: 1,
-                            explanation: "The passage explicitly states that 'sea turtles mistake floating plastic bags for jellyfish, their preferred prey.'"
+                            explanation: `
+                                <div class="explanation-section">
+                                    <div class="section-label">📖 Why "mistake them for jellyfish" is correct:</div>
+                                    <div>Paragraph 3 explicitly explains this tragic case of mistaken identity.</div>
+                                </div>
+                                <div class="explanation-section">
+                                    <div class="section-label">📝 Passage Evidence:</div>
+                                    <div class="example-box">
+                                        "Sea turtles <code>mistake floating plastic bags for jellyfish</code>, their preferred prey..."
+                                    </div>
+                                </div>
+                                <div class="wrong-options">
+                                    <div class="label">Why other options are wrong:</div>
+                                    • <strong>Bright colors</strong> - Not mentioned; jellyfish resemblance is the reason<br>
+                                    • <strong>Food scraps</strong> - Not stated; they think the BAG itself is food<br>
+                                    • <strong>Cleaning ocean</strong> - Animals don't intentionally clean; they're deceived
+                                </div>
+                                <div class="tip-box">Floating plastic bags look like jellyfish underwater - a deadly illusion for turtles!</div>
+                            `
                         },
                         {
                             id: 48,
@@ -1273,7 +2382,25 @@
                                 "Nets used in scientific research"
                             ],
                             correct: 1,
-                            explanation: "The passage describes ghost nets as 'discarded fishing nets' that kill marine animals through entanglement."
+                            explanation: `
+                                <div class="explanation-section">
+                                    <div class="section-label">📖 Why "discarded fishing nets that trap wildlife" is correct:</div>
+                                    <div>The passage defines ghost nets in paragraph 3.</div>
+                                </div>
+                                <div class="explanation-section">
+                                    <div class="section-label">📝 Passage Evidence:</div>
+                                    <div class="example-box">
+                                        "Entanglement in <code>discarded fishing nets</code>, known as ghost nets, <code>kills hundreds of thousands</code> of marine mammals, sea turtles, and seabirds annually."
+                                    </div>
+                                </div>
+                                <div class="wrong-options">
+                                    <div class="label">Why other options are wrong:</div>
+                                    • <strong>Biodegradable</strong> - They're harmful BECAUSE they don't break down<br>
+                                    • <strong>Catching microplastics</strong> - Not mentioned; they catch ANIMALS<br>
+                                    • <strong>Scientific research</strong> - They're abandoned waste, not research tools
+                                </div>
+                                <div class="tip-box">"Ghost nets" = abandoned nets that continue "ghostly" fishing, killing wildlife!</div>
+                            `
                         },
                         {
                             id: 49,
@@ -1285,7 +2412,25 @@
                                 "Marine ecosystems will fully recover"
                             ],
                             correct: 1,
-                            explanation: "The passage warns that 'the mass of plastic in the oceans could exceed the mass of fish by 2050.'"
+                            explanation: `
+                                <div class="explanation-section">
+                                    <div class="section-label">📖 Why "plastic mass could exceed fish mass" is correct:</div>
+                                    <div>The final paragraph contains this alarming prediction.</div>
+                                </div>
+                                <div class="explanation-section">
+                                    <div class="section-label">📝 Passage Evidence:</div>
+                                    <div class="example-box">
+                                        "Some researchers warn that without dramatic intervention, <code>the mass of plastic in the oceans could exceed the mass of fish by 2050</code>..."
+                                    </div>
+                                </div>
+                                <div class="wrong-options">
+                                    <div class="label">Why other options are wrong:</div>
+                                    • <strong>Cleaned up</strong> - Passage says complete cleanup is "virtually impossible"<br>
+                                    • <strong>Biodegradable replacement</strong> - Listed as a solution, not a prediction<br>
+                                    • <strong>Full recovery</strong> - Passage tone is WARNING, not optimistic
+                                </div>
+                                <div class="tip-box">Shocking statistic: More plastic than fish by 2050 if nothing changes!</div>
+                            `
                         },
                         {
                             id: 50,
@@ -1297,7 +2442,32 @@
                                 "Banning all fishing activities"
                             ],
                             correct: 1,
-                            explanation: "The passage lists 'developing biodegradable alternatives' as one of the 'essential upstream solutions.'"
+                            explanation: `
+                                <div class="explanation-section">
+                                    <div class="section-label">📖 Why "developing biodegradable alternatives" is correct:</div>
+                                    <div>Paragraph 4 lists three upstream solutions, including this one.</div>
+                                </div>
+                                <div class="explanation-section">
+                                    <div class="section-label">📝 Passage Evidence:</div>
+                                    <div class="example-box">
+                                        "Reducing single-use plastic consumption, improving waste management infrastructure, and <code>developing biodegradable alternatives</code> represent essential <code>upstream solutions</code>."
+                                    </div>
+                                </div>
+                                <div class="explanation-section">
+                                    <div class="section-label">📝 Understanding "Upstream":</div>
+                                    <div class="example-box">
+                                        <strong>Upstream</strong> = preventing the problem at the SOURCE (before plastic enters ocean)<br>
+                                        <strong>Downstream</strong> = cleaning up AFTER the problem occurs (cleanup initiatives)
+                                    </div>
+                                </div>
+                                <div class="wrong-options">
+                                    <div class="label">Why other options are wrong:</div>
+                                    • <strong>More landfills</strong> - Not mentioned; focus is on REDUCING plastic<br>
+                                    • <strong>Increasing production</strong> - Opposite of the solution!<br>
+                                    • <strong>Banning fishing</strong> - Not mentioned; ghost nets are just ONE aspect
+                                </div>
+                                <div class="tip-box">"Upstream solutions" stop the problem at the source - reduce, improve management, develop alternatives!</div>
+                            `
                         }
                     ]
                 }
@@ -1310,6 +2480,8 @@
         let timeLeft = 60 * 60; // 60 minutes in seconds
         let timerInterval;
         let isReviewMode = false;
+        let isTrialMode = false;
+        let checkedAnswers = {}; // Track which answers have been checked in trial mode
 
         // DOM Elements
         const startScreen = document.getElementById('startScreen');
@@ -1318,6 +2490,7 @@
         const quizContent = document.getElementById('quizContent');
         const timerDisplay = document.getElementById('timerDisplay');
         const timerBox = document.getElementById('timerBox');
+        const trialBadge = document.getElementById('trialBadge');
         const answeredCount = document.getElementById('answeredCount');
         const progressFill = document.getElementById('progressFill');
         const reviewScorePill = document.getElementById('reviewScorePill');
@@ -1328,10 +2501,22 @@
         const questionNav = document.getElementById('questionNav');
 
         // Initialize
-        function startQuiz() {
+        function startQuiz(trialMode = false) {
+            isTrialMode = trialMode;
             startScreen.classList.add('hidden');
             quizScreen.classList.remove('hidden');
-            startTimer();
+            
+            if (isTrialMode) {
+                // Trial mode: hide timer, show trial badge
+                timerBox.style.display = 'none';
+                trialBadge.classList.remove('hidden');
+            } else {
+                // Normal mode: show timer, start countdown
+                timerBox.style.display = 'flex';
+                trialBadge.classList.add('hidden');
+                startTimer();
+            }
+            
             renderSection(1);
             renderQuestionNav();
             setupSectionNav();
@@ -1446,14 +2631,18 @@
 
         function renderQuestion(question, sectionId) {
             const selectedAnswer = answers[question.id];
+            const isChecked = checkedAnswers[question.id];
 
             let questionText = question.text;
             if (sectionId !== 3) { // Not error identification
                 questionText = question.text.replace('_______', '<span class="blank">_______</span>');
             }
 
+            // Add class if answer has been revealed in trial mode
+            const revealedClass = isChecked ? 'answer-revealed' : '';
+
             let html = `
-                <div class="question-block">
+                <div class="question-block ${revealedClass}" data-question-id="${question.id}">
                     <div class="question-text">
                         <span class="question-number">${question.id}</span>
                         ${questionText}
@@ -1467,15 +2656,17 @@
                 const isCorrect = index === question.correct;
 
                 let extraClass = '';
-                if (isReviewMode) {
+                if (isReviewMode || isChecked) {
                     if (isCorrect) extraClass = 'correct';
                     else if (isSelected && !isCorrect) extraClass = 'incorrect';
                 }
 
+                const isDisabled = isReviewMode || isChecked;
+
                 html += `
                     <label class="option-label ${extraClass}">
                         <input type="radio" name="q${question.id}" value="${index}" 
-                            ${isSelected ? 'checked' : ''} ${isReviewMode ? 'disabled' : ''}>
+                            ${isSelected ? 'checked' : ''} ${isDisabled ? 'disabled' : ''}>
                         <span class="option-letter">${letters[index]}</span>
                         <span class="option-text">${option}</span>
                     </label>
@@ -1484,11 +2675,28 @@
 
             html += `</div>`;
 
+            // Add Check Answer button for trial mode
+            if (isTrialMode && !isReviewMode) {
+                const btnClass = isChecked ? 'check-answer-btn checked' : 'check-answer-btn';
+                const btnText = isChecked ? '✓ Answer Checked' : '🔍 Check Answer';
+                const btnDisabled = isChecked ? 'disabled' : '';
+                html += `
+                    <button class="${btnClass}" onclick="checkAnswer(${question.id})" ${btnDisabled}>
+                        ${btnText}
+                    </button>
+                `;
+            }
+
             // Add explanation for review mode
             html += `
                 <div class="explanation-box">
-                    <strong>✓ Correct Answer: ${letters[question.correct]}</strong><br>
-                    ${question.explanation}
+                    <div class="explanation-header">
+                        <span class="correct-answer-badge">✓ Correct: ${letters[question.correct]}</span>
+                        <span class="explanation-title">Explanation</span>
+                    </div>
+                    <div class="explanation-content">
+                        ${question.explanation}
+                    </div>
                 </div>
             `;
 
@@ -1504,6 +2712,55 @@
             renderQuestionNav();
         }
 
+        // Check answer function for trial mode
+        function checkAnswer(questionId) {
+            // Must have selected an answer first
+            if (answers[questionId] === undefined) {
+                alert('Please select an answer first!');
+                return;
+            }
+
+            // Mark as checked
+            checkedAnswers[questionId] = true;
+
+            // Find the question data to check if correct
+            let question = null;
+            for (const section of quizData.sections) {
+                question = section.questions.find(q => q.id === questionId);
+                if (question) break;
+            }
+
+            // Update the question block UI
+            const questionBlock = document.querySelector(`.question-block[data-question-id="${questionId}"]`);
+            if (questionBlock) {
+                questionBlock.classList.add('answer-revealed');
+                
+                // Update option labels
+                const optionLabels = questionBlock.querySelectorAll('.option-label');
+                optionLabels.forEach((label, index) => {
+                    const input = label.querySelector('input');
+                    input.disabled = true;
+                    
+                    if (index === question.correct) {
+                        label.classList.add('correct');
+                    } else if (input.checked) {
+                        label.classList.add('incorrect');
+                    }
+                });
+
+                // Update the check answer button
+                const checkBtn = questionBlock.querySelector('.check-answer-btn');
+                if (checkBtn) {
+                    checkBtn.classList.add('checked');
+                    checkBtn.innerHTML = '✓ Answer Checked';
+                    checkBtn.disabled = true;
+                }
+            }
+
+            // Update question navigator
+            renderQuestionNav();
+        }
+
         function updateProgress() {
             const count = Object.keys(answers).length;
             answeredCount.textContent = count;
@@ -1516,8 +2773,20 @@
 
             section.questions.forEach(q => {
                 const isAnswered = answers[q.id] !== undefined;
+                const isChecked = checkedAnswers[q.id];
+                
+                let btnClass = 'q-nav-btn';
+                if (isChecked) {
+                    // Find if the answer was correct
+                    const question = section.questions.find(sq => sq.id === q.id);
+                    const isCorrect = answers[q.id] === question.correct;
+                    btnClass += isCorrect ? ' checked' : ' checked-wrong';
+                } else if (isAnswered) {
+                    btnClass += ' answered';
+                }
+                
                 html += `
-                    <button class="q-nav-btn ${isAnswered ? 'answered' : ''}" 
+                    <button class="${btnClass}" 
                             onclick="scrollToQuestion(${q.id})">
                         ${q.id}
                     </button>
@@ -1706,24 +2975,25 @@
 
             // Reset state
             answers = {};
+            checkedAnswers = {};
             timeLeft = 60 * 60;
             currentSection = 1;
             isReviewMode = false;
+            isTrialMode = false;
 
             // Reset UI
             timerBox.style.display = 'flex';
+            trialBadge.classList.add('hidden');
             timerBox.classList.remove('warning', 'danger');
             clearReviewScore();
             updateTimerDisplay();
             updateProgress();
 
-            // Show quiz
+            // Show start screen to choose mode again
             resultsScreen.classList.add('hidden');
-            quizScreen.classList.remove('hidden');
+            quizScreen.classList.add('hidden');
+            startScreen.classList.remove('hidden');
             quizContent.classList.remove('review-mode');
-
-            startTimer();
-            renderSection(1);
         }
 
         function goToDashboard() {
