@@ -1,0 +1,1830 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MEXT English Quiz - Mock Exam 4</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #1a365d;
+            --primary-light: #2c5282;
+            --secondary: #c53030;
+            --accent: #2b6cb0;
+            --success: #276749;
+            --warning: #c05621;
+            --bg-light: #f7fafc;
+            --bg-card: #ffffff;
+            --text-dark: #1a202c;
+            --text-muted: #718096;
+            --border: #e2e8f0;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header Styles */
+        .quiz-header {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .quiz-title {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .quiz-title h1 {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 8px;
+        }
+
+        .quiz-title p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        .quiz-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .timer-box {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-weight: 600;
+        }
+
+        .timer-box.warning {
+            background: linear-gradient(135deg, var(--warning) 0%, #dd6b20 100%);
+        }
+
+        .timer-box.danger {
+            background: linear-gradient(135deg, var(--secondary) 0%, #e53e3e 100%);
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.02);
+            }
+        }
+
+        .timer-icon {
+            font-size: 1.5rem;
+        }
+
+        .timer-display {
+            font-size: 1.5rem;
+            font-family: 'Consolas', monospace;
+        }
+
+        .review-score {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #f0fff4;
+            color: var(--success);
+            padding: 10px 18px;
+            border-radius: 12px;
+            font-weight: 700;
+            border: 1px solid #c6f6d5;
+        }
+
+        .review-score .label {
+            font-weight: 600;
+            color: var(--text-muted);
+        }
+
+        .progress-info {
+            text-align: right;
+        }
+
+        .progress-text {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+        }
+
+        .progress-bar {
+            width: 200px;
+            height: 10px;
+            background: var(--border);
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent) 0%, var(--success) 100%);
+            border-radius: 5px;
+            transition: width 0.3s ease;
+        }
+
+        /* Section Navigation */
+        .section-nav {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .section-btn {
+            padding: 10px 16px;
+            border: 2px solid var(--border);
+            background: var(--bg-card);
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            font-size: 0.85rem;
+        }
+
+        .section-btn:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .section-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .section-btn .badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.75rem;
+            margin-left: 6px;
+        }
+
+        .section-btn.active .badge {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Quiz Content */
+        .quiz-content {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 32px;
+            box-shadow: var(--shadow-lg);
+            margin-bottom: 20px;
+        }
+
+        .section-header {
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 16px;
+            margin-bottom: 24px;
+        }
+
+        .section-header h2 {
+            color: var(--primary);
+            font-size: 1.4rem;
+            margin-bottom: 8px;
+        }
+
+        .section-header p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        /* Question Styles */
+        .question-block {
+            margin-bottom: 32px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .question-block:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+
+        .question-number {
+            display: inline-block;
+            background: var(--primary);
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 32px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-right: 12px;
+        }
+
+        .question-text {
+            font-size: 1.05rem;
+            margin-bottom: 16px;
+            color: var(--text-dark);
+        }
+
+        .question-text .blank {
+            display: inline-block;
+            min-width: 100px;
+            border-bottom: 2px solid var(--primary);
+            margin: 0 4px;
+        }
+
+        .question-text .underline {
+            text-decoration: underline;
+            text-decoration-style: wavy;
+            text-decoration-color: var(--secondary);
+            cursor: help;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+        }
+
+        .option-label {
+            display: flex;
+            align-items: center;
+            padding: 14px 18px;
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: var(--bg-light);
+        }
+
+        .option-label:hover {
+            border-color: var(--accent);
+            background: white;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        .option-label input {
+            display: none;
+        }
+
+        .option-label input:checked+.option-letter {
+            background: var(--accent);
+            color: white;
+        }
+
+        .option-label input:checked~.option-text {
+            color: var(--accent);
+            font-weight: 500;
+        }
+
+        .option-label:has(input:checked) {
+            border-color: var(--accent);
+            background: rgba(43, 108, 176, 0.05);
+        }
+
+        .option-letter {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: var(--border);
+            color: var(--text-dark);
+            font-weight: 600;
+            font-size: 0.85rem;
+            margin-right: 12px;
+            transition: all 0.2s ease;
+        }
+
+        .option-text {
+            flex: 1;
+            font-size: 0.95rem;
+        }
+
+        /* Passage Styles */
+        .passage-box {
+            background: linear-gradient(to bottom, #f8fafc, #edf2f7);
+            border-left: 4px solid var(--primary);
+            padding: 24px;
+            margin-bottom: 24px;
+            border-radius: 0 12px 12px 0;
+            font-size: 0.95rem;
+            line-height: 1.8;
+        }
+
+        .passage-box .blank-number {
+            display: inline-block;
+            background: var(--primary);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin: 0 2px;
+        }
+
+        .passage-title {
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 12px;
+            font-size: 1.1rem;
+        }
+
+        /* Error Identification */
+        .error-sentence {
+            font-size: 1.05rem;
+            line-height: 2;
+            margin-bottom: 16px;
+        }
+
+        .error-part {
+            background: #fef3c7;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 500;
+        }
+
+        /* Navigation Buttons */
+        .quiz-navigation {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .nav-btn {
+            padding: 14px 28px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-btn.prev {
+            background: var(--bg-light);
+            color: var(--text-dark);
+            border: 2px solid var(--border);
+        }
+
+        .nav-btn.prev:hover {
+            background: var(--border);
+        }
+
+        .nav-btn.next {
+            background: linear-gradient(135deg, var(--accent) 0%, var(--primary) 100%);
+            color: white;
+        }
+
+        .nav-btn.next:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .nav-btn.submit {
+            background: linear-gradient(135deg, var(--success) 0%, #2f855a 100%);
+            color: white;
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Start Screen */
+        .start-screen {
+            text-align: center;
+            padding: 60px 40px;
+        }
+
+        .start-screen h1 {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 16px;
+        }
+
+        .start-screen .subtitle {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            margin-bottom: 40px;
+        }
+
+        .exam-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .info-card {
+            background: var(--bg-light);
+            padding: 24px;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .info-card .icon {
+            font-size: 2rem;
+            margin-bottom: 12px;
+        }
+
+        .info-card .value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .info-card .label {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .start-btn {
+            padding: 18px 48px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .start-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 40px rgba(26, 54, 93, 0.4);
+        }
+
+        /* Results Screen */
+        .results-screen {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .results-screen h1 {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 24px;
+        }
+
+        .score-circle {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 32px;
+            color: white;
+        }
+
+        .score-circle .score {
+            font-size: 3rem;
+            font-weight: 700;
+        }
+
+        .score-circle .total {
+            font-size: 1rem;
+            opacity: 0.8;
+        }
+
+        .score-breakdown {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .breakdown-item {
+            background: var(--bg-light);
+            padding: 16px;
+            border-radius: 10px;
+        }
+
+        .breakdown-item .section-name {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+        }
+
+        .breakdown-item .section-score {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .result-actions {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .result-btn {
+            padding: 14px 28px;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .result-btn.review {
+            background: var(--bg-light);
+            border: 2px solid var(--border);
+            color: var(--text-dark);
+        }
+
+        .result-btn.retry {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            border: none;
+            color: white;
+        }
+
+        /* Review Mode */
+        .review-mode .option-label.correct {
+            border-color: var(--success);
+            background: rgba(39, 103, 73, 0.1);
+        }
+
+        .review-mode .option-label.correct .option-letter {
+            background: var(--success);
+            color: white;
+        }
+
+        .review-mode .option-label.incorrect {
+            border-color: var(--secondary);
+            background: rgba(197, 48, 48, 0.1);
+        }
+
+        .review-mode .option-label.incorrect .option-letter {
+            background: var(--secondary);
+            color: white;
+        }
+
+        .explanation-box {
+            background: #e6fffa;
+            border-left: 4px solid var(--success);
+            padding: 16px;
+            margin-top: 16px;
+            border-radius: 0 8px 8px 0;
+            display: none;
+        }
+
+        .review-mode .explanation-box {
+            display: block;
+        }
+
+        /* Hidden */
+        .hidden {
+            display: none !important;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 12px;
+            }
+
+            .quiz-header {
+                padding: 16px;
+            }
+
+            .quiz-title h1 {
+                font-size: 1.5rem;
+            }
+
+            .quiz-meta {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .progress-info {
+                text-align: center;
+            }
+
+            .progress-bar {
+                width: 100%;
+            }
+
+            .quiz-content {
+                padding: 20px;
+            }
+
+            .options-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .section-nav {
+                justify-content: center;
+            }
+
+            .section-btn {
+                font-size: 0.75rem;
+                padding: 8px 12px;
+            }
+        }
+
+        /* Question Navigator */
+        .question-navigator {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            padding: 16px;
+            background: var(--bg-light);
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .q-nav-btn {
+            width: 32px;
+            height: 32px;
+            border: 2px solid var(--border);
+            background: white;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .q-nav-btn:hover {
+            border-color: var(--accent);
+        }
+
+        .q-nav-btn.answered {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
+
+        .q-nav-btn.current {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(26, 54, 93, 0.3);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <!-- Start Screen -->
+        <div id="startScreen" class="quiz-content start-screen">
+            <h1>🎌 MEXT English Exam</h1>
+            <p class="subtitle">Mock Examination 4 - Undergraduate & Research Student Level</p>
+
+            <div class="exam-info">
+                <div class="info-card">
+                    <div class="icon">⏱️</div>
+                    <div class="value">60</div>
+                    <div class="label">Minutes</div>
+                </div>
+                <div class="info-card">
+                    <div class="icon">📝</div>
+                    <div class="value">50</div>
+                    <div class="label">Questions</div>
+                </div>
+                <div class="info-card">
+                    <div class="icon">📚</div>
+                    <div class="value">5</div>
+                    <div class="label">Sections</div>
+                </div>
+                <div class="info-card">
+                    <div class="icon">✅</div>
+                    <div class="value">MCQ</div>
+                    <div class="label">Format</div>
+                </div>
+            </div>
+
+            <div
+                style="text-align: left; max-width: 500px; margin: 0 auto 40px; background: var(--bg-light); padding: 20px; border-radius: 12px;">
+                <h3 style="margin-bottom: 12px; color: var(--primary);">📋 Sections Overview:</h3>
+                <ul style="list-style: none; line-height: 2;">
+                    <li>I. Vocabulary in Context (10 Questions)</li>
+                    <li>II. Grammar & Phrasing (10 Questions)</li>
+                    <li>III. Error Identification (10 Questions)</li>
+                    <li>IV. Cloze Test (10 Questions)</li>
+                    <li>V. Reading Comprehension (10 Questions)</li>
+                </ul>
+            </div>
+
+            <button class="start-btn" onclick="startQuiz()">Start Examination →</button>
+        </div>
+
+        <!-- Quiz Screen -->
+        <div id="quizScreen" class="hidden">
+            <div class="quiz-header">
+                <div class="quiz-title">
+                    <h1>🎌 MEXT English Mock Exam 4</h1>
+                    <p>Answer all questions. Each question has only one correct answer.</p>
+                </div>
+                <div class="quiz-meta">
+                    <div class="timer-box" id="timerBox">
+                        <span class="timer-icon">⏱️</span>
+                        <span class="timer-display" id="timerDisplay">60:00</span>
+                    </div>
+                    <div class="review-score hidden" id="reviewScorePill">
+                        <span class="label">Total Score</span>
+                        <span id="reviewScoreValue">--/50</span>
+                    </div>
+                    <div class="progress-info">
+                        <div class="progress-text">
+                            <span id="answeredCount">0</span> of 50 answered
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section-nav" id="sectionNav">
+                <button class="section-btn active" data-section="1">I. Vocabulary <span class="badge">10</span></button>
+                <button class="section-btn" data-section="2">II. Grammar <span class="badge">10</span></button>
+                <button class="section-btn" data-section="3">III. Error ID <span class="badge">10</span></button>
+                <button class="section-btn" data-section="4">IV. Cloze <span class="badge">10</span></button>
+                <button class="section-btn" data-section="5">V. Reading <span class="badge">10</span></button>
+            </div>
+
+            <div class="question-navigator" id="questionNav"></div>
+
+            <div class="quiz-content" id="quizContent">
+                <!-- Questions will be rendered here -->
+            </div>
+
+            <div class="quiz-navigation">
+                <button class="nav-btn prev" id="prevBtn" onclick="previousSection()">← Previous Section</button>
+                <button class="nav-btn next" id="nextBtn" onclick="nextSection()">Next Section →</button>
+                <button class="nav-btn submit hidden" id="submitBtn" onclick="submitQuiz()">Submit Exam ✓</button>
+            </div>
+        </div>
+
+        <!-- Results Screen -->
+        <div id="resultsScreen" class="quiz-content results-screen hidden">
+            <h1>📊 Examination Results</h1>
+
+            <div class="score-circle">
+                <div class="score" id="finalScore">0</div>
+                <div class="total">out of 50</div>
+            </div>
+
+            <p style="font-size: 1.2rem; margin-bottom: 24px;" id="scoreMessage"></p>
+
+            <div class="score-breakdown" id="scoreBreakdown">
+                <!-- Section scores will be rendered here -->
+            </div>
+
+            <div class="result-actions">
+                <button class="result-btn retry" onclick="retryQuiz()">🔄 Try Again</button>
+                <button class="result-btn review" onclick="goToDashboard()"
+                    style="background: linear-gradient(135deg, #1a365d 0%, #2c5282 100%); color: white; border: none;">🏠
+                    Back to Dashboard</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-analytics-compat.js"></script>
+
+    <!-- Shared Firebase Config -->
+    <script src="../js/firebase-config.js"></script>
+
+    <script>
+        // Get user from session storage
+        const mextUser = FirebaseHelper.getSessionUser();
+        const currentQuizId = FirebaseHelper.getCurrentQuizId();
+
+        // Quiz Data
+        const quizData = {
+            sections: [
+                {
+                    id: 1,
+                    title: "Section I: Vocabulary in Context",
+                    description: "Choose the correct word to complete each sentence.",
+                    questions: [
+                        {
+                            id: 1,
+                            text: "The artist's _______ style made her paintings immediately recognizable among thousands of works.",
+                            options: ["ambiguous", "distinctive", "commonplace", "imitative"],
+                            correct: 1,
+                            explanation: "'Distinctive' means having a quality that makes something recognizable and different from others."
+                        },
+                        {
+                            id: 2,
+                            text: "The witness provided a _______ account of the accident, leaving no detail unexplained.",
+                            options: ["cursory", "superficial", "meticulous", "careless"],
+                            correct: 2,
+                            explanation: "'Meticulous' means showing great attention to detail, fitting for a thorough account."
+                        },
+                        {
+                            id: 3,
+                            text: "The new policy was met with _______ opposition from labor unions who feared job losses.",
+                            options: ["mild", "tepid", "vociferous", "apathetic"],
+                            correct: 2,
+                            explanation: "'Vociferous' means loud and forceful, appropriate for strong opposition."
+                        },
+                        {
+                            id: 4,
+                            text: "His _______ remarks about her presentation embarrassed everyone in the meeting.",
+                            options: ["complimentary", "encouraging", "derogatory", "neutral"],
+                            correct: 2,
+                            explanation: "'Derogatory' means showing a critical or disrespectful attitude, causing embarrassment."
+                        },
+                        {
+                            id: 5,
+                            text: "The medicine proved _______ in treating the disease, with patients showing no improvement.",
+                            options: ["efficacious", "potent", "ineffectual", "beneficial"],
+                            correct: 2,
+                            explanation: "'Ineffectual' means not producing the desired effect, fitting when there is no improvement."
+                        },
+                        {
+                            id: 6,
+                            text: "The researcher's _______ findings challenged decades of established scientific consensus.",
+                            options: ["confirmatory", "corroborative", "anomalous", "expected"],
+                            correct: 2,
+                            explanation: "'Anomalous' means deviating from what is normal or expected, appropriate for challenging consensus."
+                        },
+                        {
+                            id: 7,
+                            text: "The company's decision to expand overseas was considered _______ by industry analysts.",
+                            options: ["reckless", "imprudent", "sagacious", "foolhardy"],
+                            correct: 2,
+                            explanation: "'Sagacious' means having good judgment, considered wise by analysts."
+                        },
+                        {
+                            id: 8,
+                            text: "The documentary offered a _______ look at the environmental crisis affecting coastal communities.",
+                            options: ["superficial", "fleeting", "comprehensive", "brief"],
+                            correct: 2,
+                            explanation: "'Comprehensive' means complete and thorough, suitable for an in-depth documentary."
+                        },
+                        {
+                            id: 9,
+                            text: "The politician's _______ stance on taxation made it difficult to predict his voting behavior.",
+                            options: ["consistent", "unwavering", "ambivalent", "steadfast"],
+                            correct: 2,
+                            explanation: "'Ambivalent' means having mixed feelings, making predictions difficult."
+                        },
+                        {
+                            id: 10,
+                            text: "The professor's explanation was so _______ that even beginners could understand the complex theory.",
+                            options: ["convoluted", "obscure", "lucid", "cryptic"],
+                            correct: 2,
+                            explanation: "'Lucid' means clear and easy to understand, allowing beginners to comprehend."
+                        }
+                    ]
+                },
+                {
+                    id: 2,
+                    title: "Section II: Grammar & Phrasing",
+                    description: "Choose the correct grammatical structure or phrase to complete each sentence.",
+                    questions: [
+                        {
+                            id: 11,
+                            text: "Rarely _______ such an impressive display of teamwork in competitive sports.",
+                            options: ["we have witnessed", "have we witnessed", "we witnessed", "did we witnessed"],
+                            correct: 1,
+                            explanation: "'Rarely' at the beginning requires inversion: 'have we witnessed.'"
+                        },
+                        {
+                            id: 12,
+                            text: "The doctor recommended that the patient _______ bed rest for at least a week.",
+                            options: ["takes", "take", "took", "will take"],
+                            correct: 1,
+                            explanation: "After 'recommend,' use subjunctive mood: 'take.'"
+                        },
+                        {
+                            id: 13,
+                            text: "_______ the storm been less severe, we could have continued our journey.",
+                            options: ["If", "Had", "Should", "Were"],
+                            correct: 1,
+                            explanation: "'Had' is the inverted form for third conditional: 'Had the storm been less severe.'"
+                        },
+                        {
+                            id: 14,
+                            text: "Either the manager or the employees _______ responsible for this decision.",
+                            options: ["is", "are", "was", "has been"],
+                            correct: 1,
+                            explanation: "With 'either...or,' the verb agrees with the nearest subject: 'employees' (plural), so 'are.'"
+                        },
+                        {
+                            id: 15,
+                            text: "I would rather you _______ the door before leaving.",
+                            options: ["lock", "locked", "will lock", "to lock"],
+                            correct: 1,
+                            explanation: "After 'would rather' + different subject, use past simple: 'locked.'"
+                        },
+                        {
+                            id: 16,
+                            text: "The news about the merger _______ not yet been confirmed by official sources.",
+                            options: ["have", "has", "are", "were"],
+                            correct: 1,
+                            explanation: "'News' is an uncountable noun and takes singular verb: 'has.'"
+                        },
+                        {
+                            id: 17,
+                            text: "Under no circumstances _______ leave the building during an emergency drill.",
+                            options: ["employees should", "should employees", "employees will", "will employees"],
+                            correct: 1,
+                            explanation: "'Under no circumstances' requires inversion: 'should employees.'"
+                        },
+                        {
+                            id: 18,
+                            text: "The project _______ completed by the time the investors arrive next month.",
+                            options: ["will be", "will have been", "is being", "has been"],
+                            correct: 1,
+                            explanation: "Future perfect 'will have been' indicates completion before a future point."
+                        },
+                        {
+                            id: 19,
+                            text: "It's essential that every participant _______ the safety guidelines carefully.",
+                            options: ["reads", "read", "will read", "reading"],
+                            correct: 1,
+                            explanation: "After 'essential that,' use subjunctive: 'read' (base form)."
+                        },
+                        {
+                            id: 20,
+                            text: "_______ for his quick thinking, the accident could have been much worse.",
+                            options: ["If it were not", "Were it not", "Had it not been", "If it had not"],
+                            correct: 2,
+                            explanation: "'Had it not been' is the correct inverted third conditional for past situations."
+                        }
+                    ]
+                },
+                {
+                    id: 3,
+                    title: "Section III: Error Identification",
+                    description: "Identify the underlined part (A, B, C, or D) that contains a grammatical error.",
+                    questions: [
+                        {
+                            id: 21,
+                            text: "The committee <span class='error-part'>(A) has</span> agreed to <span class='error-part'>(B) postpone</span> their decision <span class='error-part'>(C) until</span> <span class='error-part'>(D) next</span> month.",
+                            options: ["A", "B", "C", "D"],
+                            correct: 0,
+                            explanation: "Error in (A): In British English, 'committee' can take 'have' when emphasizing individual members, but 'has agreed' with 'their' is inconsistent. Should be 'have agreed' to match 'their.'"
+                        },
+                        {
+                            id: 22,
+                            text: "Neither the <span class='error-part'>(A) teachers</span> nor the <span class='error-part'>(B) principal</span> <span class='error-part'>(C) were</span> available for <span class='error-part'>(D) comment</span>.",
+                            options: ["A", "B", "C", "D"],
+                            correct: 2,
+                            explanation: "Error in (C): With 'neither...nor,' the verb agrees with the nearest subject 'principal' (singular), so 'was' is correct."
+                        },
+                        {
+                            id: 23,
+                            text: "The scientist, <span class='error-part'>(A) together with</span> his colleagues, <span class='error-part'>(B) have published</span> <span class='error-part'>(C) several</span> groundbreaking <span class='error-part'>(D) papers</span>.",
+                            options: ["A", "B", "C", "D"],
+                            correct: 1,
+                            explanation: "Error in (B): 'Together with' doesn't change the subject; 'scientist' is singular, requiring 'has published.'"
+                        },
+                        {
+                            id: 24,
+                            text: "The journalist asked the <span class='error-part'>(A) mayor</span> <span class='error-part'>(B) that</span> why had he <span class='error-part'>(C) decided</span> to <span class='error-part'>(D) resign</span>.",
+                            options: ["A", "B", "C", "D"],
+                            correct: 1,
+                            explanation: "Error in (B): In indirect questions, use 'why he had decided,' not 'that why had he decided.'"
+                        },
+                        {
+                            id: 25,
+                            text: "The furniture <span class='error-part'>(A) in</span> the office <span class='error-part'>(B) need</span> to be <span class='error-part'>(C) replaced</span> <span class='error-part'>(D) soon</span>.",
+                            options: ["A", "B", "C", "D"],
+                            correct: 1,
+                            explanation: "Error in (B): 'Furniture' is uncountable and singular, requiring 'needs,' not 'need.'"
+                        },
+                        {
+                            id: 26,
+                            text: "He walked <span class='error-part'>(A) so quick</span> that I <span class='error-part'>(B) could</span> barely <span class='error-part'>(C) keep up</span> with <span class='error-part'>(D) him</span>.",
+                            options: ["A", "B", "C", "D"],
+                            correct: 0,
+                            explanation: "Error in (A): Use adverb 'quickly' to modify the verb 'walked,' not adjective 'quick.'"
+                        },
+                        {
+                            id: 27,
+                            text: "The company announced that <span class='error-part'>(A) they</span> <span class='error-part'>(B) will</span> be launching <span class='error-part'>(C) their</span> new product <span class='error-part'>(D) next year</span>.",
+                            options: ["A", "B", "C", "D"],
+                            correct: 1,
+                            explanation: "Error in (B): After 'announced that,' use 'would' (past form) instead of 'will' for sequence of tenses."
+                        },
+                        {
+                            id: 28,
+                            text: "Many <span class='error-part'>(A) a student</span> <span class='error-part'>(B) have failed</span> this exam <span class='error-part'>(C) due to</span> poor <span class='error-part'>(D) preparation</span>.",
+                            options: ["A", "B", "C", "D"],
+                            correct: 1,
+                            explanation: "Error in (B): 'Many a student' takes a singular verb: 'has failed,' not 'have failed.'"
+                        },
+                        {
+                            id: 29,
+                            text: "The children were <span class='error-part'>(A) looking forward</span> to <span class='error-part'>(B) go</span> to the <span class='error-part'>(C) amusement</span> <span class='error-part'>(D) park</span>.",
+                            options: ["A", "B", "C", "D"],
+                            correct: 1,
+                            explanation: "Error in (B): After 'looking forward to,' use gerund: 'going,' not 'go.'"
+                        },
+                        {
+                            id: 30,
+                            text: "The <span class='error-part'>(A) amount</span> of <span class='error-part'>(B) students</span> enrolled this semester <span class='error-part'>(C) has</span> <span class='error-part'>(D) increased</span>.",
+                            options: ["A", "B", "C", "D"],
+                            correct: 0,
+                            explanation: "Error in (A): Use 'number' for countable nouns like 'students,' not 'amount.'"
+                        }
+                    ]
+                },
+                {
+                    id: 4,
+                    title: "Section IV: Cloze Test",
+                    description: "Read the passage and choose the best word or phrase for each blank.",
+                    passage: `<p class="passage-title">Artificial Intelligence: Promise and Peril</p>
+                    <p>Artificial intelligence has <span class="blank-number">31</span> from a science fiction concept to a technology that permeates our daily lives. From voice assistants to recommendation algorithms, AI systems <span class="blank-number">32</span> influence decisions that affect millions of people every day.</p>
+                    <p>Machine learning, a subset of AI, enables computers to learn from vast amounts of data <span class="blank-number">33</span> explicit programming. Neural networks, inspired by the human brain, can identify patterns and make predictions with remarkable <span class="blank-number">34</span>. These capabilities have revolutionized fields ranging from medical diagnosis to financial trading.</p>
+                    <p><span class="blank-number">35</span>, the rapid advancement of AI has raised significant concerns. Critics worry about job displacement, <span class="blank-number">36</span> automation threatens to replace human workers across multiple industries. Others express concern about algorithmic bias, where AI systems perpetuate or even <span class="blank-number">37</span> existing social inequalities.</p>
+                    <p>Perhaps most debated is the question of artificial general intelligence (AGI)—machines that could <span class="blank-number">38</span> human-level reasoning across all domains. While some experts believe AGI remains decades away, others argue that current systems are already demonstrating unexpected capabilities that <span class="blank-number">39</span> careful monitoring.</p>
+                    <p>The future of AI will depend largely on the choices we make today. Establishing ethical guidelines and regulatory frameworks is essential to <span class="blank-number">40</span> that AI benefits humanity while minimizing potential harms.</p>`,
+                    questions: [
+                        {
+                            id: 31,
+                            text: "Choose the best word for blank 31:",
+                            options: ["evolved", "declined", "stagnated", "retreated"],
+                            correct: 0,
+                            explanation: "'Evolved' best describes AI's progression from concept to widespread technology."
+                        },
+                        {
+                            id: 32,
+                            text: "Choose the best word for blank 32:",
+                            options: ["rarely", "never", "increasingly", "hardly"],
+                            correct: 2,
+                            explanation: "'Increasingly' conveys the growing influence of AI on daily decisions."
+                        },
+                        {
+                            id: 33,
+                            text: "Choose the best word for blank 33:",
+                            options: ["with", "without", "despite", "through"],
+                            correct: 1,
+                            explanation: "'Without' indicates that machine learning doesn't require explicit programming."
+                        },
+                        {
+                            id: 34,
+                            text: "Choose the best word for blank 34:",
+                            options: ["inaccuracy", "imprecision", "accuracy", "inconsistency"],
+                            correct: 2,
+                            explanation: "'Accuracy' fits the positive context of remarkable pattern recognition."
+                        },
+                        {
+                            id: 35,
+                            text: "Choose the best word for blank 35:",
+                            options: ["Therefore", "However", "Moreover", "Consequently"],
+                            correct: 1,
+                            explanation: "'However' introduces the contrasting concerns about AI advancement."
+                        },
+                        {
+                            id: 36,
+                            text: "Choose the best word for blank 36:",
+                            options: ["because", "as", "although", "unless"],
+                            correct: 1,
+                            explanation: "'As' introduces the reason for worry about job displacement."
+                        },
+                        {
+                            id: 37,
+                            text: "Choose the best word for blank 37:",
+                            options: ["reduce", "eliminate", "amplify", "address"],
+                            correct: 2,
+                            explanation: "'Amplify' means to make worse, fitting the concern about perpetuating inequalities."
+                        },
+                        {
+                            id: 38,
+                            text: "Choose the best word for blank 38:",
+                            options: ["lack", "avoid", "match", "reject"],
+                            correct: 2,
+                            explanation: "'Match' means equal or achieve the same level as human reasoning."
+                        },
+                        {
+                            id: 39,
+                            text: "Choose the best word for blank 39:",
+                            options: ["prevent", "discourage", "warrant", "ignore"],
+                            correct: 2,
+                            explanation: "'Warrant' means justify or require careful monitoring."
+                        },
+                        {
+                            id: 40,
+                            text: "Choose the best word for blank 40:",
+                            options: ["prevent", "ensure", "doubt", "question"],
+                            correct: 1,
+                            explanation: "'Ensure' means to make certain that AI benefits humanity."
+                        }
+                    ]
+                },
+                {
+                    id: 5,
+                    title: "Section V: Reading Comprehension",
+                    description: "Read the passages carefully and answer the questions that follow.",
+                    passages: [
+                        {
+                            title: "Passage A: The Future of Space Exploration",
+                            content: `<p>The 21st century has ushered in a new era of space exploration, characterized by ambitious plans to return humans to the Moon and eventually send astronauts to Mars. Unlike the Cold War space race driven primarily by political competition, today's ventures involve unprecedented collaboration between government agencies and private companies.</p>
+                            <p>Private space companies have dramatically reduced the cost of reaching orbit through innovations in reusable rocket technology. The ability to land and refly rocket boosters has transformed what was once an expensive single-use endeavor into a more economically viable operation. This cost reduction has opened space to commercial applications previously considered impractical.</p>
+                            <p>The establishment of a permanent human presence beyond Earth remains the ultimate goal for many space advocates. The Moon serves as a logical first step, providing a testing ground for technologies and procedures that will eventually support Mars missions. Lunar bases could also serve as launching points for deeper space exploration, taking advantage of the Moon's lower gravity to reduce fuel requirements.</p>
+                            <p>Mars presents unique challenges that exceed anything previously attempted in human spaceflight. The journey alone would take approximately seven months, exposing astronauts to prolonged radiation and the psychological stresses of isolation. Upon arrival, explorers would face extreme temperatures, a thin atmosphere, and the impossibility of immediate rescue. Despite these obstacles, multiple space agencies have announced plans to land humans on Mars within the coming decades.</p>
+                            <p>Beyond scientific discovery, advocates argue that becoming a multi-planetary species represents an insurance policy for humanity. Establishing self-sustaining colonies on other worlds would protect human civilization against catastrophic events on Earth, from asteroid impacts to pandemics. Whether this vision can be realized remains to be seen, but the pursuit continues to inspire technological innovation and international cooperation.</p>`
+                        },
+                        {
+                            title: "Passage B: The Human Microbiome",
+                            content: `<p>The human body is home to trillions of microorganisms collectively known as the microbiome. These bacteria, viruses, and fungi inhabit our skin, mouth, gut, and other tissues, outnumbering our own cells and playing crucial roles in health and disease. Far from being mere passengers, these microbial communities actively influence numerous physiological processes.</p>
+                            <p>The gut microbiome has received particular attention from researchers. Comprising hundreds of different bacterial species, this ecosystem helps digest food components that human enzymes cannot process, synthesizes essential vitamins, and trains the immune system to distinguish between harmful pathogens and benign substances. Disruption of this delicate balance has been linked to conditions ranging from inflammatory bowel disease to obesity.</p>
+                            <p>Perhaps most surprisingly, the microbiome appears to influence brain function and behavior. The gut-brain axis, a bidirectional communication network involving neural, hormonal, and immunological pathways, allows gut microbes to affect mood and cognition. Studies in animals have shown that altering the microbiome can influence anxiety and depression-like behaviors, prompting investigations into microbiome-based treatments for mental health disorders.</p>
+                            <p>Modern lifestyles may be inadvertently damaging our microbial partners. Antibiotic overuse, processed diets lacking fiber, and reduced exposure to diverse environmental microbes have all been implicated in microbiome disruption. Some researchers worry that the loss of ancestral microbial diversity may contribute to the rising prevalence of allergies, autoimmune diseases, and metabolic disorders in developed countries.</p>
+                            <p>Therapeutic manipulation of the microbiome represents a promising frontier in medicine. Fecal microbiota transplantation has proven remarkably effective against certain intestinal infections, while probiotic supplements aim to restore beneficial bacteria. As our understanding deepens, personalized microbiome treatments tailored to individual patients may become a cornerstone of preventive and therapeutic medicine.</p>`
+                        }
+                    ],
+                    questions: [
+                        {
+                            id: 41,
+                            text: "According to Passage A, what distinguishes current space exploration from the Cold War era?",
+                            options: [
+                                "Less funding is available today",
+                                "Collaboration between government and private companies",
+                                "Focus exclusively on the Moon",
+                                "Reduced public interest in space"
+                            ],
+                            correct: 1,
+                            explanation: "The passage states current ventures 'involve unprecedented collaboration between government agencies and private companies.'"
+                        },
+                        {
+                            id: 42,
+                            text: "How have private space companies reduced the cost of reaching orbit?",
+                            options: [
+                                "By using smaller rockets",
+                                "By eliminating human crews",
+                                "Through reusable rocket technology",
+                                "By receiving government subsidies"
+                            ],
+                            correct: 2,
+                            explanation: "The passage credits 'innovations in reusable rocket technology' with dramatically reducing costs."
+                        },
+                        {
+                            id: 43,
+                            text: "According to the passage, why is the Moon considered a logical first step toward Mars?",
+                            options: [
+                                "It has abundant natural resources",
+                                "It provides a testing ground for technologies and procedures",
+                                "The journey takes only three days",
+                                "Its atmosphere is similar to Mars"
+                            ],
+                            correct: 1,
+                            explanation: "The passage states the Moon serves as 'a testing ground for technologies and procedures that will eventually support Mars missions.'"
+                        },
+                        {
+                            id: 44,
+                            text: "What challenge of Mars exploration is NOT mentioned in the passage?",
+                            options: [
+                                "Prolonged radiation exposure",
+                                "Psychological stress from isolation",
+                                "Lack of water on Mars",
+                                "Extreme temperatures"
+                            ],
+                            correct: 2,
+                            explanation: "Water scarcity is not mentioned; the passage discusses radiation, isolation, temperatures, atmosphere, and rescue impossibility."
+                        },
+                        {
+                            id: 45,
+                            text: "The author suggests that establishing colonies on other worlds would:",
+                            options: [
+                                "Solve Earth's overpopulation problem",
+                                "Provide economic benefits through mining",
+                                "Protect humanity against catastrophic events",
+                                "Improve international political relations"
+                            ],
+                            correct: 2,
+                            explanation: "The passage states colonies would 'protect human civilization against catastrophic events on Earth.'"
+                        },
+                        {
+                            id: 46,
+                            text: "According to Passage B, which statement about the microbiome is true?",
+                            options: [
+                                "Microorganisms in the body are harmful",
+                                "Human cells outnumber microbial cells",
+                                "The microbiome influences numerous physiological processes",
+                                "Microbes only inhabit the digestive system"
+                            ],
+                            correct: 2,
+                            explanation: "The passage states 'microbial communities actively influence numerous physiological processes.'"
+                        },
+                        {
+                            id: 47,
+                            text: "The gut-brain axis allows:",
+                            options: [
+                                "The brain to control digestion exclusively",
+                                "Gut microbes to affect mood and cognition",
+                                "Elimination of harmful bacteria",
+                                "Absorption of nutrients in the brain"
+                            ],
+                            correct: 1,
+                            explanation: "The passage states the gut-brain axis 'allows gut microbes to affect mood and cognition.'"
+                        },
+                        {
+                            id: 48,
+                            text: "Which factor is mentioned as potentially damaging to the microbiome?",
+                            options: [
+                                "Excessive exercise",
+                                "High-fiber diets",
+                                "Antibiotic overuse",
+                                "Exposure to sunlight"
+                            ],
+                            correct: 2,
+                            explanation: "The passage lists 'antibiotic overuse' as a factor implicated in microbiome disruption."
+                        },
+                        {
+                            id: 49,
+                            text: "What treatment has proven 'remarkably effective' according to the passage?",
+                            options: [
+                                "Probiotic supplements",
+                                "Fecal microbiota transplantation",
+                                "Antibiotic therapy",
+                                "Dietary changes"
+                            ],
+                            correct: 1,
+                            explanation: "The passage states 'fecal microbiota transplantation has proven remarkably effective against certain intestinal infections.'"
+                        },
+                        {
+                            id: 50,
+                            text: "The main purpose of Passage B is to:",
+                            options: [
+                                "Warn against taking probiotics",
+                                "Explain the role and importance of the human microbiome",
+                                "Criticize modern medical practices",
+                                "Promote vegetarian diets"
+                            ],
+                            correct: 1,
+                            explanation: "The passage focuses on explaining the microbiome's composition, functions, and significance for health."
+                        }
+                    ]
+                }
+            ]
+        };
+
+        // State
+        let currentSection = 1;
+        let answers = {};
+        let timeLeft = 60 * 60; // 60 minutes in seconds
+        let timerInterval;
+        let isReviewMode = false;
+
+        // DOM Elements
+        const startScreen = document.getElementById('startScreen');
+        const quizScreen = document.getElementById('quizScreen');
+        const resultsScreen = document.getElementById('resultsScreen');
+        const quizContent = document.getElementById('quizContent');
+        const timerDisplay = document.getElementById('timerDisplay');
+        const timerBox = document.getElementById('timerBox');
+        const answeredCount = document.getElementById('answeredCount');
+        const progressFill = document.getElementById('progressFill');
+        const reviewScorePill = document.getElementById('reviewScorePill');
+        const reviewScoreValue = document.getElementById('reviewScoreValue');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const submitBtn = document.getElementById('submitBtn');
+        const questionNav = document.getElementById('questionNav');
+
+        // Initialize
+        function startQuiz() {
+            startScreen.classList.add('hidden');
+            quizScreen.classList.remove('hidden');
+            startTimer();
+            renderSection(1);
+            renderQuestionNav();
+            setupSectionNav();
+        }
+
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                updateTimerDisplay();
+
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    submitQuiz();
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            timerDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+
+            // Change color based on time remaining
+            if (timeLeft <= 300) { // 5 minutes
+                timerBox.classList.add('danger');
+                timerBox.classList.remove('warning');
+            } else if (timeLeft <= 600) { // 10 minutes
+                timerBox.classList.add('warning');
+            }
+        }
+
+        function setupSectionNav() {
+            document.querySelectorAll('.section-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const section = parseInt(btn.dataset.section);
+                    renderSection(section);
+                });
+            });
+        }
+
+        function renderSection(sectionId) {
+            currentSection = sectionId;
+            const section = quizData.sections.find(s => s.id === sectionId);
+
+            // Update navigation buttons
+            document.querySelectorAll('.section-btn').forEach(btn => {
+                btn.classList.toggle('active', parseInt(btn.dataset.section) === sectionId);
+            });
+
+            // Update prev/next buttons
+            prevBtn.disabled = sectionId === 1;
+            if (sectionId === 5) {
+                nextBtn.classList.add('hidden');
+                submitBtn.classList.remove('hidden');
+            } else {
+                nextBtn.classList.remove('hidden');
+                submitBtn.classList.add('hidden');
+            }
+
+            // Render content
+            let html = `
+                <div class="section-header">
+                    <h2>${section.title}</h2>
+                    <p>${section.description}</p>
+                </div>
+            `;
+
+            // Add passage for cloze test
+            if (section.passage) {
+                html += `<div class="passage-box">${section.passage}</div>`;
+            }
+
+            // Add passages for reading comprehension
+            if (section.passages) {
+                section.passages.forEach((passage, index) => {
+                    html += `
+                        <div class="passage-box">
+                            <div class="passage-title">${passage.title}</div>
+                            ${passage.content}
+                        </div>
+                    `;
+
+                    // Add questions after each passage
+                    const startIdx = index * 5;
+                    const endIdx = startIdx + 5;
+                    const passageQuestions = section.questions.slice(startIdx, endIdx);
+
+                    passageQuestions.forEach(q => {
+                        html += renderQuestion(q, section.id);
+                    });
+                });
+            } else {
+                // Regular questions
+                section.questions.forEach(q => {
+                    html += renderQuestion(q, section.id);
+                });
+            }
+
+            quizContent.innerHTML = html;
+            if (isReviewMode) {
+                quizContent.classList.add('review-mode');
+            }
+
+            // Add event listeners
+            quizContent.querySelectorAll('input[type="radio"]').forEach(input => {
+                input.addEventListener('change', handleAnswer);
+            });
+
+            renderQuestionNav();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function renderQuestion(question, sectionId) {
+            const selectedAnswer = answers[question.id];
+
+            let questionText = question.text;
+            if (sectionId !== 3) { // Not error identification
+                questionText = question.text.replace('_______', '<span class="blank">_______</span>');
+            }
+
+            let html = `
+                <div class="question-block">
+                    <div class="question-text">
+                        <span class="question-number">${question.id}</span>
+                        ${questionText}
+                    </div>
+                    <div class="options-grid">
+            `;
+
+            const letters = ['A', 'B', 'C', 'D'];
+            question.options.forEach((option, index) => {
+                const isSelected = selectedAnswer === index;
+                const isCorrect = index === question.correct;
+
+                let extraClass = '';
+                if (isReviewMode) {
+                    if (isCorrect) extraClass = 'correct';
+                    else if (isSelected && !isCorrect) extraClass = 'incorrect';
+                }
+
+                html += `
+                    <label class="option-label ${extraClass}">
+                        <input type="radio" name="q${question.id}" value="${index}" 
+                            ${isSelected ? 'checked' : ''} ${isReviewMode ? 'disabled' : ''}>
+                        <span class="option-letter">${letters[index]}</span>
+                        <span class="option-text">${option}</span>
+                    </label>
+                `;
+            });
+
+            html += `</div>`;
+
+            // Add explanation for review mode
+            html += `
+                <div class="explanation-box">
+                    <strong>✓ Correct Answer: ${letters[question.correct]}</strong><br>
+                    ${question.explanation}
+                </div>
+            `;
+
+            html += `</div>`;
+            return html;
+        }
+
+        function handleAnswer(e) {
+            const questionId = parseInt(e.target.name.replace('q', ''));
+            const value = parseInt(e.target.value);
+            answers[questionId] = value;
+            updateProgress();
+            renderQuestionNav();
+        }
+
+        function updateProgress() {
+            const count = Object.keys(answers).length;
+            answeredCount.textContent = count;
+            progressFill.style.width = `${(count / 50) * 100}%`;
+        }
+
+        function renderQuestionNav() {
+            const section = quizData.sections.find(s => s.id === currentSection);
+            let html = '';
+
+            section.questions.forEach(q => {
+                const isAnswered = answers[q.id] !== undefined;
+                html += `
+                    <button class="q-nav-btn ${isAnswered ? 'answered' : ''}" 
+                            onclick="scrollToQuestion(${q.id})">
+                        ${q.id}
+                    </button>
+                `;
+            });
+
+            questionNav.innerHTML = html;
+        }
+
+        function scrollToQuestion(id) {
+            const questions = document.querySelectorAll('.question-block');
+            const section = quizData.sections.find(s => s.id === currentSection);
+            const index = section.questions.findIndex(q => q.id === id);
+
+            if (questions[index]) {
+                questions[index].scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
+
+        function previousSection() {
+            if (currentSection > 1) {
+                renderSection(currentSection - 1);
+            }
+        }
+
+        function nextSection() {
+            if (currentSection < 5) {
+                renderSection(currentSection + 1);
+            }
+        }
+
+        function submitQuiz() {
+            clearInterval(timerInterval);
+
+            // Calculate time spent
+            const timeSpent = (60 * 60) - timeLeft;
+
+            // Calculate scores
+            let totalCorrect = 0;
+            const sectionScores = [];
+            const sectionData = {
+                vocabulary: { correct: 0, total: 10 },
+                grammar: { correct: 0, total: 10 },
+                errorId: { correct: 0, total: 10 },
+                cloze: { correct: 0, total: 10 },
+                reading: { correct: 0, total: 10 }
+            };
+            const sectionKeys = ['vocabulary', 'grammar', 'errorId', 'cloze', 'reading'];
+
+            quizData.sections.forEach((section, index) => {
+                let sectionCorrect = 0;
+                section.questions.forEach(q => {
+                    if (answers[q.id] === q.correct) {
+                        sectionCorrect++;
+                        totalCorrect++;
+                    }
+                });
+                sectionScores.push({
+                    name: section.title.split(':')[0],
+                    score: sectionCorrect,
+                    total: section.questions.length
+                });
+                sectionData[sectionKeys[index]].correct = sectionCorrect;
+            });
+
+            // Save to Firebase if user is logged in
+            if (mextUser && mextUser.uid) {
+                saveResultsToFirebase(totalCorrect, sectionData, timeSpent);
+            }
+
+            // Show results
+            quizScreen.classList.add('hidden');
+            resultsScreen.classList.remove('hidden');
+
+            document.getElementById('finalScore').textContent = totalCorrect;
+
+            // Score message
+            const percentage = (totalCorrect / 50) * 100;
+            let message = '';
+            if (percentage >= 80) message = '🎉 Excellent! Outstanding performance!';
+            else if (percentage >= 60) message = '👍 Good job! Keep practicing!';
+            else if (percentage >= 40) message = '📚 Fair attempt. More study needed.';
+            else message = '💪 Keep working hard! You can improve!';
+
+            document.getElementById('scoreMessage').textContent = message;
+
+            // Section breakdown
+            let breakdownHtml = '';
+            sectionScores.forEach(s => {
+                breakdownHtml += `
+                    <div class="breakdown-item">
+                        <div class="section-name">${s.name}</div>
+                        <div class="section-score">${s.score}/${s.total}</div>
+                    </div>
+                `;
+            });
+            document.getElementById('scoreBreakdown').innerHTML = breakdownHtml;
+
+            // Log analytics event
+            analytics.logEvent('quiz_complete', {
+                quiz_id: currentQuizId,
+                score: totalCorrect,
+                percentage: percentage,
+                time_spent: timeSpent
+            });
+        }
+
+        // Save results to Firebase
+        async function saveResultsToFirebase(score, sectionData, timeSpent) {
+            try {
+                const userRef = db.collection('users').doc(mextUser.uid);
+                const userDoc = await userRef.get();
+                const userData = userDoc.exists ? userDoc.data() : {};
+
+                // Get current best score for this quiz
+                const currentBest = userData.quizAttempts?.[currentQuizId]?.bestScore || 0;
+                const newBest = Math.max(currentBest, score);
+
+                // Prepare section score updates
+                const sectionUpdates = {};
+                for (const [key, data] of Object.entries(sectionData)) {
+                    const currentTotal = userData.stats?.sectionScores?.[key]?.total || 0;
+                    const currentCorrect = userData.stats?.sectionScores?.[key]?.correct || 0;
+                    sectionUpdates[`stats.sectionScores.${key}.total`] = currentTotal + data.total;
+                    sectionUpdates[`stats.sectionScores.${key}.correct`] = currentCorrect + data.correct;
+                }
+
+                // Update user document with latest attempt
+                await userRef.update({
+                    [`quizAttempts.${currentQuizId}.completed`]: true,
+                    [`quizAttempts.${currentQuizId}.score`]: score,
+                    [`quizAttempts.${currentQuizId}.bestScore`]: newBest,
+                    [`quizAttempts.${currentQuizId}.lastAttempt`]: firebase.firestore.FieldValue.serverTimestamp(),
+                    [`quizAttempts.${currentQuizId}.attempts`]: firebase.firestore.FieldValue.increment(1),
+                    [`quizAttempts.${currentQuizId}.savedAnswers`]: answers,
+                    'stats.totalAttempts': firebase.firestore.FieldValue.increment(1),
+                    'stats.totalCompleted': firebase.firestore.FieldValue.increment(1),
+                    'stats.totalTimeSpent': firebase.firestore.FieldValue.increment(timeSpent),
+                    ...sectionUpdates
+                });
+
+                // Save to history subcollection for historical tracking
+                const historyRef = db.collection('users').doc(mextUser.uid)
+                    .collection('quizHistory').doc(currentQuizId)
+                    .collection('attempts');
+
+                await historyRef.add({
+                    score: score,
+                    timeSpent: timeSpent,
+                    sectionData: sectionData,
+                    savedAnswers: answers,
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                });
+
+                console.log('Results and history saved to Firebase successfully!');
+            } catch (error) {
+                console.error('Error saving results to Firebase:', error);
+            }
+        }
+
+        function reviewAnswers() {
+            isReviewMode = true;
+            resultsScreen.classList.add('hidden');
+            quizScreen.classList.remove('hidden');
+
+            // Hide timer during review
+            timerBox.style.display = 'none';
+            setReviewScore(document.getElementById('finalScore').textContent);
+
+            // Update navigation
+            submitBtn.classList.add('hidden');
+            nextBtn.classList.remove('hidden');
+
+            quizContent.classList.add('review-mode');
+            renderSection(1);
+        }
+
+        function retryQuiz() {
+            // Increment attempt count in Firebase
+            if (mextUser && mextUser.uid) {
+                db.collection('users').doc(mextUser.uid).update({
+                    'stats.totalAttempts': firebase.firestore.FieldValue.increment(1),
+                    [`quizAttempts.${currentQuizId}.lastAttempt`]: firebase.firestore.FieldValue.serverTimestamp()
+                }).catch(err => console.error('Error updating attempt count:', err));
+            }
+
+            // Reset state
+            answers = {};
+            timeLeft = 60 * 60;
+            currentSection = 1;
+            isReviewMode = false;
+
+            // Reset UI
+            timerBox.style.display = 'flex';
+            timerBox.classList.remove('warning', 'danger');
+            clearReviewScore();
+            updateTimerDisplay();
+            updateProgress();
+
+            // Show quiz
+            resultsScreen.classList.add('hidden');
+            quizScreen.classList.remove('hidden');
+            quizContent.classList.remove('review-mode');
+
+            startTimer();
+            renderSection(1);
+        }
+
+        function goToDashboard() {
+            window.location.href = '../index.html';
+        }
+
+        // Check if coming from dashboard for review mode
+        async function checkReviewMode() {
+            const reviewMode = sessionStorage.getItem('reviewMode');
+            const reviewQuizId = sessionStorage.getItem('reviewQuizId');
+            const reviewAttemptId = sessionStorage.getItem('reviewAttemptId');
+
+            if (reviewMode === 'true' && reviewQuizId && mextUser) {
+                // Clear the flags
+                sessionStorage.removeItem('reviewMode');
+                sessionStorage.removeItem('reviewQuizId');
+                sessionStorage.removeItem('reviewAttemptId');
+
+                // Load saved answers from Firebase
+                try {
+                    let savedAnswers = null;
+                    let reviewScore = null;
+
+                    if (reviewAttemptId) {
+                        // Load specific attempt from history subcollection
+                        const attemptDoc = await db.collection('users').doc(mextUser.uid)
+                            .collection('quizHistory').doc(reviewQuizId)
+                            .collection('attempts').doc(reviewAttemptId).get();
+
+                        if (attemptDoc.exists) {
+                            const attemptData = attemptDoc.data();
+                            savedAnswers = attemptData.savedAnswers;
+                            reviewScore = attemptData.score;
+                            console.log('Loaded historical attempt:', reviewAttemptId);
+                        }
+                    } else {
+                        // Load latest attempt from main document
+                        const userDoc = await db.collection('users').doc(mextUser.uid).get();
+                        if (userDoc.exists) {
+                            const userData = userDoc.data();
+                            const attempt = userData.quizAttempts?.[reviewQuizId];
+                            savedAnswers = attempt?.savedAnswers;
+                            reviewScore = attempt?.score ?? attempt?.bestScore;
+                        }
+                    }
+
+                    if (savedAnswers) {
+                        // Convert string keys back to numbers if needed
+                        answers = {};
+                        for (const [key, value] of Object.entries(savedAnswers)) {
+                            answers[parseInt(key)] = value;
+                        }
+
+                        // Hide start screen, show quiz in review mode
+                        startScreen.classList.add('hidden');
+                        quizScreen.classList.remove('hidden');
+
+                        isReviewMode = true;
+                        timerBox.style.display = 'none';
+                        setReviewScore(reviewScore);
+                        submitBtn.classList.add('hidden');
+                        quizContent.classList.add('review-mode');
+
+                        updateProgress();
+                        renderSection(1);
+
+                        console.log('Loaded saved answers for review');
+                    } else {
+                        console.log('No saved answers found for review');
+                        alert('No saved answers found for this attempt.');
+                        window.location.href = '../index.html';
+                    }
+                } catch (error) {
+                    console.error('Error loading saved answers:', error);
+                    alert('Error loading saved answers: ' + error.message);
+                }
+            }
+        }
+
+        function setReviewScore(score) {
+            if (score === null || score === undefined) {
+                reviewScoreValue.textContent = '--/50';
+            } else {
+                reviewScoreValue.textContent = `${score}/50`;
+            }
+            reviewScorePill.classList.remove('hidden');
+        }
+
+        function clearReviewScore() {
+            reviewScorePill.classList.add('hidden');
+            reviewScoreValue.textContent = '--/50';
+        }
+
+        // Check if user is logged in, if not redirect to login
+        if (!mextUser) {
+            console.log('No user session found. For full features, please login from the main page.');
+        } else {
+            // Check if we're in review mode
+            checkReviewMode();
+        }
+    </script>
+</body>
+
+</html>

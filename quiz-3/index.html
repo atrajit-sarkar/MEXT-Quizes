@@ -1,0 +1,1830 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MEXT English Quiz - Mock Exam 3</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #1a365d;
+            --primary-light: #2c5282;
+            --secondary: #c53030;
+            --accent: #2b6cb0;
+            --success: #276749;
+            --warning: #c05621;
+            --bg-light: #f7fafc;
+            --bg-card: #ffffff;
+            --text-dark: #1a202c;
+            --text-muted: #718096;
+            --border: #e2e8f0;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header Styles */
+        .quiz-header {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .quiz-title {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .quiz-title h1 {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 8px;
+        }
+
+        .quiz-title p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        .quiz-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .timer-box {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-weight: 600;
+        }
+
+        .timer-box.warning {
+            background: linear-gradient(135deg, var(--warning) 0%, #dd6b20 100%);
+        }
+
+        .timer-box.danger {
+            background: linear-gradient(135deg, var(--secondary) 0%, #e53e3e 100%);
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.02);
+            }
+        }
+
+        .timer-icon {
+            font-size: 1.5rem;
+        }
+
+        .timer-display {
+            font-size: 1.5rem;
+            font-family: 'Consolas', monospace;
+        }
+
+        .review-score {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #f0fff4;
+            color: var(--success);
+            padding: 10px 18px;
+            border-radius: 12px;
+            font-weight: 700;
+            border: 1px solid #c6f6d5;
+        }
+
+        .review-score .label {
+            font-weight: 600;
+            color: var(--text-muted);
+        }
+
+        .progress-info {
+            text-align: right;
+        }
+
+        .progress-text {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+        }
+
+        .progress-bar {
+            width: 200px;
+            height: 10px;
+            background: var(--border);
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent) 0%, var(--success) 100%);
+            border-radius: 5px;
+            transition: width 0.3s ease;
+        }
+
+        /* Section Navigation */
+        .section-nav {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .section-btn {
+            padding: 10px 16px;
+            border: 2px solid var(--border);
+            background: var(--bg-card);
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            font-size: 0.85rem;
+        }
+
+        .section-btn:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .section-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .section-btn .badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.75rem;
+            margin-left: 6px;
+        }
+
+        .section-btn.active .badge {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Quiz Content */
+        .quiz-content {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 32px;
+            box-shadow: var(--shadow-lg);
+            margin-bottom: 20px;
+        }
+
+        .section-header {
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 16px;
+            margin-bottom: 24px;
+        }
+
+        .section-header h2 {
+            color: var(--primary);
+            font-size: 1.4rem;
+            margin-bottom: 8px;
+        }
+
+        .section-header p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        /* Question Styles */
+        .question-block {
+            margin-bottom: 32px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .question-block:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+
+        .question-number {
+            display: inline-block;
+            background: var(--primary);
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 32px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-right: 12px;
+        }
+
+        .question-text {
+            font-size: 1.05rem;
+            margin-bottom: 16px;
+            color: var(--text-dark);
+        }
+
+        .question-text .blank {
+            display: inline-block;
+            min-width: 100px;
+            border-bottom: 2px solid var(--primary);
+            margin: 0 4px;
+        }
+
+        .question-text .underline {
+            text-decoration: underline;
+            text-decoration-style: wavy;
+            text-decoration-color: var(--secondary);
+            cursor: help;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+        }
+
+        .option-label {
+            display: flex;
+            align-items: center;
+            padding: 14px 18px;
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: var(--bg-light);
+        }
+
+        .option-label:hover {
+            border-color: var(--accent);
+            background: white;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        .option-label input {
+            display: none;
+        }
+
+        .option-label input:checked+.option-letter {
+            background: var(--accent);
+            color: white;
+        }
+
+        .option-label input:checked~.option-text {
+            color: var(--accent);
+            font-weight: 500;
+        }
+
+        .option-label:has(input:checked) {
+            border-color: var(--accent);
+            background: rgba(43, 108, 176, 0.05);
+        }
+
+        .option-letter {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: var(--border);
+            color: var(--text-dark);
+            font-weight: 600;
+            font-size: 0.85rem;
+            margin-right: 12px;
+            transition: all 0.2s ease;
+        }
+
+        .option-text {
+            flex: 1;
+            font-size: 0.95rem;
+        }
+
+        /* Passage Styles */
+        .passage-box {
+            background: linear-gradient(to bottom, #f8fafc, #edf2f7);
+            border-left: 4px solid var(--primary);
+            padding: 24px;
+            margin-bottom: 24px;
+            border-radius: 0 12px 12px 0;
+            font-size: 0.95rem;
+            line-height: 1.8;
+        }
+
+        .passage-box .blank-number {
+            display: inline-block;
+            background: var(--primary);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin: 0 2px;
+        }
+
+        .passage-title {
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 12px;
+            font-size: 1.1rem;
+        }
+
+        /* Error Identification */
+        .error-sentence {
+            font-size: 1.05rem;
+            line-height: 2;
+            margin-bottom: 16px;
+        }
+
+        .error-part {
+            background: #fef3c7;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 500;
+        }
+
+        /* Navigation Buttons */
+        .quiz-navigation {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .nav-btn {
+            padding: 14px 28px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-btn.prev {
+            background: var(--bg-light);
+            color: var(--text-dark);
+            border: 2px solid var(--border);
+        }
+
+        .nav-btn.prev:hover {
+            background: var(--border);
+        }
+
+        .nav-btn.next {
+            background: linear-gradient(135deg, var(--accent) 0%, var(--primary) 100%);
+            color: white;
+        }
+
+        .nav-btn.next:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .nav-btn.submit {
+            background: linear-gradient(135deg, var(--success) 0%, #2f855a 100%);
+            color: white;
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Start Screen */
+        .start-screen {
+            text-align: center;
+            padding: 60px 40px;
+        }
+
+        .start-screen h1 {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 16px;
+        }
+
+        .start-screen .subtitle {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            margin-bottom: 40px;
+        }
+
+        .exam-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .info-card {
+            background: var(--bg-light);
+            padding: 24px;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .info-card .icon {
+            font-size: 2rem;
+            margin-bottom: 12px;
+        }
+
+        .info-card .value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .info-card .label {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .start-btn {
+            padding: 18px 48px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .start-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 40px rgba(26, 54, 93, 0.4);
+        }
+
+        /* Results Screen */
+        .results-screen {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .results-screen h1 {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 24px;
+        }
+
+        .score-circle {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 32px;
+            color: white;
+        }
+
+        .score-circle .score {
+            font-size: 3rem;
+            font-weight: 700;
+        }
+
+        .score-circle .total {
+            font-size: 1rem;
+            opacity: 0.8;
+        }
+
+        .score-breakdown {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .breakdown-item {
+            background: var(--bg-light);
+            padding: 16px;
+            border-radius: 10px;
+        }
+
+        .breakdown-item .section-name {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+        }
+
+        .breakdown-item .section-score {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .result-actions {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .result-btn {
+            padding: 14px 28px;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .result-btn.review {
+            background: var(--bg-light);
+            border: 2px solid var(--border);
+            color: var(--text-dark);
+        }
+
+        .result-btn.retry {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            border: none;
+            color: white;
+        }
+
+        /* Review Mode */
+        .review-mode .option-label.correct {
+            border-color: var(--success);
+            background: rgba(39, 103, 73, 0.1);
+        }
+
+        .review-mode .option-label.correct .option-letter {
+            background: var(--success);
+            color: white;
+        }
+
+        .review-mode .option-label.incorrect {
+            border-color: var(--secondary);
+            background: rgba(197, 48, 48, 0.1);
+        }
+
+        .review-mode .option-label.incorrect .option-letter {
+            background: var(--secondary);
+            color: white;
+        }
+
+        .explanation-box {
+            background: #e6fffa;
+            border-left: 4px solid var(--success);
+            padding: 16px;
+            margin-top: 16px;
+            border-radius: 0 8px 8px 0;
+            display: none;
+        }
+
+        .review-mode .explanation-box {
+            display: block;
+        }
+
+        /* Hidden */
+        .hidden {
+            display: none !important;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 12px;
+            }
+
+            .quiz-header {
+                padding: 16px;
+            }
+
+            .quiz-title h1 {
+                font-size: 1.5rem;
+            }
+
+            .quiz-meta {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .progress-info {
+                text-align: center;
+            }
+
+            .progress-bar {
+                width: 100%;
+            }
+
+            .quiz-content {
+                padding: 20px;
+            }
+
+            .options-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .section-nav {
+                justify-content: center;
+            }
+
+            .section-btn {
+                font-size: 0.75rem;
+                padding: 8px 12px;
+            }
+        }
+
+        /* Question Navigator */
+        .question-navigator {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            padding: 16px;
+            background: var(--bg-light);
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .q-nav-btn {
+            width: 32px;
+            height: 32px;
+            border: 2px solid var(--border);
+            background: white;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .q-nav-btn:hover {
+            border-color: var(--accent);
+        }
+
+        .q-nav-btn.answered {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
+
+        .q-nav-btn.current {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(26, 54, 93, 0.3);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <!-- Start Screen -->
+        <div id="startScreen" class="quiz-content start-screen">
+            <h1>🎌 MEXT English Exam</h1>
+            <p class="subtitle">Mock Examination 3 - Undergraduate & Research Student Level</p>
+
+            <div class="exam-info">
+                <div class="info-card">
+                    <div class="icon">⏱️</div>
+                    <div class="value">60</div>
+                    <div class="label">Minutes</div>
+                </div>
+                <div class="info-card">
+                    <div class="icon">📝</div>
+                    <div class="value">50</div>
+                    <div class="label">Questions</div>
+                </div>
+                <div class="info-card">
+                    <div class="icon">📚</div>
+                    <div class="value">5</div>
+                    <div class="label">Sections</div>
+                </div>
+                <div class="info-card">
+                    <div class="icon">✅</div>
+                    <div class="value">MCQ</div>
+                    <div class="label">Format</div>
+                </div>
+            </div>
+
+            <div
+                style="text-align: left; max-width: 500px; margin: 0 auto 40px; background: var(--bg-light); padding: 20px; border-radius: 12px;">
+                <h3 style="margin-bottom: 12px; color: var(--primary);">📋 Sections Overview:</h3>
+                <ul style="list-style: none; line-height: 2;">
+                    <li>I. Vocabulary in Context (10 Questions)</li>
+                    <li>II. Grammar & Phrasing (10 Questions)</li>
+                    <li>III. Error Identification (10 Questions)</li>
+                    <li>IV. Cloze Test (10 Questions)</li>
+                    <li>V. Reading Comprehension (10 Questions)</li>
+                </ul>
+            </div>
+
+            <button class="start-btn" onclick="startQuiz()">Start Examination →</button>
+        </div>
+
+        <!-- Quiz Screen -->
+        <div id="quizScreen" class="hidden">
+            <div class="quiz-header">
+                <div class="quiz-title">
+                    <h1>🎌 MEXT English Mock Exam 3</h1>
+                    <p>Answer all questions. Each question has only one correct answer.</p>
+                </div>
+                <div class="quiz-meta">
+                    <div class="timer-box" id="timerBox">
+                        <span class="timer-icon">⏱️</span>
+                        <span class="timer-display" id="timerDisplay">60:00</span>
+                    </div>
+                    <div class="review-score hidden" id="reviewScorePill">
+                        <span class="label">Total Score</span>
+                        <span id="reviewScoreValue">--/50</span>
+                    </div>
+                    <div class="progress-info">
+                        <div class="progress-text">
+                            <span id="answeredCount">0</span> of 50 answered
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section-nav" id="sectionNav">
+                <button class="section-btn active" data-section="1">I. Vocabulary <span class="badge">10</span></button>
+                <button class="section-btn" data-section="2">II. Grammar <span class="badge">10</span></button>
+                <button class="section-btn" data-section="3">III. Error ID <span class="badge">10</span></button>
+                <button class="section-btn" data-section="4">IV. Cloze <span class="badge">10</span></button>
+                <button class="section-btn" data-section="5">V. Reading <span class="badge">10</span></button>
+            </div>
+
+            <div class="question-navigator" id="questionNav"></div>
+
+            <div class="quiz-content" id="quizContent">
+                <!-- Questions will be rendered here -->
+            </div>
+
+            <div class="quiz-navigation">
+                <button class="nav-btn prev" id="prevBtn" onclick="previousSection()">← Previous Section</button>
+                <button class="nav-btn next" id="nextBtn" onclick="nextSection()">Next Section →</button>
+                <button class="nav-btn submit hidden" id="submitBtn" onclick="submitQuiz()">Submit Exam ✓</button>
+            </div>
+        </div>
+
+        <!-- Results Screen -->
+        <div id="resultsScreen" class="quiz-content results-screen hidden">
+            <h1>📊 Examination Results</h1>
+
+            <div class="score-circle">
+                <div class="score" id="finalScore">0</div>
+                <div class="total">out of 50</div>
+            </div>
+
+            <p style="font-size: 1.2rem; margin-bottom: 24px;" id="scoreMessage"></p>
+
+            <div class="score-breakdown" id="scoreBreakdown">
+                <!-- Section scores will be rendered here -->
+            </div>
+
+            <div class="result-actions">
+                <button class="result-btn retry" onclick="retryQuiz()">🔄 Try Again</button>
+                <button class="result-btn review" onclick="goToDashboard()"
+                    style="background: linear-gradient(135deg, #1a365d 0%, #2c5282 100%); color: white; border: none;">🏠
+                    Back to Dashboard</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-analytics-compat.js"></script>
+
+    <!-- Shared Firebase Config -->
+    <script src="../js/firebase-config.js"></script>
+
+    <script>
+        // Get user from session storage
+        const mextUser = FirebaseHelper.getSessionUser();
+        const currentQuizId = FirebaseHelper.getCurrentQuizId();
+
+        // Quiz Data
+        const quizData = {
+            sections: [
+                {
+                    id: 1,
+                    title: "Section I: Vocabulary in Context",
+                    description: "Choose the correct word to complete each sentence.",
+                    questions: [
+                        {
+                            id: 1,
+                            text: "The scientist's hypothesis was _______ when subsequent experiments failed to replicate her initial results.",
+                            options: ["validated", "nullified", "endorsed", "amplified"],
+                            correct: 1,
+                            explanation: "'Nullified' means made invalid or void, which fits when experiments fail to support a hypothesis."
+                        },
+                        {
+                            id: 2,
+                            text: "The diplomat's _______ approach to negotiations helped defuse tensions between the two nations.",
+                            options: ["belligerent", "caustic", "diplomatic", "conciliatory"],
+                            correct: 3,
+                            explanation: "'Conciliatory' means intended to placate or pacify, appropriate for defusing tensions."
+                        },
+                        {
+                            id: 3,
+                            text: "Despite the company's financial troubles, the CEO remained _______ about its future prospects.",
+                            options: ["pessimistic", "sanguine", "indifferent", "skeptical"],
+                            correct: 1,
+                            explanation: "'Sanguine' means optimistic or positive, especially in a difficult situation."
+                        },
+                        {
+                            id: 4,
+                            text: "The ancient manuscript was so _______ that scholars could barely decipher the faded text.",
+                            options: ["pristine", "illegible", "legible", "transparent"],
+                            correct: 1,
+                            explanation: "'Illegible' means not clear enough to read, fitting for faded text that is hard to decipher."
+                        },
+                        {
+                            id: 5,
+                            text: "Her _______ comments during the meeting offended several colleagues.",
+                            options: ["tactful", "diplomatic", "acerbic", "benevolent"],
+                            correct: 2,
+                            explanation: "'Acerbic' means sharp and harsh, suitable for comments that cause offense."
+                        },
+                        {
+                            id: 6,
+                            text: "The professor's lectures were known for their _______, covering complex topics in remarkable depth.",
+                            options: ["brevity", "superficiality", "prolixity", "erudition"],
+                            correct: 3,
+                            explanation: "'Erudition' means extensive knowledge or learning, appropriate for in-depth coverage."
+                        },
+                        {
+                            id: 7,
+                            text: "The politician's _______ regarding the scandal only fueled public suspicion.",
+                            options: ["candor", "transparency", "reticence", "forthrightness"],
+                            correct: 2,
+                            explanation: "'Reticence' means reluctance to speak freely, which would increase suspicion during a scandal."
+                        },
+                        {
+                            id: 8,
+                            text: "The evidence presented was entirely _______, based on speculation rather than fact.",
+                            options: ["empirical", "conjectural", "substantiated", "verifiable"],
+                            correct: 1,
+                            explanation: "'Conjectural' means based on conjecture or speculation, not proven facts."
+                        },
+                        {
+                            id: 9,
+                            text: "The orchestra's _______ performance received a standing ovation from the audience.",
+                            options: ["mediocre", "lackluster", "virtuoso", "amateur"],
+                            correct: 2,
+                            explanation: "'Virtuoso' means showing exceptional skill, deserving of a standing ovation."
+                        },
+                        {
+                            id: 10,
+                            text: "The treaty was designed to _______ long-standing hostilities between the neighboring countries.",
+                            options: ["exacerbate", "perpetuate", "ameliorate", "intensify"],
+                            correct: 2,
+                            explanation: "'Ameliorate' means to make better or improve, fitting for reducing hostilities."
+                        }
+                    ]
+                },
+                {
+                    id: 2,
+                    title: "Section II: Grammar & Phrasing",
+                    description: "Choose the correct grammatical structure or phrase to complete each sentence.",
+                    questions: [
+                        {
+                            id: 11,
+                            text: "Not until the results were published _______ the true extent of the problem.",
+                            options: ["the public realized", "did the public realize", "the public did realize", "realized the public"],
+                            correct: 1,
+                            explanation: "'Not until' at the beginning requires inversion: 'did the public realize.'"
+                        },
+                        {
+                            id: 12,
+                            text: "The manager demanded that the report _______ before the end of the day.",
+                            options: ["is completed", "be completed", "will be completed", "was completed"],
+                            correct: 1,
+                            explanation: "After 'demand,' use subjunctive mood: 'be completed.'"
+                        },
+                        {
+                            id: 13,
+                            text: "_______ to the conference, I would have presented my research findings.",
+                            options: ["Had I been invited", "If I would be invited", "Was I invited", "Should I be invited"],
+                            correct: 0,
+                            explanation: "'Had I been invited' is the inverted form for third conditional."
+                        },
+                        {
+                            id: 14,
+                            text: "Neither the teacher nor the students _______ aware of the schedule change.",
+                            options: ["was", "were", "is", "has been"],
+                            correct: 1,
+                            explanation: "With 'neither...nor,' the verb agrees with the nearest subject: 'students' (plural), so 'were.'"
+                        },
+                        {
+                            id: 15,
+                            text: "It is high time we _______ about climate change.",
+                            options: ["do something", "did something", "have done something", "will do something"],
+                            correct: 1,
+                            explanation: "'It is high time' is followed by past simple: 'did something.'"
+                        },
+                        {
+                            id: 16,
+                            text: "The professor, along with her assistants, _______ conducting the experiment.",
+                            options: ["are", "is", "were", "have been"],
+                            correct: 1,
+                            explanation: "'Along with' doesn't affect subject-verb agreement; 'professor' is singular, so 'is.'"
+                        },
+                        {
+                            id: 17,
+                            text: "Only after the ceremony _______ to take photographs.",
+                            options: ["the guests were allowed", "were the guests allowed", "the guests allowed", "did the guests allow"],
+                            correct: 1,
+                            explanation: "'Only after' at the beginning requires inversion: 'were the guests allowed.'"
+                        },
+                        {
+                            id: 18,
+                            text: "I wish I _______ a foreign language when I was younger.",
+                            options: ["learned", "had learned", "have learned", "would learn"],
+                            correct: 1,
+                            explanation: "'Wish' about past regret takes past perfect: 'had learned.'"
+                        },
+                        {
+                            id: 19,
+                            text: "The evidence suggests that the suspect _______ at the scene of the crime.",
+                            options: ["had been present", "has been present", "is being present", "will be present"],
+                            correct: 0,
+                            explanation: "Past perfect 'had been present' correctly refers to a time before the evidence was found."
+                        },
+                        {
+                            id: 20,
+                            text: "_______ his lack of experience, he performed remarkably well.",
+                            options: ["Despite of", "In spite", "Despite", "Although"],
+                            correct: 2,
+                            explanation: "'Despite' is followed directly by a noun phrase without 'of.'"
+                        }
+                    ]
+                },
+                {
+                    id: 3,
+                    title: "Section III: Error Identification",
+                    description: "Identify the underlined part (A, B, C, or D) that contains a grammatical error.",
+                    questions: [
+                        {
+                            id: 21,
+                            text: "The number of students <span class='error-part'>(A) who</span> has applied <span class='error-part'>(B) for</span> the scholarship <span class='error-part'>(C) has increased</span> <span class='error-part'>(D) dramatically</span>.",
+                            options: ["A", "B", "C", "D"],
+                            correct: 0,
+                            explanation: "Error in (A): 'The number' is singular, but 'who has applied' is awkward; should be 'who have applied' to agree with 'students.'"
+                        },
+                        {
+                            id: 22,
+                            text: "The museum <span class='error-part'>(A) contains</span> an <span class='error-part'>(B) unique</span> collection of <span class='error-part'>(C) ancient</span> <span class='error-part'>(D) artifacts</span>.",
+                            options: ["A", "B", "C", "D"],
+                            correct: 1,
+                            explanation: "Error in (B): Use 'a' before 'unique' because 'unique' starts with a consonant sound /juː/."
+                        },
+                        {
+                            id: 23,
+                            text: "Each of the <span class='error-part'>(A) participants</span> <span class='error-part'>(B) were given</span> a certificate <span class='error-part'>(C) at</span> the <span class='error-part'>(D) conclusion</span> of the workshop.",
+                            options: ["A", "B", "C", "D"],
+                            correct: 1,
+                            explanation: "Error in (B): 'Each' is singular and requires 'was given,' not 'were given.'"
+                        },
+                        {
+                            id: 24,
+                            text: "The <span class='error-part'>(A) data</span> collected from the survey <span class='error-part'>(B) indicates</span> that most respondents <span class='error-part'>(C) prefer</span> <span class='error-part'>(D) online shopping</span>.",
+                            options: ["A", "B", "C", "D"],
+                            correct: 1,
+                            explanation: "Error in (B): 'Data' is plural (singular: datum), requiring 'indicate,' not 'indicates.'"
+                        },
+                        {
+                            id: 25,
+                            text: "The scientist <span class='error-part'>(A) has devoted</span> <span class='error-part'>(B) her</span> entire career <span class='error-part'>(C) to study</span> <span class='error-part'>(D) climate change</span>.",
+                            options: ["A", "B", "C", "D"],
+                            correct: 2,
+                            explanation: "Error in (C): After 'devoted...to,' use gerund: 'to studying,' not 'to study.'"
+                        },
+                        {
+                            id: 26,
+                            text: "The report <span class='error-part'>(A) suggests</span> that the company <span class='error-part'>(B) needs</span> to be <span class='error-part'>(C) more innovative</span> than <span class='error-part'>(D) their competitors</span>.",
+                            options: ["A", "B", "C", "D"],
+                            correct: 3,
+                            explanation: "Error in (D): 'Company' is singular, so pronoun should be 'its competitors,' not 'their.'"
+                        },
+                        {
+                            id: 27,
+                            text: "Despite <span class='error-part'>(A) of</span> the heavy rain, the marathon <span class='error-part'>(B) proceeded</span> <span class='error-part'>(C) as</span> <span class='error-part'>(D) scheduled</span>.",
+                            options: ["A", "B", "C", "D"],
+                            correct: 0,
+                            explanation: "Error in (A): 'Despite' is not followed by 'of'; should be 'Despite the heavy rain.'"
+                        },
+                        {
+                            id: 28,
+                            text: "The <span class='error-part'>(A) professor</span> insisted that <span class='error-part'>(B) each student</span> <span class='error-part'>(C) submits</span> their paper <span class='error-part'>(D) by</span> Friday.",
+                            options: ["A", "B", "C", "D"],
+                            correct: 2,
+                            explanation: "Error in (C): After 'insisted that,' use subjunctive 'submit,' not 'submits.'"
+                        },
+                        {
+                            id: 29,
+                            text: "The athlete <span class='error-part'>(A) trains</span> <span class='error-part'>(B) hardly</span> every day to <span class='error-part'>(C) prepare</span> for the <span class='error-part'>(D) championship</span>.",
+                            options: ["A", "B", "C", "D"],
+                            correct: 1,
+                            explanation: "Error in (B): 'Hardly' means 'barely'; should be 'hard' (adverb meaning with great effort)."
+                        },
+                        {
+                            id: 30,
+                            text: "The <span class='error-part'>(A) equipment</span> <span class='error-part'>(B) are</span> being <span class='error-part'>(C) tested</span> <span class='error-part'>(D) thoroughly</span> before use.",
+                            options: ["A", "B", "C", "D"],
+                            correct: 1,
+                            explanation: "Error in (B): 'Equipment' is uncountable and singular, requiring 'is,' not 'are.'"
+                        }
+                    ]
+                },
+                {
+                    id: 4,
+                    title: "Section IV: Cloze Test",
+                    description: "Read the passage and choose the best word or phrase for each blank.",
+                    passage: `<p class="passage-title">The Industrial Revolution: Transforming Society</p>
+                    <p>The Industrial Revolution, which <span class="blank-number">31</span> in Britain during the late 18th century, fundamentally altered the way people lived and worked. Prior to this era, most goods were produced by hand in small workshops, <span class="blank-number">32</span> the revolution introduced machine-based manufacturing on an unprecedented scale.</p>
+                    <p>Several factors contributed to Britain's role as the birthplace of industrialization. The country possessed abundant natural resources, <span class="blank-number">33</span> coal and iron ore. Additionally, its extensive colonial empire provided both raw materials and markets for <span class="blank-number">34</span> goods. A stable political system and growing financial institutions also created conditions <span class="blank-number">35</span> to economic innovation.</p>
+                    <p>The social consequences of industrialization were profound. Millions of people migrated from rural areas to cities in search of factory employment, <span class="blank-number">36</span> rapid urbanization. Working conditions in early factories were often harsh, with long hours, low wages, and dangerous machinery. <span class="blank-number">37</span>, these conditions eventually sparked labor movements that fought for workers' rights.</p>
+                    <p>Technological innovations during this period were remarkable. James Watt's improvements to the steam engine <span class="blank-number">38</span> countless applications, from powering factories to revolutionizing transportation. The development of railways <span class="blank-number">39</span> the movement of goods and people, effectively shrinking distances and expanding commercial networks.</p>
+                    <p>The Industrial Revolution's legacy continues to shape our world today. It established the foundations of modern capitalism and <span class="blank-number">40</span> the path for subsequent technological revolutions, including the digital age we now inhabit.</p>`,
+                    questions: [
+                        {
+                            id: 31,
+                            text: "Choose the best word for blank 31:",
+                            options: ["originated", "emerged", "appeared", "started"],
+                            correct: 0,
+                            explanation: "'Originated' best conveys the sense of the revolution beginning in a specific place."
+                        },
+                        {
+                            id: 32,
+                            text: "Choose the best word for blank 32:",
+                            options: ["while", "but", "so", "because"],
+                            correct: 1,
+                            explanation: "'But' introduces the contrast between handmade production and machine manufacturing."
+                        },
+                        {
+                            id: 33,
+                            text: "Choose the best word for blank 33:",
+                            options: ["including", "particularly", "namely", "as"],
+                            correct: 1,
+                            explanation: "'Particularly' emphasizes the importance of coal and iron as key resources."
+                        },
+                        {
+                            id: 34,
+                            text: "Choose the best word for blank 34:",
+                            options: ["exported", "manufactured", "imported", "traditional"],
+                            correct: 1,
+                            explanation: "'Manufactured' goods logically follows the discussion of industrial production."
+                        },
+                        {
+                            id: 35,
+                            text: "Choose the best word for blank 35:",
+                            options: ["favorable", "opposed", "resistant", "harmful"],
+                            correct: 0,
+                            explanation: "'Favorable' means conducive to economic innovation in this context."
+                        },
+                        {
+                            id: 36,
+                            text: "Choose the best word for blank 36:",
+                            options: ["preventing", "hindering", "triggering", "delaying"],
+                            correct: 2,
+                            explanation: "'Triggering' means causing rapid urbanization to happen."
+                        },
+                        {
+                            id: 37,
+                            text: "Choose the best word for blank 37:",
+                            options: ["Therefore", "However", "Furthermore", "Meanwhile"],
+                            correct: 1,
+                            explanation: "'However' introduces the contrasting positive outcome of labor movements."
+                        },
+                        {
+                            id: 38,
+                            text: "Choose the best word for blank 38:",
+                            options: ["prevented", "enabled", "limited", "discouraged"],
+                            correct: 1,
+                            explanation: "'Enabled' indicates that the steam engine made many applications possible."
+                        },
+                        {
+                            id: 39,
+                            text: "Choose the best word for blank 39:",
+                            options: ["restricted", "impeded", "facilitated", "complicated"],
+                            correct: 2,
+                            explanation: "'Facilitated' means made easier the movement of goods and people."
+                        },
+                        {
+                            id: 40,
+                            text: "Choose the best word for blank 40:",
+                            options: ["blocked", "paved", "closed", "hindered"],
+                            correct: 1,
+                            explanation: "'Paved the path' is an idiomatic expression meaning to prepare the way for something."
+                        }
+                    ]
+                },
+                {
+                    id: 5,
+                    title: "Section V: Reading Comprehension",
+                    description: "Read the passages carefully and answer the questions that follow.",
+                    passages: [
+                        {
+                            title: "Passage A: The Science of Sleep",
+                            content: `<p>Sleep remains one of the most mysterious phenomena in human biology, despite decades of scientific research. While we spend approximately one-third of our lives sleeping, scientists are still uncovering the fundamental reasons why sleep is essential for health and survival.</p>
+                            <p>During sleep, the brain undergoes a remarkable process of memory consolidation. Information acquired during waking hours is transferred from short-term to long-term memory storage, strengthening neural connections that preserve important experiences while pruning unnecessary ones. Studies have demonstrated that students who sleep well after learning new material retain information significantly better than those who remain sleep-deprived.</p>
+                            <p>Perhaps most surprisingly, researchers have discovered that sleep serves a crucial housekeeping function for the brain. During deep sleep, the glymphatic system—a waste clearance pathway—becomes highly active, flushing toxins and metabolic waste products that accumulate during waking hours. This includes beta-amyloid proteins associated with Alzheimer's disease, suggesting that chronic sleep deprivation may increase dementia risk.</p>
+                            <p>The consequences of insufficient sleep extend beyond cognitive function. Sleep deprivation has been linked to weakened immune response, increased inflammation, and elevated risk of cardiovascular disease. Even moderate sleep restriction can impair glucose metabolism, potentially contributing to diabetes development. Hormonal regulation is similarly affected, with sleep loss disrupting appetite-controlling hormones and contributing to weight gain.</p>
+                            <p>Despite growing awareness of sleep's importance, modern society increasingly encroaches upon rest time. Artificial lighting, electronic devices, and demanding work schedules have created a culture of chronic sleep deprivation. Health experts recommend that adults obtain seven to nine hours of quality sleep nightly, yet surveys indicate that a significant proportion of the population regularly falls short of this target.</p>`
+                        },
+                        {
+                            title: "Passage B: Ocean Plastic Crisis",
+                            content: `<p>The accumulation of plastic waste in the world's oceans has emerged as one of the most pressing environmental challenges of our time. Scientists estimate that between 8 and 12 million metric tons of plastic enter marine environments annually, creating vast garbage patches and threatening marine ecosystems worldwide.</p>
+                            <p>The durability that makes plastic commercially valuable also makes it environmentally destructive. Unlike organic materials that decompose within months or years, plastic can persist in the environment for centuries, gradually fragmenting into smaller pieces called microplastics. These microscopic particles have been found in every corner of the ocean, from surface waters to the deepest trenches, and have entered the marine food chain at every level.</p>
+                            <p>Marine wildlife suffers severe consequences from plastic pollution. Sea turtles mistake floating plastic bags for jellyfish, their preferred prey, while seabirds inadvertently feed plastic fragments to their chicks. Entanglement in discarded fishing nets, known as ghost nets, kills hundreds of thousands of marine mammals, sea turtles, and seabirds annually. The ingestion of plastic can cause intestinal blockages, malnutrition, and exposure to toxic chemicals that leach from plastic materials.</p>
+                            <p>Addressing the ocean plastic crisis requires action at multiple levels. Reducing single-use plastic consumption, improving waste management infrastructure, and developing biodegradable alternatives represent essential upstream solutions. Meanwhile, cleanup initiatives attempt to remove existing plastic from marine environments, though the scale of contamination makes complete remediation virtually impossible.</p>
+                            <p>The economic implications are substantial. Fishing and tourism industries suffer significant losses from plastic pollution, while coastal communities face mounting cleanup costs. Some researchers warn that without dramatic intervention, the mass of plastic in the oceans could exceed the mass of fish by 2050, fundamentally altering marine ecosystems that billions of people depend upon for food and livelihoods.</p>`
+                        }
+                    ],
+                    questions: [
+                        {
+                            id: 41,
+                            text: "According to Passage A, what happens to memories during sleep?",
+                            options: [
+                                "They are permanently erased to make room for new information",
+                                "They are transferred from short-term to long-term storage",
+                                "They become distorted and unreliable",
+                                "They are shared between different brain regions"
+                            ],
+                            correct: 1,
+                            explanation: "The passage states that 'information is transferred from short-term to long-term memory storage' during sleep."
+                        },
+                        {
+                            id: 42,
+                            text: "What is the glymphatic system's primary function during sleep?",
+                            options: [
+                                "Creating new memories",
+                                "Regulating body temperature",
+                                "Flushing toxins and waste from the brain",
+                                "Controlling dream content"
+                            ],
+                            correct: 2,
+                            explanation: "The passage describes the glymphatic system as 'flushing toxins and metabolic waste products that accumulate during waking hours.'"
+                        },
+                        {
+                            id: 43,
+                            text: "The passage suggests that chronic sleep deprivation may increase the risk of:",
+                            options: [
+                                "Improved athletic performance",
+                                "Alzheimer's disease",
+                                "Enhanced creativity",
+                                "Faster reflexes"
+                            ],
+                            correct: 1,
+                            explanation: "The passage mentions that beta-amyloid proteins 'associated with Alzheimer's disease' accumulate when sleep is insufficient."
+                        },
+                        {
+                            id: 44,
+                            text: "According to Passage A, which of the following contributes to modern sleep deprivation?",
+                            options: [
+                                "Improved nutrition",
+                                "Reduced stress levels",
+                                "Electronic devices and demanding work schedules",
+                                "Increased physical activity"
+                            ],
+                            correct: 2,
+                            explanation: "The passage mentions 'artificial lighting, electronic devices, and demanding work schedules' as factors creating sleep deprivation."
+                        },
+                        {
+                            id: 45,
+                            text: "The author's main purpose in Passage A is to:",
+                            options: [
+                                "Criticize modern work culture",
+                                "Explain the importance and functions of sleep",
+                                "Promote specific sleep medications",
+                                "Compare human and animal sleep patterns"
+                            ],
+                            correct: 1,
+                            explanation: "The passage focuses on explaining why sleep is essential and its various biological functions."
+                        },
+                        {
+                            id: 46,
+                            text: "According to Passage B, what are microplastics?",
+                            options: [
+                                "A new type of biodegradable plastic",
+                                "Plastic particles that have fragmented into tiny pieces",
+                                "Microscopic organisms that eat plastic",
+                                "Plastic designed for medical purposes"
+                            ],
+                            correct: 1,
+                            explanation: "The passage defines microplastics as plastic 'gradually fragmenting into smaller pieces called microplastics.'"
+                        },
+                        {
+                            id: 47,
+                            text: "Why do sea turtles ingest plastic bags according to the passage?",
+                            options: [
+                                "They are attracted to the bright colors",
+                                "They mistake them for jellyfish",
+                                "The bags contain food scraps",
+                                "They are trying to clean the ocean"
+                            ],
+                            correct: 1,
+                            explanation: "The passage explicitly states that 'sea turtles mistake floating plastic bags for jellyfish, their preferred prey.'"
+                        },
+                        {
+                            id: 48,
+                            text: "What are 'ghost nets' as described in the passage?",
+                            options: [
+                                "Biodegradable fishing equipment",
+                                "Discarded fishing nets that continue to trap wildlife",
+                                "Special nets for catching microplastics",
+                                "Nets used in scientific research"
+                            ],
+                            correct: 1,
+                            explanation: "The passage describes ghost nets as 'discarded fishing nets' that kill marine animals through entanglement."
+                        },
+                        {
+                            id: 49,
+                            text: "According to the passage, what prediction do researchers make about 2050?",
+                            options: [
+                                "All ocean plastic will be cleaned up",
+                                "Plastic mass could exceed the mass of fish in oceans",
+                                "Biodegradable plastic will replace all conventional plastic",
+                                "Marine ecosystems will fully recover"
+                            ],
+                            correct: 1,
+                            explanation: "The passage warns that 'the mass of plastic in the oceans could exceed the mass of fish by 2050.'"
+                        },
+                        {
+                            id: 50,
+                            text: "Which of the following is mentioned as an upstream solution to ocean plastic?",
+                            options: [
+                                "Building more landfills",
+                                "Developing biodegradable alternatives",
+                                "Increasing plastic production",
+                                "Banning all fishing activities"
+                            ],
+                            correct: 1,
+                            explanation: "The passage lists 'developing biodegradable alternatives' as one of the 'essential upstream solutions.'"
+                        }
+                    ]
+                }
+            ]
+        };
+
+        // State
+        let currentSection = 1;
+        let answers = {};
+        let timeLeft = 60 * 60; // 60 minutes in seconds
+        let timerInterval;
+        let isReviewMode = false;
+
+        // DOM Elements
+        const startScreen = document.getElementById('startScreen');
+        const quizScreen = document.getElementById('quizScreen');
+        const resultsScreen = document.getElementById('resultsScreen');
+        const quizContent = document.getElementById('quizContent');
+        const timerDisplay = document.getElementById('timerDisplay');
+        const timerBox = document.getElementById('timerBox');
+        const answeredCount = document.getElementById('answeredCount');
+        const progressFill = document.getElementById('progressFill');
+        const reviewScorePill = document.getElementById('reviewScorePill');
+        const reviewScoreValue = document.getElementById('reviewScoreValue');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const submitBtn = document.getElementById('submitBtn');
+        const questionNav = document.getElementById('questionNav');
+
+        // Initialize
+        function startQuiz() {
+            startScreen.classList.add('hidden');
+            quizScreen.classList.remove('hidden');
+            startTimer();
+            renderSection(1);
+            renderQuestionNav();
+            setupSectionNav();
+        }
+
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                updateTimerDisplay();
+
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    submitQuiz();
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            timerDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+
+            // Change color based on time remaining
+            if (timeLeft <= 300) { // 5 minutes
+                timerBox.classList.add('danger');
+                timerBox.classList.remove('warning');
+            } else if (timeLeft <= 600) { // 10 minutes
+                timerBox.classList.add('warning');
+            }
+        }
+
+        function setupSectionNav() {
+            document.querySelectorAll('.section-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const section = parseInt(btn.dataset.section);
+                    renderSection(section);
+                });
+            });
+        }
+
+        function renderSection(sectionId) {
+            currentSection = sectionId;
+            const section = quizData.sections.find(s => s.id === sectionId);
+
+            // Update navigation buttons
+            document.querySelectorAll('.section-btn').forEach(btn => {
+                btn.classList.toggle('active', parseInt(btn.dataset.section) === sectionId);
+            });
+
+            // Update prev/next buttons
+            prevBtn.disabled = sectionId === 1;
+            if (sectionId === 5) {
+                nextBtn.classList.add('hidden');
+                submitBtn.classList.remove('hidden');
+            } else {
+                nextBtn.classList.remove('hidden');
+                submitBtn.classList.add('hidden');
+            }
+
+            // Render content
+            let html = `
+                <div class="section-header">
+                    <h2>${section.title}</h2>
+                    <p>${section.description}</p>
+                </div>
+            `;
+
+            // Add passage for cloze test
+            if (section.passage) {
+                html += `<div class="passage-box">${section.passage}</div>`;
+            }
+
+            // Add passages for reading comprehension
+            if (section.passages) {
+                section.passages.forEach((passage, index) => {
+                    html += `
+                        <div class="passage-box">
+                            <div class="passage-title">${passage.title}</div>
+                            ${passage.content}
+                        </div>
+                    `;
+
+                    // Add questions after each passage
+                    const startIdx = index * 5;
+                    const endIdx = startIdx + 5;
+                    const passageQuestions = section.questions.slice(startIdx, endIdx);
+
+                    passageQuestions.forEach(q => {
+                        html += renderQuestion(q, section.id);
+                    });
+                });
+            } else {
+                // Regular questions
+                section.questions.forEach(q => {
+                    html += renderQuestion(q, section.id);
+                });
+            }
+
+            quizContent.innerHTML = html;
+            if (isReviewMode) {
+                quizContent.classList.add('review-mode');
+            }
+
+            // Add event listeners
+            quizContent.querySelectorAll('input[type="radio"]').forEach(input => {
+                input.addEventListener('change', handleAnswer);
+            });
+
+            renderQuestionNav();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function renderQuestion(question, sectionId) {
+            const selectedAnswer = answers[question.id];
+
+            let questionText = question.text;
+            if (sectionId !== 3) { // Not error identification
+                questionText = question.text.replace('_______', '<span class="blank">_______</span>');
+            }
+
+            let html = `
+                <div class="question-block">
+                    <div class="question-text">
+                        <span class="question-number">${question.id}</span>
+                        ${questionText}
+                    </div>
+                    <div class="options-grid">
+            `;
+
+            const letters = ['A', 'B', 'C', 'D'];
+            question.options.forEach((option, index) => {
+                const isSelected = selectedAnswer === index;
+                const isCorrect = index === question.correct;
+
+                let extraClass = '';
+                if (isReviewMode) {
+                    if (isCorrect) extraClass = 'correct';
+                    else if (isSelected && !isCorrect) extraClass = 'incorrect';
+                }
+
+                html += `
+                    <label class="option-label ${extraClass}">
+                        <input type="radio" name="q${question.id}" value="${index}" 
+                            ${isSelected ? 'checked' : ''} ${isReviewMode ? 'disabled' : ''}>
+                        <span class="option-letter">${letters[index]}</span>
+                        <span class="option-text">${option}</span>
+                    </label>
+                `;
+            });
+
+            html += `</div>`;
+
+            // Add explanation for review mode
+            html += `
+                <div class="explanation-box">
+                    <strong>✓ Correct Answer: ${letters[question.correct]}</strong><br>
+                    ${question.explanation}
+                </div>
+            `;
+
+            html += `</div>`;
+            return html;
+        }
+
+        function handleAnswer(e) {
+            const questionId = parseInt(e.target.name.replace('q', ''));
+            const value = parseInt(e.target.value);
+            answers[questionId] = value;
+            updateProgress();
+            renderQuestionNav();
+        }
+
+        function updateProgress() {
+            const count = Object.keys(answers).length;
+            answeredCount.textContent = count;
+            progressFill.style.width = `${(count / 50) * 100}%`;
+        }
+
+        function renderQuestionNav() {
+            const section = quizData.sections.find(s => s.id === currentSection);
+            let html = '';
+
+            section.questions.forEach(q => {
+                const isAnswered = answers[q.id] !== undefined;
+                html += `
+                    <button class="q-nav-btn ${isAnswered ? 'answered' : ''}" 
+                            onclick="scrollToQuestion(${q.id})">
+                        ${q.id}
+                    </button>
+                `;
+            });
+
+            questionNav.innerHTML = html;
+        }
+
+        function scrollToQuestion(id) {
+            const questions = document.querySelectorAll('.question-block');
+            const section = quizData.sections.find(s => s.id === currentSection);
+            const index = section.questions.findIndex(q => q.id === id);
+
+            if (questions[index]) {
+                questions[index].scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
+
+        function previousSection() {
+            if (currentSection > 1) {
+                renderSection(currentSection - 1);
+            }
+        }
+
+        function nextSection() {
+            if (currentSection < 5) {
+                renderSection(currentSection + 1);
+            }
+        }
+
+        function submitQuiz() {
+            clearInterval(timerInterval);
+
+            // Calculate time spent
+            const timeSpent = (60 * 60) - timeLeft;
+
+            // Calculate scores
+            let totalCorrect = 0;
+            const sectionScores = [];
+            const sectionData = {
+                vocabulary: { correct: 0, total: 10 },
+                grammar: { correct: 0, total: 10 },
+                errorId: { correct: 0, total: 10 },
+                cloze: { correct: 0, total: 10 },
+                reading: { correct: 0, total: 10 }
+            };
+            const sectionKeys = ['vocabulary', 'grammar', 'errorId', 'cloze', 'reading'];
+
+            quizData.sections.forEach((section, index) => {
+                let sectionCorrect = 0;
+                section.questions.forEach(q => {
+                    if (answers[q.id] === q.correct) {
+                        sectionCorrect++;
+                        totalCorrect++;
+                    }
+                });
+                sectionScores.push({
+                    name: section.title.split(':')[0],
+                    score: sectionCorrect,
+                    total: section.questions.length
+                });
+                sectionData[sectionKeys[index]].correct = sectionCorrect;
+            });
+
+            // Save to Firebase if user is logged in
+            if (mextUser && mextUser.uid) {
+                saveResultsToFirebase(totalCorrect, sectionData, timeSpent);
+            }
+
+            // Show results
+            quizScreen.classList.add('hidden');
+            resultsScreen.classList.remove('hidden');
+
+            document.getElementById('finalScore').textContent = totalCorrect;
+
+            // Score message
+            const percentage = (totalCorrect / 50) * 100;
+            let message = '';
+            if (percentage >= 80) message = '🎉 Excellent! Outstanding performance!';
+            else if (percentage >= 60) message = '👍 Good job! Keep practicing!';
+            else if (percentage >= 40) message = '📚 Fair attempt. More study needed.';
+            else message = '💪 Keep working hard! You can improve!';
+
+            document.getElementById('scoreMessage').textContent = message;
+
+            // Section breakdown
+            let breakdownHtml = '';
+            sectionScores.forEach(s => {
+                breakdownHtml += `
+                    <div class="breakdown-item">
+                        <div class="section-name">${s.name}</div>
+                        <div class="section-score">${s.score}/${s.total}</div>
+                    </div>
+                `;
+            });
+            document.getElementById('scoreBreakdown').innerHTML = breakdownHtml;
+
+            // Log analytics event
+            analytics.logEvent('quiz_complete', {
+                quiz_id: currentQuizId,
+                score: totalCorrect,
+                percentage: percentage,
+                time_spent: timeSpent
+            });
+        }
+
+        // Save results to Firebase
+        async function saveResultsToFirebase(score, sectionData, timeSpent) {
+            try {
+                const userRef = db.collection('users').doc(mextUser.uid);
+                const userDoc = await userRef.get();
+                const userData = userDoc.exists ? userDoc.data() : {};
+
+                // Get current best score for this quiz
+                const currentBest = userData.quizAttempts?.[currentQuizId]?.bestScore || 0;
+                const newBest = Math.max(currentBest, score);
+
+                // Prepare section score updates
+                const sectionUpdates = {};
+                for (const [key, data] of Object.entries(sectionData)) {
+                    const currentTotal = userData.stats?.sectionScores?.[key]?.total || 0;
+                    const currentCorrect = userData.stats?.sectionScores?.[key]?.correct || 0;
+                    sectionUpdates[`stats.sectionScores.${key}.total`] = currentTotal + data.total;
+                    sectionUpdates[`stats.sectionScores.${key}.correct`] = currentCorrect + data.correct;
+                }
+
+                // Update user document with latest attempt
+                await userRef.update({
+                    [`quizAttempts.${currentQuizId}.completed`]: true,
+                    [`quizAttempts.${currentQuizId}.score`]: score,
+                    [`quizAttempts.${currentQuizId}.bestScore`]: newBest,
+                    [`quizAttempts.${currentQuizId}.lastAttempt`]: firebase.firestore.FieldValue.serverTimestamp(),
+                    [`quizAttempts.${currentQuizId}.attempts`]: firebase.firestore.FieldValue.increment(1),
+                    [`quizAttempts.${currentQuizId}.savedAnswers`]: answers,
+                    'stats.totalAttempts': firebase.firestore.FieldValue.increment(1),
+                    'stats.totalCompleted': firebase.firestore.FieldValue.increment(1),
+                    'stats.totalTimeSpent': firebase.firestore.FieldValue.increment(timeSpent),
+                    ...sectionUpdates
+                });
+
+                // Save to history subcollection for historical tracking
+                const historyRef = db.collection('users').doc(mextUser.uid)
+                    .collection('quizHistory').doc(currentQuizId)
+                    .collection('attempts');
+
+                await historyRef.add({
+                    score: score,
+                    timeSpent: timeSpent,
+                    sectionData: sectionData,
+                    savedAnswers: answers,
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                });
+
+                console.log('Results and history saved to Firebase successfully!');
+            } catch (error) {
+                console.error('Error saving results to Firebase:', error);
+            }
+        }
+
+        function reviewAnswers() {
+            isReviewMode = true;
+            resultsScreen.classList.add('hidden');
+            quizScreen.classList.remove('hidden');
+
+            // Hide timer during review
+            timerBox.style.display = 'none';
+            setReviewScore(document.getElementById('finalScore').textContent);
+
+            // Update navigation
+            submitBtn.classList.add('hidden');
+            nextBtn.classList.remove('hidden');
+
+            quizContent.classList.add('review-mode');
+            renderSection(1);
+        }
+
+        function retryQuiz() {
+            // Increment attempt count in Firebase
+            if (mextUser && mextUser.uid) {
+                db.collection('users').doc(mextUser.uid).update({
+                    'stats.totalAttempts': firebase.firestore.FieldValue.increment(1),
+                    [`quizAttempts.${currentQuizId}.lastAttempt`]: firebase.firestore.FieldValue.serverTimestamp()
+                }).catch(err => console.error('Error updating attempt count:', err));
+            }
+
+            // Reset state
+            answers = {};
+            timeLeft = 60 * 60;
+            currentSection = 1;
+            isReviewMode = false;
+
+            // Reset UI
+            timerBox.style.display = 'flex';
+            timerBox.classList.remove('warning', 'danger');
+            clearReviewScore();
+            updateTimerDisplay();
+            updateProgress();
+
+            // Show quiz
+            resultsScreen.classList.add('hidden');
+            quizScreen.classList.remove('hidden');
+            quizContent.classList.remove('review-mode');
+
+            startTimer();
+            renderSection(1);
+        }
+
+        function goToDashboard() {
+            window.location.href = '../index.html';
+        }
+
+        // Check if coming from dashboard for review mode
+        async function checkReviewMode() {
+            const reviewMode = sessionStorage.getItem('reviewMode');
+            const reviewQuizId = sessionStorage.getItem('reviewQuizId');
+            const reviewAttemptId = sessionStorage.getItem('reviewAttemptId');
+
+            if (reviewMode === 'true' && reviewQuizId && mextUser) {
+                // Clear the flags
+                sessionStorage.removeItem('reviewMode');
+                sessionStorage.removeItem('reviewQuizId');
+                sessionStorage.removeItem('reviewAttemptId');
+
+                // Load saved answers from Firebase
+                try {
+                    let savedAnswers = null;
+                    let reviewScore = null;
+
+                    if (reviewAttemptId) {
+                        // Load specific attempt from history subcollection
+                        const attemptDoc = await db.collection('users').doc(mextUser.uid)
+                            .collection('quizHistory').doc(reviewQuizId)
+                            .collection('attempts').doc(reviewAttemptId).get();
+
+                        if (attemptDoc.exists) {
+                            const attemptData = attemptDoc.data();
+                            savedAnswers = attemptData.savedAnswers;
+                            reviewScore = attemptData.score;
+                            console.log('Loaded historical attempt:', reviewAttemptId);
+                        }
+                    } else {
+                        // Load latest attempt from main document
+                        const userDoc = await db.collection('users').doc(mextUser.uid).get();
+                        if (userDoc.exists) {
+                            const userData = userDoc.data();
+                            const attempt = userData.quizAttempts?.[reviewQuizId];
+                            savedAnswers = attempt?.savedAnswers;
+                            reviewScore = attempt?.score ?? attempt?.bestScore;
+                        }
+                    }
+
+                    if (savedAnswers) {
+                        // Convert string keys back to numbers if needed
+                        answers = {};
+                        for (const [key, value] of Object.entries(savedAnswers)) {
+                            answers[parseInt(key)] = value;
+                        }
+
+                        // Hide start screen, show quiz in review mode
+                        startScreen.classList.add('hidden');
+                        quizScreen.classList.remove('hidden');
+
+                        isReviewMode = true;
+                        timerBox.style.display = 'none';
+                        setReviewScore(reviewScore);
+                        submitBtn.classList.add('hidden');
+                        quizContent.classList.add('review-mode');
+
+                        updateProgress();
+                        renderSection(1);
+
+                        console.log('Loaded saved answers for review');
+                    } else {
+                        console.log('No saved answers found for review');
+                        alert('No saved answers found for this attempt.');
+                        window.location.href = '../index.html';
+                    }
+                } catch (error) {
+                    console.error('Error loading saved answers:', error);
+                    alert('Error loading saved answers: ' + error.message);
+                }
+            }
+        }
+
+        function setReviewScore(score) {
+            if (score === null || score === undefined) {
+                reviewScoreValue.textContent = '--/50';
+            } else {
+                reviewScoreValue.textContent = `${score}/50`;
+            }
+            reviewScorePill.classList.remove('hidden');
+        }
+
+        function clearReviewScore() {
+            reviewScorePill.classList.add('hidden');
+            reviewScoreValue.textContent = '--/50';
+        }
+
+        // Check if user is logged in, if not redirect to login
+        if (!mextUser) {
+            console.log('No user session found. For full features, please login from the main page.');
+        } else {
+            // Check if we're in review mode
+            checkReviewMode();
+        }
+    </script>
+</body>
+
+</html>

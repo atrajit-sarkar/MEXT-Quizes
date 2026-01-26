@@ -1210,7 +1210,7 @@
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-analytics-compat.js"></script>
-    
+
     <!-- Shared Firebase Config -->
     <script src="js/firebase-config.js"></script>
 
@@ -1242,7 +1242,25 @@
                 questions: 50,
                 duration: 60,
                 path: 'quiz-3/index.html',
-                available: false
+                available: true
+            },
+            {
+                id: 'quiz-4',
+                title: 'Mock Examination 4',
+                description: 'Comprehensive practice exam',
+                questions: 50,
+                duration: 60,
+                path: 'quiz-4/index.html',
+                available: true
+            },
+            {
+                id: 'quiz-5',
+                title: 'Mock Examination 5',
+                description: 'Advanced mock examination',
+                questions: 50,
+                duration: 60,
+                path: 'quiz-5/index.html',
+                available: true
             }
         ];
 
@@ -1509,14 +1527,14 @@
             // Store review mode flag in session
             sessionStorage.setItem('reviewMode', 'true');
             sessionStorage.setItem('reviewQuizId', quizId);
-            
+
             // Store user info
             FirebaseHelper.saveSessionUser(currentUser);
             FirebaseHelper.setCurrentQuizId(quizId);
-            
+
             // Navigate to quiz
             window.location.href = path;
-            
+
             analytics.logEvent('quiz_review', { quiz_id: quizId });
         }
 
@@ -1525,13 +1543,13 @@
             sessionStorage.setItem('reviewMode', 'true');
             sessionStorage.setItem('reviewQuizId', quizId);
             sessionStorage.setItem('reviewAttemptId', attemptId);
-            
+
             FirebaseHelper.saveSessionUser(currentUser);
             FirebaseHelper.setCurrentQuizId(quizId);
-            
+
             closeHistoryModal();
             window.location.href = path;
-            
+
             analytics.logEvent('quiz_history_review', { quiz_id: quizId, attempt_id: attemptId });
         }
 
@@ -1540,19 +1558,19 @@
             const modal = document.getElementById('historyModal');
             const titleEl = document.getElementById('historyTitle');
             const bodyEl = document.getElementById('historyBody');
-            
+
             titleEl.textContent = `${quizTitle} - History`;
             bodyEl.innerHTML = '<div class="loading"><div class="spinner"></div></div>';
             modal.classList.add('active');
-            
+
             try {
                 // Fetch history from subcollection
                 const historyRef = db.collection('users').doc(currentUser.uid)
                     .collection('quizHistory').doc(quizId)
                     .collection('attempts');
-                
+
                 const historySnap = await historyRef.orderBy('timestamp', 'desc').limit(20).get();
-                
+
                 if (historySnap.empty) {
                     // No history subcollection yet, show current attempt info
                     const attempt = userData.quizAttempts?.[quizId];
@@ -1587,21 +1605,21 @@
                     }
                     return;
                 }
-                
+
                 // Find best score
                 let bestScore = 0;
                 historySnap.docs.forEach(doc => {
                     const score = doc.data().score || 0;
                     if (score > bestScore) bestScore = score;
                 });
-                
+
                 let html = '';
                 historySnap.docs.forEach((doc, index) => {
                     const data = doc.data();
                     const date = data.timestamp?.toDate?.() || new Date();
                     const isBest = data.score === bestScore;
                     const percentage = Math.round((data.score / 50) * 100);
-                    
+
                     html += `
                         <div class="history-item" onclick="reviewHistoryAttempt('${quizId}', '${quizPath}', '${doc.id}')">
                             <div class="history-rank ${isBest ? 'best' : ''}">${index + 1}</div>
@@ -1619,9 +1637,9 @@
                         </div>
                     `;
                 });
-                
+
                 bodyEl.innerHTML = html;
-                
+
             } catch (error) {
                 console.error('Error loading history:', error);
                 bodyEl.innerHTML = `

@@ -21,13 +21,13 @@ const analytics = firebase.analytics();
 // Helper Functions
 const FirebaseHelper = {
     // Get current user from session
-    getSessionUser: function() {
+    getSessionUser: function () {
         const userStr = sessionStorage.getItem('mextUser');
         return userStr ? JSON.parse(userStr) : null;
     },
 
     // Save user to session
-    saveSessionUser: function(user) {
+    saveSessionUser: function (user) {
         sessionStorage.setItem('mextUser', JSON.stringify({
             uid: user.uid,
             email: user.email,
@@ -37,22 +37,22 @@ const FirebaseHelper = {
     },
 
     // Get current quiz ID
-    getCurrentQuizId: function() {
+    getCurrentQuizId: function () {
         return sessionStorage.getItem('currentQuizId') || 'quiz-1';
     },
 
     // Set current quiz ID
-    setCurrentQuizId: function(quizId) {
+    setCurrentQuizId: function (quizId) {
         sessionStorage.setItem('currentQuizId', quizId);
     },
 
     // Save quiz results to Firestore
-    saveQuizResults: async function(userId, quizId, score, sectionData, timeSpent) {
+    saveQuizResults: async function (userId, quizId, score, sectionData, timeSpent) {
         try {
             const userRef = db.collection('users').doc(userId);
             const userDoc = await userRef.get();
             const userData = userDoc.exists ? userDoc.data() : {};
-            
+
             // Get current best score for this quiz
             const currentBest = userData.quizAttempts?.[quizId]?.bestScore || 0;
             const newBest = Math.max(currentBest, score);
@@ -95,10 +95,10 @@ const FirebaseHelper = {
     },
 
     // Create or update user document
-    createUserDocument: async function(user) {
+    createUserDocument: async function (user) {
         try {
             const userDoc = await db.collection('users').doc(user.uid).get();
-            
+
             if (!userDoc.exists) {
                 await db.collection('users').doc(user.uid).set({
                     email: user.email,
@@ -128,7 +128,7 @@ const FirebaseHelper = {
     },
 
     // Load user data
-    loadUserData: async function(userId) {
+    loadUserData: async function (userId) {
         try {
             const userDoc = await db.collection('users').doc(userId).get();
             if (userDoc.exists) {
@@ -142,7 +142,7 @@ const FirebaseHelper = {
     },
 
     // Start quiz - save to Firestore
-    startQuiz: async function(userId, quizId) {
+    startQuiz: async function (userId, quizId) {
         try {
             await db.collection('users').doc(userId).set({
                 quizAttempts: {
