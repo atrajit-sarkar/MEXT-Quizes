@@ -1,0 +1,1815 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MEXT English Quiz - Mock Exam 1</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #1a365d;
+            --primary-light: #2c5282;
+            --secondary: #c53030;
+            --accent: #2b6cb0;
+            --success: #276749;
+            --warning: #c05621;
+            --bg-light: #f7fafc;
+            --bg-card: #ffffff;
+            --text-dark: #1a202c;
+            --text-muted: #718096;
+            --border: #e2e8f0;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header Styles */
+        .quiz-header {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .quiz-title {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .quiz-title h1 {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 8px;
+        }
+
+        .quiz-title p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        .quiz-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .timer-box {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-weight: 600;
+        }
+
+        .timer-box.warning {
+            background: linear-gradient(135deg, var(--warning) 0%, #dd6b20 100%);
+        }
+
+        .timer-box.danger {
+            background: linear-gradient(135deg, var(--secondary) 0%, #e53e3e 100%);
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+
+        .timer-icon {
+            font-size: 1.5rem;
+        }
+
+        .timer-display {
+            font-size: 1.5rem;
+            font-family: 'Consolas', monospace;
+        }
+
+        .review-score {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #f0fff4;
+            color: var(--success);
+            padding: 10px 18px;
+            border-radius: 12px;
+            font-weight: 700;
+            border: 1px solid #c6f6d5;
+        }
+
+        .review-score .label {
+            font-weight: 600;
+            color: var(--text-muted);
+        }
+
+        .progress-info {
+            text-align: right;
+        }
+
+        .progress-text {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+        }
+
+        .progress-bar {
+            width: 200px;
+            height: 10px;
+            background: var(--border);
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent) 0%, var(--success) 100%);
+            border-radius: 5px;
+            transition: width 0.3s ease;
+        }
+
+        /* Section Navigation */
+        .section-nav {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .section-btn {
+            padding: 10px 16px;
+            border: 2px solid var(--border);
+            background: var(--bg-card);
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            font-size: 0.85rem;
+        }
+
+        .section-btn:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .section-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .section-btn .badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.75rem;
+            margin-left: 6px;
+        }
+
+        .section-btn.active .badge {
+            background: rgba(255,255,255,0.3);
+        }
+
+        /* Quiz Content */
+        .quiz-content {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 32px;
+            box-shadow: var(--shadow-lg);
+            margin-bottom: 20px;
+        }
+
+        .section-header {
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 16px;
+            margin-bottom: 24px;
+        }
+
+        .section-header h2 {
+            color: var(--primary);
+            font-size: 1.4rem;
+            margin-bottom: 8px;
+        }
+
+        .section-header p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        /* Question Styles */
+        .question-block {
+            margin-bottom: 32px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .question-block:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+
+        .question-number {
+            display: inline-block;
+            background: var(--primary);
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 32px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-right: 12px;
+        }
+
+        .question-text {
+            font-size: 1.05rem;
+            margin-bottom: 16px;
+            color: var(--text-dark);
+        }
+
+        .question-text .blank {
+            display: inline-block;
+            min-width: 100px;
+            border-bottom: 2px solid var(--primary);
+            margin: 0 4px;
+        }
+
+        .question-text .underline {
+            text-decoration: underline;
+            text-decoration-style: wavy;
+            text-decoration-color: var(--secondary);
+            cursor: help;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+        }
+
+        .option-label {
+            display: flex;
+            align-items: center;
+            padding: 14px 18px;
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: var(--bg-light);
+        }
+
+        .option-label:hover {
+            border-color: var(--accent);
+            background: white;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        .option-label input {
+            display: none;
+        }
+
+        .option-label input:checked + .option-letter {
+            background: var(--accent);
+            color: white;
+        }
+
+        .option-label input:checked ~ .option-text {
+            color: var(--accent);
+            font-weight: 500;
+        }
+
+        .option-label:has(input:checked) {
+            border-color: var(--accent);
+            background: rgba(43, 108, 176, 0.05);
+        }
+
+        .option-letter {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: var(--border);
+            color: var(--text-dark);
+            font-weight: 600;
+            font-size: 0.85rem;
+            margin-right: 12px;
+            transition: all 0.2s ease;
+        }
+
+        .option-text {
+            flex: 1;
+            font-size: 0.95rem;
+        }
+
+        /* Passage Styles */
+        .passage-box {
+            background: linear-gradient(to bottom, #f8fafc, #edf2f7);
+            border-left: 4px solid var(--primary);
+            padding: 24px;
+            margin-bottom: 24px;
+            border-radius: 0 12px 12px 0;
+            font-size: 0.95rem;
+            line-height: 1.8;
+        }
+
+        .passage-box .blank-number {
+            display: inline-block;
+            background: var(--primary);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin: 0 2px;
+        }
+
+        .passage-title {
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 12px;
+            font-size: 1.1rem;
+        }
+
+        /* Error Identification */
+        .error-sentence {
+            font-size: 1.05rem;
+            line-height: 2;
+            margin-bottom: 16px;
+        }
+
+        .error-part {
+            background: #fef3c7;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 500;
+        }
+
+        /* Navigation Buttons */
+        .quiz-navigation {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .nav-btn {
+            padding: 14px 28px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-btn.prev {
+            background: var(--bg-light);
+            color: var(--text-dark);
+            border: 2px solid var(--border);
+        }
+
+        .nav-btn.prev:hover {
+            background: var(--border);
+        }
+
+        .nav-btn.next {
+            background: linear-gradient(135deg, var(--accent) 0%, var(--primary) 100%);
+            color: white;
+        }
+
+        .nav-btn.next:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .nav-btn.submit {
+            background: linear-gradient(135deg, var(--success) 0%, #2f855a 100%);
+            color: white;
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Start Screen */
+        .start-screen {
+            text-align: center;
+            padding: 60px 40px;
+        }
+
+        .start-screen h1 {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 16px;
+        }
+
+        .start-screen .subtitle {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            margin-bottom: 40px;
+        }
+
+        .exam-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .info-card {
+            background: var(--bg-light);
+            padding: 24px;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .info-card .icon {
+            font-size: 2rem;
+            margin-bottom: 12px;
+        }
+
+        .info-card .value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .info-card .label {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .start-btn {
+            padding: 18px 48px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .start-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 40px rgba(26, 54, 93, 0.4);
+        }
+
+        /* Results Screen */
+        .results-screen {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .results-screen h1 {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 24px;
+        }
+
+        .score-circle {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 32px;
+            color: white;
+        }
+
+        .score-circle .score {
+            font-size: 3rem;
+            font-weight: 700;
+        }
+
+        .score-circle .total {
+            font-size: 1rem;
+            opacity: 0.8;
+        }
+
+        .score-breakdown {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .breakdown-item {
+            background: var(--bg-light);
+            padding: 16px;
+            border-radius: 10px;
+        }
+
+        .breakdown-item .section-name {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+        }
+
+        .breakdown-item .section-score {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .result-actions {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .result-btn {
+            padding: 14px 28px;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .result-btn.review {
+            background: var(--bg-light);
+            border: 2px solid var(--border);
+            color: var(--text-dark);
+        }
+
+        .result-btn.retry {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            border: none;
+            color: white;
+        }
+
+        /* Review Mode */
+        .review-mode .option-label.correct {
+            border-color: var(--success);
+            background: rgba(39, 103, 73, 0.1);
+        }
+
+        .review-mode .option-label.correct .option-letter {
+            background: var(--success);
+            color: white;
+        }
+
+        .review-mode .option-label.incorrect {
+            border-color: var(--secondary);
+            background: rgba(197, 48, 48, 0.1);
+        }
+
+        .review-mode .option-label.incorrect .option-letter {
+            background: var(--secondary);
+            color: white;
+        }
+
+        .explanation-box {
+            background: #e6fffa;
+            border-left: 4px solid var(--success);
+            padding: 16px;
+            margin-top: 16px;
+            border-radius: 0 8px 8px 0;
+            display: none;
+        }
+
+        .review-mode .explanation-box {
+            display: block;
+        }
+
+        /* Hidden */
+        .hidden {
+            display: none !important;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 12px;
+            }
+
+            .quiz-header {
+                padding: 16px;
+            }
+
+            .quiz-title h1 {
+                font-size: 1.5rem;
+            }
+
+            .quiz-meta {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .progress-info {
+                text-align: center;
+            }
+
+            .progress-bar {
+                width: 100%;
+            }
+
+            .quiz-content {
+                padding: 20px;
+            }
+
+            .options-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .section-nav {
+                justify-content: center;
+            }
+
+            .section-btn {
+                font-size: 0.75rem;
+                padding: 8px 12px;
+            }
+        }
+
+        /* Question Navigator */
+        .question-navigator {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            padding: 16px;
+            background: var(--bg-light);
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .q-nav-btn {
+            width: 32px;
+            height: 32px;
+            border: 2px solid var(--border);
+            background: white;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .q-nav-btn:hover {
+            border-color: var(--accent);
+        }
+
+        .q-nav-btn.answered {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
+
+        .q-nav-btn.current {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(26, 54, 93, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Start Screen -->
+        <div id="startScreen" class="quiz-content start-screen">
+            <h1>🎌 MEXT English Exam</h1>
+            <p class="subtitle">Mock Examination 1 - Undergraduate & Research Student Level</p>
+            
+            <div class="exam-info">
+                <div class="info-card">
+                    <div class="icon">⏱️</div>
+                    <div class="value">60</div>
+                    <div class="label">Minutes</div>
+                </div>
+                <div class="info-card">
+                    <div class="icon">📝</div>
+                    <div class="value">50</div>
+                    <div class="label">Questions</div>
+                </div>
+                <div class="info-card">
+                    <div class="icon">📚</div>
+                    <div class="value">5</div>
+                    <div class="label">Sections</div>
+                </div>
+                <div class="info-card">
+                    <div class="icon">✅</div>
+                    <div class="value">MCQ</div>
+                    <div class="label">Format</div>
+                </div>
+            </div>
+
+            <div style="text-align: left; max-width: 500px; margin: 0 auto 40px; background: var(--bg-light); padding: 20px; border-radius: 12px;">
+                <h3 style="margin-bottom: 12px; color: var(--primary);">📋 Sections Overview:</h3>
+                <ul style="list-style: none; line-height: 2;">
+                    <li>I. Vocabulary in Context (10 Questions)</li>
+                    <li>II. Grammar & Phrasing (10 Questions)</li>
+                    <li>III. Error Identification (10 Questions)</li>
+                    <li>IV. Cloze Test (10 Questions)</li>
+                    <li>V. Reading Comprehension (10 Questions)</li>
+                </ul>
+            </div>
+
+            <button class="start-btn" onclick="startQuiz()">Start Examination →</button>
+        </div>
+
+        <!-- Quiz Screen -->
+        <div id="quizScreen" class="hidden">
+            <div class="quiz-header">
+                <div class="quiz-title">
+                    <h1>🎌 MEXT English Mock Exam 1</h1>
+                    <p>Answer all questions. Each question has only one correct answer.</p>
+                </div>
+                <div class="quiz-meta">
+                    <div class="timer-box" id="timerBox">
+                        <span class="timer-icon">⏱️</span>
+                        <span class="timer-display" id="timerDisplay">60:00</span>
+                    </div>
+                    <div class="review-score hidden" id="reviewScorePill">
+                        <span class="label">Total Score</span>
+                        <span id="reviewScoreValue">--/50</span>
+                    </div>
+                    <div class="progress-info">
+                        <div class="progress-text">
+                            <span id="answeredCount">0</span> of 50 answered
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section-nav" id="sectionNav">
+                <button class="section-btn active" data-section="1">I. Vocabulary <span class="badge">10</span></button>
+                <button class="section-btn" data-section="2">II. Grammar <span class="badge">10</span></button>
+                <button class="section-btn" data-section="3">III. Error ID <span class="badge">10</span></button>
+                <button class="section-btn" data-section="4">IV. Cloze <span class="badge">10</span></button>
+                <button class="section-btn" data-section="5">V. Reading <span class="badge">10</span></button>
+            </div>
+
+            <div class="question-navigator" id="questionNav"></div>
+
+            <div class="quiz-content" id="quizContent">
+                <!-- Questions will be rendered here -->
+            </div>
+
+            <div class="quiz-navigation">
+                <button class="nav-btn prev" id="prevBtn" onclick="previousSection()">← Previous Section</button>
+                <button class="nav-btn next" id="nextBtn" onclick="nextSection()">Next Section →</button>
+                <button class="nav-btn submit hidden" id="submitBtn" onclick="submitQuiz()">Submit Exam ✓</button>
+            </div>
+        </div>
+
+        <!-- Results Screen -->
+        <div id="resultsScreen" class="quiz-content results-screen hidden">
+            <h1>📊 Examination Results</h1>
+            
+            <div class="score-circle">
+                <div class="score" id="finalScore">0</div>
+                <div class="total">out of 50</div>
+            </div>
+
+            <p style="font-size: 1.2rem; margin-bottom: 24px;" id="scoreMessage"></p>
+
+            <div class="score-breakdown" id="scoreBreakdown">
+                <!-- Section scores will be rendered here -->
+            </div>
+
+            <div class="result-actions">
+                <button class="result-btn retry" onclick="retryQuiz()">🔄 Try Again</button>
+                <button class="result-btn review" onclick="goToDashboard()" style="background: linear-gradient(135deg, #1a365d 0%, #2c5282 100%); color: white; border: none;">🏠 Back to Dashboard</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-analytics-compat.js"></script>
+    
+    <!-- Shared Firebase Config -->
+    <script src="../js/firebase-config.js"></script>
+
+    <script>
+        // Get user from session storage
+        const mextUser = FirebaseHelper.getSessionUser();
+        const currentQuizId = FirebaseHelper.getCurrentQuizId();
+
+        // Quiz Data
+        const quizData = {
+            sections: [
+                {
+                    id: 1,
+                    title: "Section I: Vocabulary in Context",
+                    description: "Choose the correct word to complete each sentence.",
+                    questions: [
+                        {
+                            id: 1,
+                            text: "The doctor carefully reviewed the patient's _______ before prescribing any medication.",
+                            options: ["diagnoses", "medicines", "symptoms", "treatments"],
+                            correct: 2,
+                            explanation: "'Symptoms' refers to the physical signs of illness that a doctor reviews before making a diagnosis."
+                        },
+                        {
+                            id: 2,
+                            text: "After the company announced layoffs, many employees became _______ and started looking for other jobs.",
+                            options: ["disengaged", "disgruntled", "disinterested", "disposed"],
+                            correct: 1,
+                            explanation: "'Disgruntled' means dissatisfied and angry, which fits the context of employees upset about layoffs."
+                        },
+                        {
+                            id: 3,
+                            text: "The scientist _______ discovered a new compound while conducting an unrelated experiment.",
+                            options: ["deliberately", "inadvertently", "keenly", "precisely"],
+                            correct: 1,
+                            explanation: "'Inadvertently' means unintentionally, which matches discovering something while doing an unrelated experiment."
+                        },
+                        {
+                            id: 4,
+                            text: "Despite feeling unwell, Sarah was determined to put on a brave face and appear to be _______.",
+                            options: ["in the pink", "under the weather", "out of sorts", "in the red"],
+                            correct: 0,
+                            explanation: "'In the pink' means in excellent health or condition, which is the impression Sarah wanted to give."
+                        },
+                        {
+                            id: 5,
+                            text: "The politician's _______ remarks during the debate alienated many potential supporters.",
+                            options: ["articulate", "diplomatic", "inflammatory", "measured"],
+                            correct: 2,
+                            explanation: "'Inflammatory' means provocative and likely to cause anger, which would alienate supporters."
+                        },
+                        {
+                            id: 6,
+                            text: "The museum curator was _______ about the authenticity of the painting, requiring extensive documentation.",
+                            options: ["ambivalent", "indifferent", "meticulous", "negligent"],
+                            correct: 2,
+                            explanation: "'Meticulous' means extremely careful and precise, fitting for someone requiring extensive documentation."
+                        },
+                        {
+                            id: 7,
+                            text: "The new employee showed great _______ in learning the company's complex procedures.",
+                            options: ["aptitude", "attitude", "latitude", "magnitude"],
+                            correct: 0,
+                            explanation: "'Aptitude' means natural ability or talent for learning something, which fits the context."
+                        },
+                        {
+                            id: 8,
+                            text: "The documentary provided a _______ account of the historical events, presenting multiple perspectives.",
+                            options: ["biased", "comprehensive", "superficial", "one-sided"],
+                            correct: 1,
+                            explanation: "'Comprehensive' means complete and including all aspects, matching 'multiple perspectives.'"
+                        },
+                        {
+                            id: 9,
+                            text: "Heavy rainfall caused the river to _______ its banks, flooding nearby villages.",
+                            options: ["breach", "bridge", "broach", "branch"],
+                            correct: 0,
+                            explanation: "'Breach' means to break through, which is what a flooding river does to its banks."
+                        },
+                        {
+                            id: 10,
+                            text: "The professor's _______ explanation helped students understand the complex theory.",
+                            options: ["ambiguous", "convoluted", "lucid", "obscure"],
+                            correct: 2,
+                            explanation: "'Lucid' means clear and easy to understand, which would help students comprehend complex material."
+                        }
+                    ]
+                },
+                {
+                    id: 2,
+                    title: "Section II: Grammar & Phrasing",
+                    description: "Choose the correct grammatical structure or phrase to complete each sentence.",
+                    questions: [
+                        {
+                            id: 11,
+                            text: "My new laptop is lighter than yours _______ 100 grams.",
+                            options: ["at", "by", "for", "with"],
+                            correct: 1,
+                            explanation: "'By' is used to indicate the amount of difference in comparisons."
+                        },
+                        {
+                            id: 12,
+                            text: "If Alice _______ Doug's flight was going to be delayed, she would have arrived later.",
+                            options: ["knew", "had known", "has known", "would know"],
+                            correct: 1,
+                            explanation: "This is a third conditional sentence requiring 'had known' (past perfect) in the if-clause."
+                        },
+                        {
+                            id: 13,
+                            text: "Do you mind _______ on the sofa while I clean the floor?",
+                            options: ["my lying", "me to lie", "that I lie", "I am lying"],
+                            correct: 0,
+                            explanation: "After 'mind,' we use a possessive + gerund (my lying) or object + gerund (me lying)."
+                        },
+                        {
+                            id: 14,
+                            text: "_______ the heavy traffic, we managed to arrive on time.",
+                            options: ["Although", "Despite", "However", "Nevertheless"],
+                            correct: 1,
+                            explanation: "'Despite' is followed by a noun phrase ('the heavy traffic'), not a clause."
+                        },
+                        {
+                            id: 15,
+                            text: "The book, _______ was published last year, has already sold a million copies.",
+                            options: ["that", "which", "what", "whom"],
+                            correct: 1,
+                            explanation: "'Which' is used in non-restrictive relative clauses (with commas) referring to things."
+                        },
+                        {
+                            id: 16,
+                            text: "She suggested that he _______ the doctor immediately.",
+                            options: ["sees", "saw", "see", "seeing"],
+                            correct: 2,
+                            explanation: "After 'suggest,' the subjunctive mood requires the base form of the verb."
+                        },
+                        {
+                            id: 17,
+                            text: "Not only _______ the exam, but she also received the highest score.",
+                            options: ["she passed", "did she pass", "she did pass", "passed she"],
+                            correct: 1,
+                            explanation: "'Not only' at the beginning of a sentence requires subject-verb inversion."
+                        },
+                        {
+                            id: 18,
+                            text: "By the time the guests arrive, we _______ all the preparations.",
+                            options: ["finish", "will finish", "will have finished", "are finishing"],
+                            correct: 2,
+                            explanation: "'By the time' + present tense requires future perfect in the main clause."
+                        },
+                        {
+                            id: 19,
+                            text: "The students were made _______ their assignments before the deadline.",
+                            options: ["submit", "to submit", "submitting", "submitted"],
+                            correct: 1,
+                            explanation: "In passive constructions with 'make,' the infinitive requires 'to.'"
+                        },
+                        {
+                            id: 20,
+                            text: "_______ harder, you would have passed the examination.",
+                            options: ["Had you studied", "If you studied", "You had studied", "Were you studying"],
+                            correct: 0,
+                            explanation: "'Had you studied' is an inverted form of 'If you had studied' in third conditionals."
+                        }
+                    ]
+                },
+                {
+                    id: 3,
+                    title: "Section III: Error Identification",
+                    description: "Identify the underlined part (A, B, C, or D) that contains a grammatical error.",
+                    questions: [
+                        {
+                            id: 21,
+                            text: "The virus itself <span class='error-part'>(A) did not caused</span> all of the deaths; <span class='error-part'>(B) rather</span>, secondary bacterial infections <span class='error-part'>(C) were</span> responsible for <span class='error-part'>(D) many</span> of them.",
+                            options: ["A", "B", "C", "D"],
+                            correct: 0,
+                            explanation: "Error in (A): After 'did not,' the base form 'cause' should be used, not 'caused.'"
+                        },
+                        {
+                            id: 22,
+                            text: "The number of students <span class='error-part'>(A) who</span> has applied <span class='error-part'>(B) for</span> the scholarship <span class='error-part'>(C) has increased</span> <span class='error-part'>(D) significantly</span> this year.",
+                            options: ["A", "B", "C", "D"],
+                            correct: 0,
+                            explanation: "Error in (A): 'Who has applied' should be 'who have applied' as 'students' is plural."
+                        },
+                        {
+                            id: 23,
+                            text: "Each of the participants <span class='error-part'>(A) were given</span> a certificate <span class='error-part'>(B) of</span> completion <span class='error-part'>(C) at</span> the end of <span class='error-part'>(D) the</span> workshop.",
+                            options: ["A", "B", "C", "D"],
+                            correct: 0,
+                            explanation: "Error in (A): 'Each' takes a singular verb, so it should be 'was given,' not 'were given.'"
+                        },
+                        {
+                            id: 24,
+                            text: "The professor <span class='error-part'>(A) along with</span> her students <span class='error-part'>(B) are conducting</span> research <span class='error-part'>(C) on</span> climate <span class='error-part'>(D) change</span>.",
+                            options: ["A", "B", "C", "D"],
+                            correct: 1,
+                            explanation: "Error in (B): 'Along with' doesn't change the subject; 'professor' is singular, requiring 'is conducting.'"
+                        },
+                        {
+                            id: 25,
+                            text: "Neither the manager <span class='error-part'>(A) nor</span> the employees <span class='error-part'>(B) was</span> informed <span class='error-part'>(C) about</span> the <span class='error-part'>(D) upcoming</span> changes.",
+                            options: ["A", "B", "C", "D"],
+                            correct: 1,
+                            explanation: "Error in (B): With 'neither...nor,' the verb agrees with the nearest subject ('employees'), so it should be 'were.'"
+                        },
+                        {
+                            id: 26,
+                            text: "The data <span class='error-part'>(A) shows</span> that <span class='error-part'>(B) more</span> people are choosing <span class='error-part'>(C) to work</span> <span class='error-part'>(D) remotely</span> than ever before.",
+                            options: ["A", "B", "C", "D"],
+                            correct: 0,
+                            explanation: "Error in (A): 'Data' is traditionally plural in academic writing, requiring 'show' instead of 'shows.'"
+                        },
+                        {
+                            id: 27,
+                            text: "The child <span class='error-part'>(A) was laying</span> on the bed <span class='error-part'>(B) when</span> his mother <span class='error-part'>(C) came</span> <span class='error-part'>(D) home</span>.",
+                            options: ["A", "B", "C", "D"],
+                            correct: 0,
+                            explanation: "Error in (A): 'Laying' requires an object. The correct form is 'was lying' (to recline)."
+                        },
+                        {
+                            id: 28,
+                            text: "The <span class='error-part'>(A) amount</span> of books <span class='error-part'>(B) in</span> the library <span class='error-part'>(C) has grown</span> <span class='error-part'>(D) considerably</span>.",
+                            options: ["A", "B", "C", "D"],
+                            correct: 0,
+                            explanation: "Error in (A): 'Amount' is used for uncountable nouns. For countable 'books,' use 'number.'"
+                        },
+                        {
+                            id: 29,
+                            text: "The news <span class='error-part'>(A) about</span> the economic recovery <span class='error-part'>(B) were</span> <span class='error-part'>(C) encouraging</span> to <span class='error-part'>(D) investors</span>.",
+                            options: ["A", "B", "C", "D"],
+                            correct: 1,
+                            explanation: "Error in (B): 'News' is an uncountable noun that takes a singular verb: 'was encouraging.'"
+                        },
+                        {
+                            id: 30,
+                            text: "If I <span class='error-part'>(A) would have</span> known about the meeting, I <span class='error-part'>(B) would have</span> <span class='error-part'>(C) attended</span> <span class='error-part'>(D) it</span>.",
+                            options: ["A", "B", "C", "D"],
+                            correct: 0,
+                            explanation: "Error in (A): In third conditionals, use 'had known,' not 'would have known,' in the if-clause."
+                        }
+                    ]
+                },
+                {
+                    id: 4,
+                    title: "Section IV: Cloze Test",
+                    description: "Read the passage and choose the best word or phrase for each blank.",
+                    passage: `<p class="passage-title">The History and Cultural Significance of Tea</p>
+                    <p>Tea is one of the most widely consumed beverages in the world, second only to water. Its history <span class="blank-number">31</span> back nearly 5,000 years to ancient China, where legend has it that Emperor Shen Nung discovered tea <span class="blank-number">32</span> when leaves from a wild tree blew into his pot of boiling water.</p>
+                    <p><span class="blank-number">33</span> its long history, tea has played a significant role in shaping cultures and economies around the world. The drink was initially used for medicinal purposes <span class="blank-number">34</span> it became a daily beverage. By the Tang Dynasty (618-907 CE), tea drinking had become an art form, <span class="blank-number">35</span> elaborate ceremonies and rituals.</p>
+                    <p>The introduction of tea to Europe in the 17th century had <span class="blank-number">36</span> consequences. It transformed social customs, particularly in Britain, where afternoon tea became an institution. <span class="blank-number">37</span>, the British demand for tea led to significant historical events, including the establishment of tea plantations in India and the infamous Boston Tea Party, which was a <span class="blank-number">38</span> moment in American history.</p>
+                    <p>Today, tea continues to evolve. <span class="blank-number">39</span> traditional varieties like green, black, and oolong remain popular, new trends such as bubble tea and matcha lattes have emerged to appeal to younger generations. <span class="blank-number">40</span> its form, tea remains a beverage that brings people together across cultures.</p>`,
+                    questions: [
+                        {
+                            id: 31,
+                            text: "Choose the best word for blank 31:",
+                            options: ["dates", "goes", "traces", "returns"],
+                            correct: 0,
+                            explanation: "'Dates back' is the correct collocation meaning to have existed since a particular time."
+                        },
+                        {
+                            id: 32,
+                            text: "Choose the best word for blank 32:",
+                            options: ["incidentally", "accidentally", "occasionally", "intentionally"],
+                            correct: 1,
+                            explanation: "'Accidentally' fits the context of an unplanned discovery when leaves blew into boiling water."
+                        },
+                        {
+                            id: 33,
+                            text: "Choose the best word for blank 33:",
+                            options: ["Throughout", "During", "Within", "Between"],
+                            correct: 0,
+                            explanation: "'Throughout' indicates something happening during the whole period of its long history."
+                        },
+                        {
+                            id: 34,
+                            text: "Choose the best word for blank 34:",
+                            options: ["after", "before", "since", "until"],
+                            correct: 1,
+                            explanation: "'Before' indicates the sequence: first medicinal use, then daily beverage."
+                        },
+                        {
+                            id: 35,
+                            text: "Choose the best word for blank 35:",
+                            options: ["complete with", "apart from", "instead of", "due to"],
+                            correct: 0,
+                            explanation: "'Complete with' means including or featuring, fitting the context of ceremonies and rituals."
+                        },
+                        {
+                            id: 36,
+                            text: "Choose the best word for blank 36:",
+                            options: ["profound", "subtle", "minor", "negligible"],
+                            correct: 0,
+                            explanation: "'Profound' means very great, matching the significant impact described in the passage."
+                        },
+                        {
+                            id: 37,
+                            text: "Choose the best word for blank 37:",
+                            options: ["Therefore", "However", "Moreover", "Otherwise"],
+                            correct: 2,
+                            explanation: "'Moreover' adds additional information about the consequences of tea introduction."
+                        },
+                        {
+                            id: 38,
+                            text: "Choose the best word for blank 38:",
+                            options: ["pivotal", "marginal", "trivial", "peripheral"],
+                            correct: 0,
+                            explanation: "'Pivotal' means of crucial importance, which describes the Boston Tea Party's significance."
+                        },
+                        {
+                            id: 39,
+                            text: "Choose the best word for blank 39:",
+                            options: ["Since", "Although", "Because", "Unless"],
+                            correct: 1,
+                            explanation: "'Although' introduces a contrast between traditional varieties and new trends."
+                        },
+                        {
+                            id: 40,
+                            text: "Choose the best word for blank 40:",
+                            options: ["Despite", "Regarding", "Whatever", "Considering"],
+                            correct: 2,
+                            explanation: "'Whatever' meaning 'regardless of' fits: regardless of its form, tea brings people together."
+                        }
+                    ]
+                },
+                {
+                    id: 5,
+                    title: "Section V: Reading Comprehension",
+                    description: "Read the passages carefully and answer the questions that follow.",
+                    passages: [
+                        {
+                            title: "Passage A: The Silent Crisis of Endangered Languages",
+                            content: `<p>Linguists estimate that of the approximately 7,000 languages spoken in the world today, nearly half are endangered and may disappear within the next century. This represents not merely a loss of communication systems but the extinction of unique worldviews, cultural knowledge, and historical memory encoded within these languages.</p>
+                            <p>Each language represents a distinct way of categorizing and understanding reality. The Yupik people of Alaska, for instance, have numerous words for different types of snow and ice—distinctions that are not merely vocabulary but reflect centuries of accumulated environmental knowledge essential for survival in Arctic conditions. When a language dies, this specialized knowledge often dies with it.</p>
+                            <p>The causes of language endangerment are complex and interconnected. Globalization and urbanization pressure minority language speakers to adopt dominant languages for economic advancement. Educational systems that operate exclusively in national languages further marginalize indigenous tongues. Additionally, the prestige associated with global languages like English creates a generational divide where younger speakers abandon ancestral languages.</p>
+                            <p>Efforts to preserve endangered languages face significant challenges. Documentation projects, while valuable, cannot fully capture the living essence of a language. Revitalization programs require sustained community commitment and resources that are often scarce. However, success stories like the revival of Hebrew and the ongoing efforts to strengthen Welsh and Māori offer hope that determined communities can reverse language decline.</p>
+                            <p>The preservation of linguistic diversity is ultimately a matter of human heritage. Just as we strive to protect biodiversity, we must recognize that each language represents an irreplaceable repository of human thought and creativity.</p>`
+                        },
+                        {
+                            title: "Passage B: The Science of Sugar-Free Beverages",
+                            content: `<p>As health consciousness has increased, so has the popularity of sugar-free beverages. Marketed as healthier alternatives to their sugar-laden counterparts, these drinks use artificial sweeteners to provide sweetness without calories. However, recent research suggests that their impact on health may be more complex than previously thought.</p>
+                            <p>One particular concern is the effect on dental health. While it is true that sugar-free drinks do not contribute to tooth decay in the traditional sense—bacteria cannot ferment artificial sweeteners as they do sugar—many such beverages are highly acidic. This acidity can erode tooth enamel, the protective outer layer of teeth, leading to increased sensitivity and vulnerability to cavities. Studies have shown that the pH levels of many diet sodas are comparable to those of battery acid.</p>
+                            <p>Beyond dental effects, artificial sweeteners may influence metabolism and eating behavior. Some research indicates that consuming artificial sweeteners can confuse the body's ability to regulate calorie intake. When the brain detects sweetness but no corresponding calories arrive, it may trigger increased appetite and cravings for high-calorie foods, potentially undermining weight management goals.</p>
+                            <p>Furthermore, emerging evidence suggests potential effects on the gut microbiome—the community of bacteria living in our digestive systems. Some artificial sweeteners appear to alter the composition and function of these bacterial communities, with possible implications for metabolism and immune function that scientists are only beginning to understand.</p>
+                            <p>This is not to suggest that sugar-free beverages are necessarily harmful or should be avoided entirely. Rather, consumers should be informed that "sugar-free" does not automatically mean "health-promoting" and should consider moderation and variety in their beverage choices.</p>`
+                        }
+                    ],
+                    questions: [
+                        {
+                            id: 41,
+                            text: "According to Passage A, what happens when a language becomes extinct?",
+                            options: [
+                                "Only the vocabulary is lost",
+                                "Cultural knowledge and unique perspectives disappear",
+                                "Communication becomes impossible",
+                                "The speakers migrate to other regions"
+                            ],
+                            correct: 1,
+                            explanation: "The passage states that language loss means 'extinction of unique worldviews, cultural knowledge, and historical memory.'"
+                        },
+                        {
+                            id: 42,
+                            text: "The example of the Yupik people is used to illustrate:",
+                            options: [
+                                "How Arctic languages are more complex than others",
+                                "The difficulty of learning indigenous languages",
+                                "How language encodes specialized environmental knowledge",
+                                "Why Alaskan cultures are particularly vulnerable"
+                            ],
+                            correct: 2,
+                            explanation: "The Yupik example shows how their many words for snow reflect 'centuries of accumulated environmental knowledge.'"
+                        },
+                        {
+                            id: 43,
+                            text: "Which factor does the passage NOT mention as a cause of language endangerment?",
+                            options: [
+                                "Pressure from globalization",
+                                "Climate change affecting indigenous communities",
+                                "Educational systems using only national languages",
+                                "The prestige of global languages"
+                            ],
+                            correct: 1,
+                            explanation: "Climate change is not mentioned in the passage as a cause of language endangerment."
+                        },
+                        {
+                            id: 44,
+                            text: "What does the author suggest about language documentation projects?",
+                            options: [
+                                "They are the most effective preservation method",
+                                "They are too expensive to be practical",
+                                "They cannot fully capture a living language",
+                                "They should be abandoned in favor of revitalization"
+                            ],
+                            correct: 2,
+                            explanation: "The passage states that documentation 'cannot fully capture the living essence of a language.'"
+                        },
+                        {
+                            id: 45,
+                            text: "The author compares linguistic diversity to:",
+                            options: [
+                                "Economic resources",
+                                "Biological diversity",
+                                "Cultural artifacts",
+                                "Historical monuments"
+                            ],
+                            correct: 1,
+                            explanation: "The author explicitly states 'Just as we strive to protect biodiversity' comparing it to linguistic diversity."
+                        },
+                        {
+                            id: 46,
+                            text: "According to Passage B, why don't sugar-free drinks cause traditional tooth decay?",
+                            options: [
+                                "They contain protective minerals",
+                                "Bacteria cannot ferment artificial sweeteners",
+                                "They have neutral pH levels",
+                                "They strengthen tooth enamel"
+                            ],
+                            correct: 1,
+                            explanation: "The passage explains that 'bacteria cannot ferment artificial sweeteners as they do sugar.'"
+                        },
+                        {
+                            id: 47,
+                            text: "What concern does Passage B raise about artificial sweeteners and appetite?",
+                            options: [
+                                "They cause immediate weight gain",
+                                "They may increase cravings for high-calorie foods",
+                                "They reduce the sense of taste",
+                                "They cause dehydration"
+                            ],
+                            correct: 1,
+                            explanation: "The passage states sweeteners 'may trigger increased appetite and cravings for high-calorie foods.'"
+                        },
+                        {
+                            id: 48,
+                            text: "The comparison of diet soda pH to battery acid serves to:",
+                            options: [
+                                "Warn that diet sodas are poisonous",
+                                "Emphasize the acidity of these beverages",
+                                "Recommend avoiding all carbonated drinks",
+                                "Explain the chemical composition of sweeteners"
+                            ],
+                            correct: 1,
+                            explanation: "The comparison emphasizes how acidic diet sodas can be, supporting the point about enamel erosion."
+                        },
+                        {
+                            id: 49,
+                            text: "What does Passage B suggest about the effect of artificial sweeteners on gut bacteria?",
+                            options: [
+                                "They definitely cause serious harm",
+                                "They have no effect whatsoever",
+                                "Research is still ongoing to understand the implications",
+                                "They improve digestive health"
+                            ],
+                            correct: 2,
+                            explanation: "The passage mentions 'implications... that scientists are only beginning to understand,' indicating ongoing research."
+                        },
+                        {
+                            id: 50,
+                            text: "What is the author's overall conclusion in Passage B?",
+                            options: [
+                                "Sugar-free beverages should be completely avoided",
+                                "Sugar-free is always healthier than regular beverages",
+                                "Consumers should be informed and practice moderation",
+                                "More regulations are needed for artificial sweeteners"
+                            ],
+                            correct: 2,
+                            explanation: "The conclusion states consumers 'should consider moderation and variety in their beverage choices.'"
+                        }
+                    ]
+                }
+            ]
+        };
+
+        // State
+        let currentSection = 1;
+        let answers = {};
+        let timeLeft = 60 * 60; // 60 minutes in seconds
+        let timerInterval;
+        let isReviewMode = false;
+
+        // DOM Elements
+        const startScreen = document.getElementById('startScreen');
+        const quizScreen = document.getElementById('quizScreen');
+        const resultsScreen = document.getElementById('resultsScreen');
+        const quizContent = document.getElementById('quizContent');
+        const timerDisplay = document.getElementById('timerDisplay');
+        const timerBox = document.getElementById('timerBox');
+        const answeredCount = document.getElementById('answeredCount');
+        const progressFill = document.getElementById('progressFill');
+        const reviewScorePill = document.getElementById('reviewScorePill');
+        const reviewScoreValue = document.getElementById('reviewScoreValue');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const submitBtn = document.getElementById('submitBtn');
+        const questionNav = document.getElementById('questionNav');
+
+        // Initialize
+        function startQuiz() {
+            startScreen.classList.add('hidden');
+            quizScreen.classList.remove('hidden');
+            startTimer();
+            renderSection(1);
+            renderQuestionNav();
+            setupSectionNav();
+        }
+
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                updateTimerDisplay();
+                
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    submitQuiz();
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            timerDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            
+            // Change color based on time remaining
+            if (timeLeft <= 300) { // 5 minutes
+                timerBox.classList.add('danger');
+                timerBox.classList.remove('warning');
+            } else if (timeLeft <= 600) { // 10 minutes
+                timerBox.classList.add('warning');
+            }
+        }
+
+        function setupSectionNav() {
+            document.querySelectorAll('.section-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const section = parseInt(btn.dataset.section);
+                    renderSection(section);
+                });
+            });
+        }
+
+        function renderSection(sectionId) {
+            currentSection = sectionId;
+            const section = quizData.sections.find(s => s.id === sectionId);
+            
+            // Update navigation buttons
+            document.querySelectorAll('.section-btn').forEach(btn => {
+                btn.classList.toggle('active', parseInt(btn.dataset.section) === sectionId);
+            });
+
+            // Update prev/next buttons
+            prevBtn.disabled = sectionId === 1;
+            if (sectionId === 5) {
+                nextBtn.classList.add('hidden');
+                submitBtn.classList.remove('hidden');
+            } else {
+                nextBtn.classList.remove('hidden');
+                submitBtn.classList.add('hidden');
+            }
+
+            // Render content
+            let html = `
+                <div class="section-header">
+                    <h2>${section.title}</h2>
+                    <p>${section.description}</p>
+                </div>
+            `;
+
+            // Add passage for cloze test
+            if (section.passage) {
+                html += `<div class="passage-box">${section.passage}</div>`;
+            }
+
+            // Add passages for reading comprehension
+            if (section.passages) {
+                section.passages.forEach((passage, index) => {
+                    html += `
+                        <div class="passage-box">
+                            <div class="passage-title">${passage.title}</div>
+                            ${passage.content}
+                        </div>
+                    `;
+                    
+                    // Add questions after each passage
+                    const startIdx = index * 5;
+                    const endIdx = startIdx + 5;
+                    const passageQuestions = section.questions.slice(startIdx, endIdx);
+                    
+                    passageQuestions.forEach(q => {
+                        html += renderQuestion(q, section.id);
+                    });
+                });
+            } else {
+                // Regular questions
+                section.questions.forEach(q => {
+                    html += renderQuestion(q, section.id);
+                });
+            }
+
+            quizContent.innerHTML = html;
+            if (isReviewMode) {
+                quizContent.classList.add('review-mode');
+            }
+            
+            // Add event listeners
+            quizContent.querySelectorAll('input[type="radio"]').forEach(input => {
+                input.addEventListener('change', handleAnswer);
+            });
+
+            renderQuestionNav();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function renderQuestion(question, sectionId) {
+            const selectedAnswer = answers[question.id];
+            
+            let questionText = question.text;
+            if (sectionId !== 3) { // Not error identification
+                questionText = question.text.replace('_______', '<span class="blank">_______</span>');
+            }
+
+            let html = `
+                <div class="question-block">
+                    <div class="question-text">
+                        <span class="question-number">${question.id}</span>
+                        ${questionText}
+                    </div>
+                    <div class="options-grid">
+            `;
+
+            const letters = ['A', 'B', 'C', 'D'];
+            question.options.forEach((option, index) => {
+                const isSelected = selectedAnswer === index;
+                const isCorrect = index === question.correct;
+                
+                let extraClass = '';
+                if (isReviewMode) {
+                    if (isCorrect) extraClass = 'correct';
+                    else if (isSelected && !isCorrect) extraClass = 'incorrect';
+                }
+
+                html += `
+                    <label class="option-label ${extraClass}">
+                        <input type="radio" name="q${question.id}" value="${index}" 
+                            ${isSelected ? 'checked' : ''} ${isReviewMode ? 'disabled' : ''}>
+                        <span class="option-letter">${letters[index]}</span>
+                        <span class="option-text">${option}</span>
+                    </label>
+                `;
+            });
+
+            html += `</div>`;
+            
+            // Add explanation for review mode
+            html += `
+                <div class="explanation-box">
+                    <strong>✓ Correct Answer: ${letters[question.correct]}</strong><br>
+                    ${question.explanation}
+                </div>
+            `;
+            
+            html += `</div>`;
+            return html;
+        }
+
+        function handleAnswer(e) {
+            const questionId = parseInt(e.target.name.replace('q', ''));
+            const value = parseInt(e.target.value);
+            answers[questionId] = value;
+            updateProgress();
+            renderQuestionNav();
+        }
+
+        function updateProgress() {
+            const count = Object.keys(answers).length;
+            answeredCount.textContent = count;
+            progressFill.style.width = `${(count / 50) * 100}%`;
+        }
+
+        function renderQuestionNav() {
+            const section = quizData.sections.find(s => s.id === currentSection);
+            let html = '';
+            
+            section.questions.forEach(q => {
+                const isAnswered = answers[q.id] !== undefined;
+                html += `
+                    <button class="q-nav-btn ${isAnswered ? 'answered' : ''}" 
+                            onclick="scrollToQuestion(${q.id})">
+                        ${q.id}
+                    </button>
+                `;
+            });
+            
+            questionNav.innerHTML = html;
+        }
+
+        function scrollToQuestion(id) {
+            const questions = document.querySelectorAll('.question-block');
+            const section = quizData.sections.find(s => s.id === currentSection);
+            const index = section.questions.findIndex(q => q.id === id);
+            
+            if (questions[index]) {
+                questions[index].scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
+
+        function previousSection() {
+            if (currentSection > 1) {
+                renderSection(currentSection - 1);
+            }
+        }
+
+        function nextSection() {
+            if (currentSection < 5) {
+                renderSection(currentSection + 1);
+            }
+        }
+
+        function submitQuiz() {
+            clearInterval(timerInterval);
+            
+            // Calculate time spent
+            const timeSpent = (60 * 60) - timeLeft;
+            
+            // Calculate scores
+            let totalCorrect = 0;
+            const sectionScores = [];
+            const sectionData = {
+                vocabulary: { correct: 0, total: 10 },
+                grammar: { correct: 0, total: 10 },
+                errorId: { correct: 0, total: 10 },
+                cloze: { correct: 0, total: 10 },
+                reading: { correct: 0, total: 10 }
+            };
+            const sectionKeys = ['vocabulary', 'grammar', 'errorId', 'cloze', 'reading'];
+
+            quizData.sections.forEach((section, index) => {
+                let sectionCorrect = 0;
+                section.questions.forEach(q => {
+                    if (answers[q.id] === q.correct) {
+                        sectionCorrect++;
+                        totalCorrect++;
+                    }
+                });
+                sectionScores.push({
+                    name: section.title.split(':')[0],
+                    score: sectionCorrect,
+                    total: section.questions.length
+                });
+                sectionData[sectionKeys[index]].correct = sectionCorrect;
+            });
+
+            // Save to Firebase if user is logged in
+            if (mextUser && mextUser.uid) {
+                saveResultsToFirebase(totalCorrect, sectionData, timeSpent);
+            }
+
+            // Show results
+            quizScreen.classList.add('hidden');
+            resultsScreen.classList.remove('hidden');
+
+            document.getElementById('finalScore').textContent = totalCorrect;
+            
+            // Score message
+            const percentage = (totalCorrect / 50) * 100;
+            let message = '';
+            if (percentage >= 80) message = '🎉 Excellent! Outstanding performance!';
+            else if (percentage >= 60) message = '👍 Good job! Keep practicing!';
+            else if (percentage >= 40) message = '📚 Fair attempt. More study needed.';
+            else message = '💪 Keep working hard! You can improve!';
+            
+            document.getElementById('scoreMessage').textContent = message;
+
+            // Section breakdown
+            let breakdownHtml = '';
+            sectionScores.forEach(s => {
+                breakdownHtml += `
+                    <div class="breakdown-item">
+                        <div class="section-name">${s.name}</div>
+                        <div class="section-score">${s.score}/${s.total}</div>
+                    </div>
+                `;
+            });
+            document.getElementById('scoreBreakdown').innerHTML = breakdownHtml;
+
+            // Log analytics event
+            analytics.logEvent('quiz_complete', {
+                quiz_id: currentQuizId,
+                score: totalCorrect,
+                percentage: percentage,
+                time_spent: timeSpent
+            });
+        }
+
+        // Save results to Firebase
+        async function saveResultsToFirebase(score, sectionData, timeSpent) {
+            try {
+                const userRef = db.collection('users').doc(mextUser.uid);
+                const userDoc = await userRef.get();
+                const userData = userDoc.exists ? userDoc.data() : {};
+                
+                // Get current best score for this quiz
+                const currentBest = userData.quizAttempts?.[currentQuizId]?.bestScore || 0;
+                const newBest = Math.max(currentBest, score);
+
+                // Prepare section score updates
+                const sectionUpdates = {};
+                for (const [key, data] of Object.entries(sectionData)) {
+                    const currentTotal = userData.stats?.sectionScores?.[key]?.total || 0;
+                    const currentCorrect = userData.stats?.sectionScores?.[key]?.correct || 0;
+                    sectionUpdates[`stats.sectionScores.${key}.total`] = currentTotal + data.total;
+                    sectionUpdates[`stats.sectionScores.${key}.correct`] = currentCorrect + data.correct;
+                }
+
+                // Update user document with latest attempt
+                await userRef.update({
+                    [`quizAttempts.${currentQuizId}.completed`]: true,
+                    [`quizAttempts.${currentQuizId}.score`]: score,
+                    [`quizAttempts.${currentQuizId}.bestScore`]: newBest,
+                    [`quizAttempts.${currentQuizId}.lastAttempt`]: firebase.firestore.FieldValue.serverTimestamp(),
+                    [`quizAttempts.${currentQuizId}.attempts`]: firebase.firestore.FieldValue.increment(1),
+                    [`quizAttempts.${currentQuizId}.savedAnswers`]: answers,
+                    'stats.totalCompleted': firebase.firestore.FieldValue.increment(1),
+                    'stats.totalTimeSpent': firebase.firestore.FieldValue.increment(timeSpent),
+                    ...sectionUpdates
+                });
+
+                // Save to history subcollection for historical tracking
+                const historyRef = db.collection('users').doc(mextUser.uid)
+                    .collection('quizHistory').doc(currentQuizId)
+                    .collection('attempts');
+                
+                await historyRef.add({
+                    score: score,
+                    timeSpent: timeSpent,
+                    sectionData: sectionData,
+                    savedAnswers: answers,
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                });
+
+                console.log('Results and history saved to Firebase successfully!');
+            } catch (error) {
+                console.error('Error saving results to Firebase:', error);
+            }
+        }
+
+        function reviewAnswers() {
+            isReviewMode = true;
+            resultsScreen.classList.add('hidden');
+            quizScreen.classList.remove('hidden');
+            
+            // Hide timer during review
+            timerBox.style.display = 'none';
+            setReviewScore(document.getElementById('finalScore').textContent);
+            
+            // Update navigation
+            submitBtn.classList.add('hidden');
+            nextBtn.classList.remove('hidden');
+            
+            quizContent.classList.add('review-mode');
+            renderSection(1);
+        }
+
+        function retryQuiz() {
+            // Increment attempt count in Firebase
+            if (mextUser && mextUser.uid) {
+                db.collection('users').doc(mextUser.uid).update({
+                    'stats.totalAttempts': firebase.firestore.FieldValue.increment(1),
+                    [`quizAttempts.${currentQuizId}.lastAttempt`]: firebase.firestore.FieldValue.serverTimestamp()
+                }).catch(err => console.error('Error updating attempt count:', err));
+            }
+
+            // Reset state
+            answers = {};
+            timeLeft = 60 * 60;
+            currentSection = 1;
+            isReviewMode = false;
+
+            // Reset UI
+            timerBox.style.display = 'flex';
+            timerBox.classList.remove('warning', 'danger');
+            clearReviewScore();
+            updateTimerDisplay();
+            updateProgress();
+
+            // Show quiz
+            resultsScreen.classList.add('hidden');
+            quizScreen.classList.remove('hidden');
+            quizContent.classList.remove('review-mode');
+            
+            startTimer();
+            renderSection(1);
+        }
+
+        function goToDashboard() {
+            window.location.href = '../index.html';
+        }
+
+        // Check if coming from dashboard for review mode
+        async function checkReviewMode() {
+            const reviewMode = sessionStorage.getItem('reviewMode');
+            const reviewQuizId = sessionStorage.getItem('reviewQuizId');
+            const reviewAttemptId = sessionStorage.getItem('reviewAttemptId');
+            
+            if (reviewMode === 'true' && reviewQuizId && mextUser) {
+                // Clear the flags
+                sessionStorage.removeItem('reviewMode');
+                sessionStorage.removeItem('reviewQuizId');
+                sessionStorage.removeItem('reviewAttemptId');
+                
+                // Load saved answers from Firebase
+                try {
+                    let savedAnswers = null;
+                    let reviewScore = null;
+                    
+                    if (reviewAttemptId) {
+                        // Load specific attempt from history subcollection
+                        const attemptDoc = await db.collection('users').doc(mextUser.uid)
+                            .collection('quizHistory').doc(reviewQuizId)
+                            .collection('attempts').doc(reviewAttemptId).get();
+                        
+                        if (attemptDoc.exists) {
+                            const attemptData = attemptDoc.data();
+                            savedAnswers = attemptData.savedAnswers;
+                            reviewScore = attemptData.score;
+                            console.log('Loaded historical attempt:', reviewAttemptId);
+                        }
+                    } else {
+                        // Load latest attempt from main document
+                        const userDoc = await db.collection('users').doc(mextUser.uid).get();
+                        if (userDoc.exists) {
+                            const userData = userDoc.data();
+                            const attempt = userData.quizAttempts?.[reviewQuizId];
+                            savedAnswers = attempt?.savedAnswers;
+                            reviewScore = attempt?.score ?? attempt?.bestScore;
+                        }
+                    }
+                    
+                    if (savedAnswers) {
+                        // Convert string keys back to numbers if needed
+                        answers = {};
+                        for (const [key, value] of Object.entries(savedAnswers)) {
+                            answers[parseInt(key)] = value;
+                        }
+                        
+                        // Hide start screen, show quiz in review mode
+                        startScreen.classList.add('hidden');
+                        quizScreen.classList.remove('hidden');
+                        
+                        isReviewMode = true;
+                        timerBox.style.display = 'none';
+                        setReviewScore(reviewScore);
+                        submitBtn.classList.add('hidden');
+                        quizContent.classList.add('review-mode');
+                        
+                        updateProgress();
+                        renderSection(1);
+                        
+                        console.log('Loaded saved answers for review');
+                    } else {
+                        console.log('No saved answers found for review');
+                        alert('No saved answers found for this attempt.');
+                        window.location.href = '../index.html';
+                    }
+                } catch (error) {
+                    console.error('Error loading saved answers:', error);
+                    alert('Error loading saved answers: ' + error.message);
+                }
+            }
+        }
+
+        function setReviewScore(score) {
+            if (score === null || score === undefined) {
+                reviewScoreValue.textContent = '--/50';
+            } else {
+                reviewScoreValue.textContent = `${score}/50`;
+            }
+            reviewScorePill.classList.remove('hidden');
+        }
+
+        function clearReviewScore() {
+            reviewScorePill.classList.add('hidden');
+            reviewScoreValue.textContent = '--/50';
+        }
+
+        // Check if user is logged in, if not redirect to login
+        if (!mextUser) {
+            console.log('No user session found. For full features, please login from the main page.');
+        } else {
+            // Check if we're in review mode
+            checkReviewMode();
+        }
+    </script>
+</body>
+</html>
