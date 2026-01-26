@@ -598,12 +598,24 @@
         }
 
         .explanation-box {
-            background: #e6fffa;
+            background: linear-gradient(135deg, #e6fffa 0%, #f0fff4 100%);
             border-left: 4px solid var(--success);
-            padding: 16px;
+            padding: 20px;
             margin-top: 16px;
-            border-radius: 0 8px 8px 0;
+            border-radius: 0 12px 12px 0;
             display: none;
+            font-size: 0.95rem;
+            line-height: 1.8;
+            box-shadow: 0 2px 8px rgba(39, 103, 73, 0.1);
+        }
+
+        .explanation-box strong {
+            color: var(--primary);
+        }
+
+        .explanation-box br {
+            display: block;
+            margin: 4px 0;
         }
 
         .review-mode .explanation-box {
@@ -697,6 +709,122 @@
             border-color: var(--primary);
             box-shadow: 0 0 0 2px rgba(26, 54, 93, 0.3);
         }
+
+        /* Trial Mode Styles */
+        .trial-btn {
+            padding: 18px 48px;
+            background: linear-gradient(135deg, var(--warning) 0%, #dd6b20 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-left: 16px;
+        }
+
+        .trial-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 40px rgba(192, 86, 33, 0.4);
+        }
+
+        .start-buttons {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .trial-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, var(--warning) 0%, #dd6b20 100%);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .check-answer-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 10px 20px;
+            background: linear-gradient(135deg, var(--accent) 0%, var(--primary) 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-top: 12px;
+        }
+
+        .check-answer-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        .check-answer-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .check-answer-btn.checked {
+            background: var(--success);
+        }
+
+        .question-block.answer-revealed .explanation-box {
+            display: block;
+        }
+
+        .question-block.answer-revealed .option-label.correct {
+            border-color: var(--success);
+            background: rgba(39, 103, 73, 0.1);
+        }
+
+        .question-block.answer-revealed .option-label.correct .option-letter {
+            background: var(--success);
+            color: white;
+        }
+
+        .question-block.answer-revealed .option-label.incorrect {
+            border-color: var(--secondary);
+            background: rgba(197, 48, 48, 0.1);
+        }
+
+        .question-block.answer-revealed .option-label.incorrect .option-letter {
+            background: var(--secondary);
+            color: white;
+        }
+
+        .q-nav-btn.checked {
+            background: var(--success);
+            color: white;
+            border-color: var(--success);
+        }
+
+        .q-nav-btn.checked-wrong {
+            background: var(--secondary);
+            color: white;
+            border-color: var(--secondary);
+        }
+
+        @media (max-width: 768px) {
+            .start-buttons {
+                flex-direction: column;
+            }
+            
+            .trial-btn {
+                margin-left: 0;
+            }
+        }
     </style>
 </head>
 <body>
@@ -740,7 +868,11 @@
                 </ul>
             </div>
 
-            <button class="start-btn" onclick="startQuiz()">Start Examination →</button>
+            <div class="start-buttons">
+                <button class="start-btn" onclick="startQuiz(false)">Start Examination →</button>
+                <button class="trial-btn" onclick="startQuiz(true)">📝 Trial Mode</button>
+            </div>
+            <p style="margin-top: 16px; color: var(--text-muted); font-size: 0.9rem;">Trial Mode: No timer, check answers as you go!</p>
         </div>
 
         <!-- Quiz Screen -->
@@ -754,6 +886,10 @@
                     <div class="timer-box" id="timerBox">
                         <span class="timer-icon">⏱️</span>
                         <span class="timer-display" id="timerDisplay">60:00</span>
+                    </div>
+                    <div class="trial-badge hidden" id="trialBadge">
+                        <span>📝</span>
+                        <span>Trial Mode</span>
                     </div>
                     <div class="review-score hidden" id="reviewScorePill">
                         <span class="label">Total Score</span>
@@ -840,70 +976,160 @@
                             text: "The archaeologist's findings were _______ by carbon dating tests that confirmed the artifacts were over 3,000 years old.",
                             options: ["refuted", "corroborated", "disputed", "contradicted"],
                             correct: 1,
-                            explanation: "'Corroborated' means confirmed or supported with evidence, which fits the context of test results confirming the age."
+                            explanation: `<strong>💡 Why 'corroborated' is correct:</strong><br><br>
+                            <strong>Definition:</strong> 'Corroborate' means to confirm or give support to a statement, theory, or finding with additional evidence.<br><br>
+                            <strong>Context Clue:</strong> The sentence says the carbon dating tests "confirmed" the artifacts were over 3,000 years old. This means the tests provided supporting evidence — they backed up the archaeologist's findings.<br><br>
+                            <strong>Why other options are wrong:</strong><br>
+                            • <strong>Refuted</strong> = proved something wrong (opposite meaning)<br>
+                            • <strong>Disputed</strong> = questioned or argued against (opposite meaning)<br>
+                            • <strong>Contradicted</strong> = said the opposite (opposite meaning)<br><br>
+                            <strong>Example in everyday life:</strong><br>
+                            "The witness's story was <em>corroborated</em> by security camera footage." (The video supported/confirmed what the witness said.)<br><br>
+                            <strong>Memory Tip:</strong> Think of "co-" (together) + "rob-" (strong) = making something stronger together = confirming with evidence.`
                         },
                         {
                             id: 2,
                             text: "The author's _______ use of symbolism throughout the novel adds layers of meaning that reward careful reading.",
                             options: ["arbitrary", "sporadic", "judicious", "careless"],
                             correct: 2,
-                            explanation: "'Judicious' means showing good judgment and wisdom, appropriate for describing effective use of symbolism."
+                            explanation: `<strong>💡 Why 'judicious' is correct:</strong><br><br>
+                            <strong>Definition:</strong> 'Judicious' means having, showing, or done with good judgment or sense; wise and careful.<br><br>
+                            <strong>Context Clue:</strong> The sentence says the symbolism "adds layers of meaning that reward careful reading." This is a positive outcome, suggesting the author used symbolism wisely and skillfully.<br><br>
+                            <strong>Why other options are wrong:</strong><br>
+                            • <strong>Arbitrary</strong> = random, without reason (negative, wouldn't reward reading)<br>
+                            • <strong>Sporadic</strong> = occurring at irregular intervals (doesn't indicate quality)<br>
+                            • <strong>Careless</strong> = lacking attention (negative, wouldn't add meaningful layers)<br><br>
+                            <strong>Example in everyday life:</strong><br>
+                            "She made a <em>judicious</em> investment in her education." (A wise, well-thought-out investment.)<br><br>
+                            <strong>Memory Tip:</strong> 'Judicious' comes from 'judge' — using good judgment like a wise judge would.`
                         },
                         {
                             id: 3,
                             text: "Despite numerous setbacks, the research team remained _______ in their pursuit of a cure.",
                             options: ["resigned", "apathetic", "tenacious", "complacent"],
                             correct: 2,
-                            explanation: "'Tenacious' means persistent and determined, fitting the context of continuing despite setbacks."
+                            explanation: `<strong>💡 Why 'tenacious' is correct:</strong><br><br>
+                            <strong>Definition:</strong> 'Tenacious' means holding firmly to something; persistent and determined, not giving up easily.<br><br>
+                            <strong>Context Clue:</strong> "Despite numerous setbacks" tells us the team faced many problems, but they continued their work. This shows persistence and determination.<br><br>
+                            <strong>Why other options are wrong:</strong><br>
+                            • <strong>Resigned</strong> = accepting something unpleasant as unavoidable, giving up<br>
+                            • <strong>Apathetic</strong> = showing no interest or enthusiasm<br>
+                            • <strong>Complacent</strong> = satisfied with the current situation, not trying to improve<br><br>
+                            <strong>Example in everyday life:</strong><br>
+                            "Thomas Edison was <em>tenacious</em> — he failed thousands of times before inventing the light bulb."<br><br>
+                            <strong>Memory Tip:</strong> Think of a "tenant" who refuses to leave — they hold on tightly! 'Tenacious' shares this root meaning of holding firmly.`
                         },
                         {
                             id: 4,
                             text: "The committee members expressed _______ concern about the proposed budget cuts affecting education.",
                             options: ["tepid", "vehement", "indifferent", "cursory"],
                             correct: 1,
-                            explanation: "'Vehement' means showing strong feeling or intense passion, appropriate for expressing serious concern."
+                            explanation: `<strong>💡 Why 'vehement' is correct:</strong><br><br>
+                            <strong>Definition:</strong> 'Vehement' means showing strong, intense feeling; forceful, passionate, or fierce.<br><br>
+                            <strong>Context Clue:</strong> Budget cuts to education is a serious issue that typically generates strong reactions. The sentence structure suggests the committee had a significant response.<br><br>
+                            <strong>Why other options are wrong:</strong><br>
+                            • <strong>Tepid</strong> = lukewarm, lacking enthusiasm (weak concern)<br>
+                            • <strong>Indifferent</strong> = having no interest or concern at all<br>
+                            • <strong>Cursory</strong> = hasty and superficial (describes manner, not intensity)<br><br>
+                            <strong>Example in everyday life:</strong><br>
+                            "She was a <em>vehement</em> supporter of animal rights, often organizing protests." (Very passionate and intense.)<br><br>
+                            <strong>Memory Tip:</strong> 'Vehement' sounds like "vehicle meant" — imagine a vehicle moving with great force and intensity.`
                         },
                         {
                             id: 5,
                             text: "The economist warned that the country's mounting debt could _______ its long-term economic stability.",
                             options: ["bolster", "jeopardize", "enhance", "fortify"],
                             correct: 1,
-                            explanation: "'Jeopardize' means to put at risk or in danger, which fits the negative consequence of mounting debt."
+                            explanation: `<strong>💡 Why 'jeopardize' is correct:</strong><br><br>
+                            <strong>Definition:</strong> 'Jeopardize' means to put something at risk of being lost, harmed, or destroyed; to endanger.<br><br>
+                            <strong>Context Clue:</strong> The economist "warned" about "mounting debt" — both negative signals. A warning about debt implies something bad could happen to economic stability.<br><br>
+                            <strong>Why other options are wrong:</strong><br>
+                            • <strong>Bolster</strong> = support, strengthen (positive, doesn't fit "warned")<br>
+                            • <strong>Enhance</strong> = improve, increase quality (positive, doesn't fit "warned")<br>
+                            • <strong>Fortify</strong> = make stronger (positive, doesn't fit "warned")<br><br>
+                            <strong>Example in everyday life:</strong><br>
+                            "Skipping classes could <em>jeopardize</em> your chances of passing the exam." (Put at risk of failing.)<br><br>
+                            <strong>Memory Tip:</strong> 'Jeopardize' contains "jeopardy" — like the game show, it's about being in a risky situation!`
                         },
                         {
                             id: 6,
                             text: "Her _______ for languages enabled her to become fluent in five different tongues within a decade.",
                             options: ["aversion", "propensity", "antipathy", "indifference"],
                             correct: 1,
-                            explanation: "'Propensity' means a natural tendency or aptitude, fitting someone who learns languages easily."
+                            explanation: `<strong>💡 Why 'propensity' is correct:</strong><br><br>
+                            <strong>Definition:</strong> 'Propensity' means a natural tendency or inclination to behave in a particular way; an aptitude or talent.<br><br>
+                            <strong>Context Clue:</strong> She became fluent in FIVE languages in just a decade — this is impressive! She must have a natural talent or tendency for learning languages.<br><br>
+                            <strong>Why other options are wrong:</strong><br>
+                            • <strong>Aversion</strong> = strong dislike (opposite — would prevent learning)<br>
+                            • <strong>Antipathy</strong> = deep-seated dislike (opposite — would prevent learning)<br>
+                            • <strong>Indifference</strong> = lack of interest (wouldn't lead to becoming fluent)<br><br>
+                            <strong>Example in everyday life:</strong><br>
+                            "He has a <em>propensity</em> for getting into trouble." (A natural tendency to find trouble.)<br><br>
+                            <strong>Memory Tip:</strong> 'Propensity' sounds like "pro-tendency" — a professional-level natural tendency!`
                         },
                         {
                             id: 7,
                             text: "The defense attorney attempted to _______ the witness's credibility by pointing out inconsistencies in testimony.",
                             options: ["bolster", "undermine", "substantiate", "reinforce"],
                             correct: 1,
-                            explanation: "'Undermine' means to weaken or damage, which describes attacking someone's credibility."
+                            explanation: `<strong>💡 Why 'undermine' is correct:</strong><br><br>
+                            <strong>Definition:</strong> 'Undermine' means to weaken, damage, or sabotage something gradually or insidiously.<br><br>
+                            <strong>Context Clue:</strong> The defense attorney is pointing out "inconsistencies" (mistakes/contradictions) in the witness's testimony. Why? To make the witness seem unreliable and weaken their credibility.<br><br>
+                            <strong>Why other options are wrong:</strong><br>
+                            • <strong>Bolster</strong> = support, strengthen (opposite — why would defense help the witness?)<br>
+                            • <strong>Substantiate</strong> = provide evidence for (opposite — defense wouldn't prove witness right)<br>
+                            • <strong>Reinforce</strong> = strengthen (opposite — defense wouldn't help the witness)<br><br>
+                            <strong>Example in everyday life:</strong><br>
+                            "Constant criticism can <em>undermine</em> a child's self-confidence." (Gradually weaken their confidence.)<br><br>
+                            <strong>Memory Tip:</strong> 'Under-mine' — think of mining UNDER a building's foundation to make it collapse. Same idea — weakening from below!`
                         },
                         {
                             id: 8,
                             text: "The panel discussion featured a _______ debate between experts holding opposing views on climate policy.",
                             options: ["mundane", "perfunctory", "vigorous", "languid"],
                             correct: 2,
-                            explanation: "'Vigorous' means energetic and forceful, appropriate for describing an intense debate."
+                            explanation: `<strong>💡 Why 'vigorous' is correct:</strong><br><br>
+                            <strong>Definition:</strong> 'Vigorous' means strong, active, and full of energy; characterized by forceful activity.<br><br>
+                            <strong>Context Clue:</strong> The experts have "opposing views" on climate policy — a controversial topic. When people strongly disagree about something important, debates tend to be energetic and intense.<br><br>
+                            <strong>Why other options are wrong:</strong><br>
+                            • <strong>Mundane</strong> = ordinary, boring (doesn't fit opposing views on important topic)<br>
+                            • <strong>Perfunctory</strong> = done without care or interest (doesn't fit passionate topic)<br>
+                            • <strong>Languid</strong> = weak, lacking energy (opposite of what opposing views create)<br><br>
+                            <strong>Example in everyday life:</strong><br>
+                            "She maintains her health through <em>vigorous</em> exercise every morning." (Energetic, intense exercise.)<br><br>
+                            <strong>Memory Tip:</strong> 'Vigorous' sounds like "vigor" — think of someone full of VIGOR (energy and enthusiasm)!`
                         },
                         {
                             id: 9,
                             text: "The CEO's decision to expand into new markets proved to be _______, leading the company to record profits.",
                             options: ["detrimental", "deleterious", "injurious", "propitious"],
                             correct: 3,
-                            explanation: "'Propitious' means favorable or advantageous, fitting the context of a decision leading to success."
+                            explanation: `<strong>💡 Why 'propitious' is correct:</strong><br><br>
+                            <strong>Definition:</strong> 'Propitious' means favorable, advantageous, or indicating a good chance of success; auspicious.<br><br>
+                            <strong>Context Clue:</strong> The result was "record profits" — an extremely positive outcome! The decision must have been favorable/advantageous.<br><br>
+                            <strong>Why other options are wrong:</strong><br>
+                            • <strong>Detrimental</strong> = harmful, damaging (negative — contradicts record profits)<br>
+                            • <strong>Deleterious</strong> = causing harm (negative — contradicts record profits)<br>
+                            • <strong>Injurious</strong> = causing injury or damage (negative — contradicts record profits)<br><br>
+                            <strong>Example in everyday life:</strong><br>
+                            "The sunny weather was <em>propitious</em> for our outdoor wedding." (Favorable conditions for the event.)<br><br>
+                            <strong>Memory Tip:</strong> 'Propitious' sounds like "prosperity" — both relate to good fortune and favorable conditions!`
                         },
                         {
                             id: 10,
                             text: "The novelist's writing style is characterized by its _______ descriptions that transport readers to another era.",
                             options: ["sparse", "terse", "laconic", "evocative"],
                             correct: 3,
-                            explanation: "'Evocative' means bringing strong images or feelings to mind, perfect for descriptions that transport readers."
+                            explanation: `<strong>💡 Why 'evocative' is correct:</strong><br><br>
+                            <strong>Definition:</strong> 'Evocative' means bringing strong images, memories, or feelings to mind; vividly expressive.<br><br>
+                            <strong>Context Clue:</strong> The descriptions "transport readers to another era" — they make readers feel like they're actually in a different time period. This requires writing that strongly evokes (brings forth) images and feelings.<br><br>
+                            <strong>Why other options are wrong:</strong><br>
+                            • <strong>Sparse</strong> = thin, scanty, few (wouldn't transport readers)<br>
+                            • <strong>Terse</strong> = brief and abrupt (wouldn't create rich imagery)<br>
+                            • <strong>Laconic</strong> = using very few words (wouldn't create immersive experience)<br><br>
+                            <strong>Example in everyday life:</strong><br>
+                            "The smell of fresh bread is <em>evocative</em> of my grandmother's kitchen." (The smell brings back strong memories.)<br><br>
+                            <strong>Memory Tip:</strong> 'Evocative' comes from 'evoke' (to bring forth) — it evokes/brings forth feelings and images in your mind!`
                         }
                     ]
                 },
@@ -917,70 +1143,234 @@
                             text: "Scarcely _______ the building when the fire alarm went off.",
                             options: ["had we entered", "we had entered", "we entered", "did we entered"],
                             correct: 0,
-                            explanation: "'Scarcely' requires inversion and past perfect: 'had we entered.'"
+                            explanation: `<strong>💡 Why 'had we entered' is correct:</strong><br><br>
+                            <strong>Grammar Rule:</strong> When a sentence begins with negative adverbs like <em>scarcely, hardly, barely, seldom, rarely, never,</em> or <em>no sooner</em>, we MUST use <strong>inversion</strong> (reversing the subject and auxiliary verb).<br><br>
+                            <strong>Structure:</strong> Scarcely + <strong>had + subject</strong> + past participle + when...<br><br>
+                            <strong>Breaking it down:</strong><br>
+                            • Normal order: "We had scarcely entered the building when..."<br>
+                            • Inverted order: "Scarcely <strong>had we</strong> entered the building when..."<br><br>
+                            <strong>Why other options are wrong:</strong><br>
+                            • <strong>"we had entered"</strong> = No inversion (incorrect word order)<br>
+                            • <strong>"we entered"</strong> = No inversion, wrong tense (needs past perfect)<br>
+                            • <strong>"did we entered"</strong> = "Did" doesn't combine with past participle "entered"<br><br>
+                            <strong>More Examples:</strong><br>
+                            ✓ "Hardly <em>had I sat down</em> when the phone rang."<br>
+                            ✓ "Rarely <em>have I seen</em> such beauty."<br>
+                            ✓ "Never <em>had she felt</em> so happy."<br><br>
+                            <strong>Memory Tip:</strong> When you see Scarcely/Hardly/Barely at the start, flip the subject and "had"!`
                         },
                         {
                             id: 12,
                             text: "The committee insists that every member _______ present at the meeting tomorrow.",
                             options: ["is", "be", "will be", "would be"],
                             correct: 1,
-                            explanation: "After verbs like 'insist,' the subjunctive mood requires the base form 'be.'"
+                            explanation: `<strong>💡 Why 'be' is correct:</strong><br><br>
+                            <strong>Grammar Rule:</strong> This is the <strong>Subjunctive Mood</strong>! After certain verbs expressing demands, suggestions, or recommendations (insist, demand, suggest, recommend, require, propose, request), we use the <strong>base form</strong> of the verb (without "to").<br><br>
+                            <strong>Structure:</strong> Subject + insists/demands/suggests + that + someone + <strong>base verb</strong><br><br>
+                            <strong>Why 'be' (not 'is'):</strong><br>
+                            • "is" = indicative mood (stating facts) — Wrong here<br>
+                            • "be" = subjunctive mood (expressing demands/wishes) — Correct!<br><br>
+                            <strong>Why other options are wrong:</strong><br>
+                            • <strong>"is"</strong> = Indicative mood, not subjunctive<br>
+                            • <strong>"will be"</strong> = Future tense, doesn't follow subjunctive rule<br>
+                            • <strong>"would be"</strong> = Conditional, doesn't follow subjunctive rule<br><br>
+                            <strong>More Examples:</strong><br>
+                            ✓ "I suggest that he <em>study</em> harder." (not "studies")<br>
+                            ✓ "She demanded that he <em>leave</em> immediately." (not "leaves")<br>
+                            ✓ "The doctor recommended that she <em>take</em> vitamins." (not "takes")<br><br>
+                            <strong>Memory Tip:</strong> Subjunctive verbs after insist/demand/suggest look like infinitives without "to" — always the base form!`
                         },
                         {
                             id: 13,
                             text: "Having failed the exam twice, the student decided _______ a tutor.",
                             options: ["to hire", "hiring", "hired", "hire"],
                             correct: 0,
-                            explanation: "After 'decide,' we use the infinitive 'to hire.'"
+                            explanation: `<strong>💡 Why 'to hire' is correct:</strong><br><br>
+                            <strong>Grammar Rule:</strong> The verb "decide" is ALWAYS followed by the <strong>infinitive (to + verb)</strong>.<br><br>
+                            <strong>Structure:</strong> decide + to + verb<br><br>
+                            <strong>Common verbs that take infinitives:</strong><br>
+                            • decide, want, hope, plan, expect, promise, agree, refuse, offer, learn, seem, appear, pretend, afford<br><br>
+                            <strong>Why other options are wrong:</strong><br>
+                            • <strong>"hiring"</strong> = gerund (-ing form) — doesn't follow "decide"<br>
+                            • <strong>"hired"</strong> = past tense — grammatically incorrect here<br>
+                            • <strong>"hire"</strong> = base form — needs "to" after "decide"<br><br>
+                            <strong>Compare with verbs that take gerunds (-ing):</strong><br>
+                            enjoy, avoid, finish, consider, suggest, keep, mind, practice<br><br>
+                            <strong>Examples:</strong><br>
+                            ✓ "She decided <em>to travel</em> abroad." (infinitive)<br>
+                            ✓ "He enjoys <em>traveling</em> abroad." (gerund)<br>
+                            ✓ "They agreed <em>to help</em> us." (infinitive)<br><br>
+                            <strong>Memory Tip:</strong> "Decide" is about making a choice for the future — use "to + verb" (infinitive) for future-oriented actions!`
                         },
                         {
                             id: 14,
                             text: "The results, _______ were announced yesterday, exceeded everyone's expectations.",
                             options: ["that", "which", "what", "where"],
                             correct: 1,
-                            explanation: "'Which' is used in non-restrictive clauses (with commas) to refer to things."
+                            explanation: `<strong>💡 Why 'which' is correct:</strong><br><br>
+                            <strong>Grammar Rule:</strong> Notice the <strong>commas</strong> around this clause! This is a <strong>non-restrictive (non-defining) relative clause</strong>, which provides extra information about "the results."<br><br>
+                            <strong>Key Difference:</strong><br>
+                            • <strong>"which"</strong> → Used in non-restrictive clauses (WITH commas) — adds extra info<br>
+                            • <strong>"that"</strong> → Used in restrictive clauses (NO commas) — essential info<br><br>
+                            <strong>Why other options are wrong:</strong><br>
+                            • <strong>"that"</strong> = Cannot be used with commas in non-restrictive clauses<br>
+                            • <strong>"what"</strong> = Not a relative pronoun for things<br>
+                            • <strong>"where"</strong> = Used for places, not things<br><br>
+                            <strong>Examples:</strong><br>
+                            ✓ Non-restrictive: "My car, <em>which</em> is red, is parked outside." (extra info)<br>
+                            ✓ Restrictive: "The car <em>that</em> is red is mine." (identifies which car)<br><br>
+                            <strong>How to remember:</strong><br>
+                            • See commas? → Use "which"<br>
+                            • No commas? → "that" is usually fine<br><br>
+                            <strong>Memory Tip:</strong> "Which" goes with commas like a "witch" with a hat — they belong together! 🧙‍♀️`
                         },
                         {
                             id: 15,
                             text: "It is essential that the report _______ by Friday at the latest.",
                             options: ["submits", "be submitted", "is submitted", "will be submitted"],
                             correct: 1,
-                            explanation: "After 'essential that,' use the subjunctive: 'be submitted' (passive form)."
+                            explanation: `<strong>💡 Why 'be submitted' is correct:</strong><br><br>
+                            <strong>Grammar Rule:</strong> This uses the <strong>Subjunctive Mood</strong> with impersonal expressions! After phrases like "It is essential/important/necessary/vital that...", we use the <strong>base form</strong> of the verb.<br><br>
+                            <strong>Structure:</strong> It is essential that + subject + <strong>base verb</strong> (or <strong>be + past participle</strong> for passive)<br><br>
+                            <strong>Why 'be submitted' (passive subjunctive):</strong><br>
+                            • The report doesn't submit itself — it gets submitted by someone<br>
+                            • Active: "...that someone <em>submit</em> the report"<br>
+                            • Passive: "...that the report <em>be submitted</em>"<br><br>
+                            <strong>Why other options are wrong:</strong><br>
+                            • <strong>"submits"</strong> = Third person singular, not subjunctive<br>
+                            • <strong>"is submitted"</strong> = Indicative mood, not subjunctive<br>
+                            • <strong>"will be submitted"</strong> = Future tense, not subjunctive<br><br>
+                            <strong>More Examples:</strong><br>
+                            ✓ "It is important that she <em>be</em> informed." (not "is informed")<br>
+                            ✓ "It was necessary that the door <em>be locked</em>." (not "was locked")<br>
+                            ✓ "It is vital that he <em>attend</em> the meeting." (not "attends")<br><br>
+                            <strong>Memory Tip:</strong> After "It is essential/important/necessary that..." — use the bare verb form, even if it looks strange!`
                         },
                         {
                             id: 16,
                             text: "No sooner _______ home than it started raining heavily.",
                             options: ["I arrived", "had I arrived", "did I arrive", "I had arrived"],
                             correct: 1,
-                            explanation: "'No sooner' requires inversion with past perfect: 'had I arrived.'"
+                            explanation: `<strong>💡 Why 'had I arrived' is correct:</strong><br><br>
+                            <strong>Grammar Rule:</strong> "No sooner" is a negative expression that requires:<br>
+                            1. <strong>Inversion</strong> (auxiliary before subject)<br>
+                            2. <strong>Past Perfect tense</strong> (had + past participle)<br>
+                            3. <strong>"than"</strong> (not "when") to connect the clauses<br><br>
+                            <strong>Structure:</strong> No sooner + <strong>had + subject + past participle</strong> + than + simple past<br><br>
+                            <strong>Why other options are wrong:</strong><br>
+                            • <strong>"I arrived"</strong> = No inversion, wrong tense<br>
+                            • <strong>"did I arrive"</strong> = Wrong auxiliary (needs "had," not "did")<br>
+                            • <strong>"I had arrived"</strong> = No inversion (correct tense but wrong order)<br><br>
+                            <strong>Comparison with normal order:</strong><br>
+                            • Normal: "I <em>had</em> no sooner <em>arrived</em> home than it started raining."<br>
+                            • Inverted: "No sooner <em>had I arrived</em> home than it started raining."<br><br>
+                            <strong>Similar Patterns:</strong><br>
+                            ✓ "Hardly <em>had she left</em> when the phone rang."<br>
+                            ✓ "Scarcely <em>had we begun</em> when it ended."<br><br>
+                            <strong>Memory Tip:</strong> "No sooner HAD" — remember this pair! And "no sooner...THAN" (not "when").`
                         },
                         {
                             id: 17,
                             text: "The director, as well as the actors, _______ responsible for the play's success.",
                             options: ["are", "is", "were", "have been"],
                             correct: 1,
-                            explanation: "'As well as' doesn't change the subject; 'director' is singular, so use 'is.'"
+                            explanation: `<strong>💡 Why 'is' is correct:</strong><br><br>
+                            <strong>Grammar Rule:</strong> When two subjects are connected by "as well as," "along with," "together with," "in addition to," or "besides," the verb agrees with the <strong>FIRST subject only</strong>!<br><br>
+                            <strong>Structure:</strong> Subject 1 + as well as + Subject 2 + <strong>verb agreeing with Subject 1</strong><br><br>
+                            <strong>In this sentence:</strong><br>
+                            • First subject: "The director" (singular)<br>
+                            • Second subject: "the actors" (plural)<br>
+                            • Verb agrees with "director" → singular "is"<br><br>
+                            <strong>Why other options are wrong:</strong><br>
+                            • <strong>"are"</strong> = Plural, but verb must agree with "director" (singular)<br>
+                            • <strong>"were"</strong> = Plural past tense, wrong agreement<br>
+                            • <strong>"have been"</strong> = Plural, wrong agreement<br><br>
+                            <strong>⚠️ Important:</strong> This is different from "and"!<br>
+                            • "The director <em>and</em> the actors <em>are</em> responsible." (both subjects count)<br>
+                            • "The director, <em>as well as</em> the actors, <em>is</em> responsible." (only first counts)<br><br>
+                            <strong>More Examples:</strong><br>
+                            ✓ "The teacher, along with her students, <em>is</em> going on the trip."<br>
+                            ✓ "My brother, as well as my sisters, <em>was</em> at the party."<br><br>
+                            <strong>Memory Tip:</strong> "As well as" is like adding a side note — the main subject still controls the verb!`
                         },
                         {
                             id: 18,
                             text: "By next month, the construction team _______ the project for two years.",
                             options: ["will work on", "will be working on", "will have been working on", "has been working on"],
                             correct: 2,
-                            explanation: "'By next month' with duration requires future perfect continuous: 'will have been working on.'"
+                            explanation: `<strong>💡 Why 'will have been working on' is correct:</strong><br><br>
+                            <strong>Grammar Rule:</strong> This sentence requires the <strong>Future Perfect Continuous</strong> tense because:<br>
+                            1. It talks about a future point in time ("By next month")<br>
+                            2. It emphasizes the duration of an ongoing action ("for two years")<br><br>
+                            <strong>Structure:</strong> will + have + been + verb-ing<br><br>
+                            <strong>When to use Future Perfect Continuous:</strong><br>
+                            Use it when you want to emphasize the <em>duration</em> of an action that will continue UP TO a specific future time.<br><br>
+                            <strong>Why other options are wrong:</strong><br>
+                            • <strong>"will work on"</strong> = Simple future, doesn't show duration<br>
+                            • <strong>"will be working on"</strong> = Future continuous, doesn't connect to the duration "for two years"<br>
+                            • <strong>"has been working on"</strong> = Present perfect continuous, but we need future<br><br>
+                            <strong>Visual Timeline:</strong><br>
+                            Past ←——— NOW ——— Next month (2 years total) → Future<br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|_________working_________|<br><br>
+                            <strong>More Examples:</strong><br>
+                            ✓ "By December, I <em>will have been studying</em> Japanese for 5 years."<br>
+                            ✓ "By the time she retires, she <em>will have been teaching</em> for 30 years."<br><br>
+                            <strong>Memory Tip:</strong> "By + future time" + "for + duration" = Future Perfect Continuous!`
                         },
                         {
                             id: 19,
                             text: "I would rather you _______ smoking in the house.",
                             options: ["stop", "stopped", "will stop", "to stop"],
                             correct: 1,
-                            explanation: "After 'would rather,' use past simple for another person: 'stopped.'"
+                            explanation: `<strong>💡 Why 'stopped' is correct:</strong><br><br>
+                            <strong>Grammar Rule:</strong> "Would rather" has two different patterns:<br><br>
+                            <strong>Pattern 1 - Same subject:</strong><br>
+                            "I would rather + <strong>base verb</strong>"<br>
+                            → "I would rather <em>go</em> home." (I want to go)<br><br>
+                            <strong>Pattern 2 - Different subject:</strong><br>
+                            "I would rather + someone + <strong>past tense</strong>"<br>
+                            → "I would rather you <em>went</em> home." (I want YOU to go)<br><br>
+                            <strong>In this sentence:</strong><br>
+                            • "I" is the speaker<br>
+                            • "you" is doing the action<br>
+                            • Different subjects → use past tense "stopped"<br><br>
+                            <strong>Why other options are wrong:</strong><br>
+                            • <strong>"stop"</strong> = Base form, only for same subject<br>
+                            • <strong>"will stop"</strong> = Future, not used with "would rather"<br>
+                            • <strong>"to stop"</strong> = Infinitive, never used with "would rather"<br><br>
+                            <strong>⚠️ Note:</strong> The past tense here doesn't mean past time — it's used for present/future wishes!<br><br>
+                            <strong>More Examples:</strong><br>
+                            ✓ "I would rather she <em>came</em> tomorrow." (want her to come)<br>
+                            ✓ "He would rather I <em>didn't tell</em> anyone." (wants me not to tell)<br>
+                            ✓ "I would rather <em>stay</em> home." (same subject = base form)<br><br>
+                            <strong>Memory Tip:</strong> "Would rather + SOMEONE ELSE" = past tense (even for present/future meaning)!`
                         },
                         {
                             id: 20,
                             text: "_______ the instructions carefully, he wouldn't have made so many mistakes.",
                             options: ["Should he read", "Had he read", "If he reads", "Were he to read"],
                             correct: 1,
-                            explanation: "'Had he read' is the inverted form of third conditional 'If he had read.'"
+                            explanation: `<strong>💡 Why 'Had he read' is correct:</strong><br><br>
+                            <strong>Grammar Rule:</strong> This is a <strong>Third Conditional</strong> sentence (unreal past) with <strong>inversion</strong>!<br><br>
+                            <strong>Third Conditional - Normal form:</strong><br>
+                            "If + past perfect, would have + past participle"<br>
+                            → "If he <em>had read</em> the instructions, he wouldn't have made mistakes."<br><br>
+                            <strong>Third Conditional - Inverted form (no "if"):</strong><br>
+                            "Had + subject + past participle, would have..."<br>
+                            → "<em>Had he read</em> the instructions, he wouldn't have made mistakes."<br><br>
+                            <strong>Why other options are wrong:</strong><br>
+                            • <strong>"Should he read"</strong> = First conditional inversion (future possibility), but "wouldn't have made" shows past<br>
+                            • <strong>"If he reads"</strong> = First conditional (present/future), doesn't match "wouldn't have made"<br>
+                            • <strong>"Were he to read"</strong> = Second conditional inversion (hypothetical present), doesn't match past result<br><br>
+                            <strong>Key Signal:</strong> "wouldn't have made" (past result) tells us we need third conditional!<br><br>
+                            <strong>Conditional Inversion Summary:</strong><br>
+                            • 1st: Should he arrive... (= If he arrives/arrived...)<br>
+                            • 2nd: Were he to arrive... (= If he arrived...)<br>
+                            • 3rd: Had he arrived... (= If he had arrived...)<br><br>
+                            <strong>More Examples:</strong><br>
+                            ✓ "<em>Had I known</em>, I would have helped." (= If I had known...)<br>
+                            ✓ "<em>Had she studied</em>, she would have passed." (= If she had studied...)<br><br>
+                            <strong>Memory Tip:</strong> "HAD + subject" for past unreal conditions — think "HAD" for "something that HAD already happened (but didn't)"!`
                         }
                     ]
                 },
@@ -994,70 +1384,282 @@
                             text: "The research team <span class='error-part'>(A) have discovered</span> a new species of orchid <span class='error-part'>(B) that</span> grows <span class='error-part'>(C) exclusively</span> in <span class='error-part'>(D) remote</span> mountain regions.",
                             options: ["A", "B", "C", "D"],
                             correct: 0,
-                            explanation: "Error in (A): 'Team' is a collective noun taking singular verb: 'has discovered.'"
+                            explanation: `<strong>💡 Error in (A): 'have discovered' should be 'has discovered'</strong><br><br>
+                            <strong>Grammar Rule:</strong> Collective nouns like "team," "committee," "family," "group," "staff" are typically treated as <strong>singular</strong> in American English.<br><br>
+                            <strong>The Error:</strong><br>
+                            • ❌ "The team <em>have</em> discovered" (plural verb)<br>
+                            • ✓ "The team <em>has</em> discovered" (singular verb)<br><br>
+                            <strong>Why other parts are correct:</strong><br>
+                            • <strong>(B) "that"</strong> = Correct relative pronoun for restrictive clause<br>
+                            • <strong>(C) "exclusively"</strong> = Correct adverb meaning "only"<br>
+                            • <strong>(D) "remote"</strong> = Correct adjective describing mountain regions<br><br>
+                            <strong>Understanding Collective Nouns:</strong><br>
+                            A collective noun refers to a group of people/things as ONE UNIT. When the group acts together, use singular verb:<br><br>
+                            <strong>Examples:</strong><br>
+                            ✓ "The family <em>is</em> going on vacation." (acting as one unit)<br>
+                            ✓ "The committee <em>has</em> made its decision."<br>
+                            ✓ "The staff <em>was</em> informed of the changes."<br><br>
+                            <strong>⚠️ British vs American English:</strong><br>
+                            • American: "The team is..." (usually singular)<br>
+                            • British: "The team are..." (often plural, acceptable)<br>
+                            MEXT exams typically follow American English rules.<br><br>
+                            <strong>Memory Tip:</strong> Think of the team as ONE unit making ONE discovery — singular "has"!`
                         },
                         {
                             id: 22,
                             text: "Between <span class='error-part'>(A) you and I</span>, I think the proposal <span class='error-part'>(B) needs</span> <span class='error-part'>(C) more</span> detailed <span class='error-part'>(D) analysis</span>.",
                             options: ["A", "B", "C", "D"],
                             correct: 0,
-                            explanation: "Error in (A): After prepositions, use object pronouns: 'Between you and me.'"
+                            explanation: `<strong>💡 Error in (A): 'you and I' should be 'you and me'</strong><br><br>
+                            <strong>Grammar Rule:</strong> After prepositions (between, for, with, to, from, etc.), always use <strong>object pronouns</strong> (me, him, her, us, them), NOT subject pronouns (I, he, she, we, they).<br><br>
+                            <strong>The Error:</strong><br>
+                            • ❌ "Between you and <em>I</em>" (subject pronoun after preposition)<br>
+                            • ✓ "Between you and <em>me</em>" (object pronoun after preposition)<br><br>
+                            <strong>Why people make this mistake:</strong><br>
+                            Many people were told "say 'you and I,' not 'you and me'" as children, but this only applies to SUBJECTS, not objects of prepositions!<br><br>
+                            <strong>Simple Test:</strong> Remove "you and" — would you say "Between I" or "Between me"?<br>
+                            → "Between me" sounds right! So it's "Between you and me."<br><br>
+                            <strong>Why other parts are correct:</strong><br>
+                            • <strong>(B) "needs"</strong> = Correct singular verb for "proposal"<br>
+                            • <strong>(C) "more"</strong> = Correct comparative adverb<br>
+                            • <strong>(D) "analysis"</strong> = Correct noun<br><br>
+                            <strong>More Examples:</strong><br>
+                            ✓ "This gift is for you and <em>me</em>." (not "you and I")<br>
+                            ✓ "She sat between him and <em>me</em>." (not "him and I")<br>
+                            ✓ "Come with us and <em>them</em>." (not "we and they")<br><br>
+                            <strong>Memory Tip:</strong> After any preposition (between, for, with, to...) → always use ME, HIM, HER, US, THEM!`
                         },
                         {
                             id: 23,
                             text: "One of the <span class='error-part'>(A) most influential</span> writers <span class='error-part'>(B) of</span> the 20th century <span class='error-part'>(C) were</span> George <span class='error-part'>(D) Orwell</span>.",
                             options: ["A", "B", "C", "D"],
                             correct: 2,
-                            explanation: "Error in (C): The subject is 'One' (singular), so the verb should be 'was,' not 'were.'"
+                            explanation: `<strong>💡 Error in (C): 'were' should be 'was'</strong><br><br>
+                            <strong>Grammar Rule:</strong> In "One of the + plural noun" structures, the verb agrees with <strong>"One"</strong> (singular), NOT the plural noun that follows!<br><br>
+                            <strong>The Error:</strong><br>
+                            • ❌ "One of the writers <em>were</em>..." (verb agrees with "writers")<br>
+                            • ✓ "One of the writers <em>was</em>..." (verb agrees with "One")<br><br>
+                            <strong>Understanding the Structure:</strong><br>
+                            "One [SUBJECT] of the most influential writers [prepositional phrase]"<br>
+                            The real subject is "One" — singular!<br><br>
+                            <strong>Why people make this mistake:</strong><br>
+                            "Writers" is right next to the verb, so people mistakenly match the verb to it. But remember: prepositional phrases ("of the writers") don't affect subject-verb agreement!<br><br>
+                            <strong>Why other parts are correct:</strong><br>
+                            • <strong>(A) "most influential"</strong> = Correct superlative form<br>
+                            • <strong>(B) "of"</strong> = Correct preposition<br>
+                            • <strong>(D) "Orwell"</strong> = Correct proper noun<br><br>
+                            <strong>More Examples:</strong><br>
+                            ✓ "One of my friends <em>is</em> coming." (not "are")<br>
+                            ✓ "One of the best movies <em>was</em> released." (not "were")<br>
+                            ✓ "Each of the students <em>has</em> a book." (not "have")<br><br>
+                            <strong>Memory Tip:</strong> Find the TRUE subject! "One of the [plural]" → subject is "ONE" (singular)!`
                         },
                         {
                             id: 24,
                             text: "The <span class='error-part'>(A) phenomenon</span> of global warming <span class='error-part'>(B) have been</span> <span class='error-part'>(C) extensively</span> studied <span class='error-part'>(D) by</span> scientists worldwide.",
                             options: ["A", "B", "C", "D"],
                             correct: 1,
-                            explanation: "Error in (B): 'Phenomenon' is singular, requiring 'has been,' not 'have been.'"
+                            explanation: `<strong>💡 Error in (B): 'have been' should be 'has been'</strong><br><br>
+                            <strong>Grammar Rule:</strong> The subject "phenomenon" is <strong>singular</strong>, so it requires the singular verb "has been," not "have been."<br><br>
+                            <strong>The Error:</strong><br>
+                            • ❌ "The phenomenon <em>have been</em> studied" (plural verb)<br>
+                            • ✓ "The phenomenon <em>has been</em> studied" (singular verb)<br><br>
+                            <strong>Understanding Greek/Latin Plurals:</strong><br>
+                            "Phenomenon" comes from Greek and has an irregular plural:<br>
+                            • Singular: phenomenon<br>
+                            • Plural: phenomen<strong>a</strong><br><br>
+                            <strong>Common Greek/Latin Singular-Plural Pairs:</strong><br>
+                            • criterion → criteria<br>
+                            • bacterium → bacteria<br>
+                            • datum → data<br>
+                            • medium → media<br>
+                            • curriculum → curricula<br>
+                            • stimulus → stimuli<br><br>
+                            <strong>Why other parts are correct:</strong><br>
+                            • <strong>(A) "phenomenon"</strong> = Correct singular noun<br>
+                            • <strong>(C) "extensively"</strong> = Correct adverb<br>
+                            • <strong>(D) "by"</strong> = Correct preposition for passive voice<br><br>
+                            <strong>Examples:</strong><br>
+                            ✓ "This <em>phenomenon is</em> interesting." (singular)<br>
+                            ✓ "These <em>phenomena are</em> interesting." (plural)<br><br>
+                            <strong>Memory Tip:</strong> Words ending in "-on" (phenomenon, criterion) are usually singular; their plurals end in "-a"!`
                         },
                         {
                             id: 25,
                             text: "Everyone <span class='error-part'>(A) who</span> attended the conference <span class='error-part'>(B) were impressed</span> <span class='error-part'>(C) by</span> the keynote <span class='error-part'>(D) speaker</span>.",
                             options: ["A", "B", "C", "D"],
                             correct: 1,
-                            explanation: "Error in (B): 'Everyone' is singular and requires 'was impressed,' not 'were impressed.'"
+                            explanation: `<strong>💡 Error in (B): 'were impressed' should be 'was impressed'</strong><br><br>
+                            <strong>Grammar Rule:</strong> Indefinite pronouns like "everyone," "everybody," "someone," "anyone," "no one," "each," and "either" are always <strong>SINGULAR</strong> and take singular verbs!<br><br>
+                            <strong>The Error:</strong><br>
+                            • ❌ "Everyone <em>were</em> impressed" (plural verb)<br>
+                            • ✓ "Everyone <em>was</em> impressed" (singular verb)<br><br>
+                            <strong>Why people make this mistake:</strong><br>
+                            "Everyone" feels like it means "many people," so we instinctively want to use plural. But grammatically, "everyone" = "every single one" = singular!<br><br>
+                            <strong>Singular Indefinite Pronouns:</strong><br>
+                            • Everyone, everybody, everything<br>
+                            • Someone, somebody, something<br>
+                            • Anyone, anybody, anything<br>
+                            • No one, nobody, nothing<br>
+                            • Each, either, neither<br><br>
+                            <strong>Why other parts are correct:</strong><br>
+                            • <strong>(A) "who"</strong> = Correct relative pronoun for people<br>
+                            • <strong>(C) "by"</strong> = Correct preposition for passive voice<br>
+                            • <strong>(D) "speaker"</strong> = Correct noun<br><br>
+                            <strong>Examples:</strong><br>
+                            ✓ "Everyone <em>has</em> a phone." (not "have")<br>
+                            ✓ "Somebody <em>is</em> at the door." (not "are")<br>
+                            ✓ "Each of them <em>was</em> given a prize." (not "were")<br><br>
+                            <strong>Memory Tip:</strong> "Every-ONE" = ONE person at a time = singular! Same for "some-ONE," "any-ONE," "no ONE."` 
                         },
                         {
                             id: 26,
                             text: "The architect <span class='error-part'>(A) designed</span> the building <span class='error-part'>(B) to be</span> both <span class='error-part'>(C) functionally</span> and <span class='error-part'>(D) aesthetically pleasing</span>.",
                             options: ["A", "B", "C", "D"],
                             correct: 2,
-                            explanation: "Error in (C): Parallel structure requires 'functional' (adjective), not 'functionally' (adverb)."
+                            explanation: `<strong>💡 Error in (C): 'functionally' should be 'functional'</strong><br><br>
+                            <strong>Grammar Rule:</strong> This sentence uses <strong>parallel structure</strong> with "both...and..." — the words connected must be the same part of speech!<br><br>
+                            <strong>The Error:</strong><br>
+                            Structure: "both X and Y pleasing"<br>
+                            • X and Y must be the same type of word<br>
+                            • ❌ "both <em>functionally</em> and aesthetically pleasing" (adverb + adjective)<br>
+                            • ✓ "both <em>functional</em> and aesthetic" OR "both <em>functionally</em> and <em>aesthetically</em> pleasing"<br><br>
+                            <strong>Looking at the sentence:</strong><br>
+                            "aesthetically pleasing" = adverb + adjective (aesthetically modifies pleasing)<br>
+                            So "functionally" should ALSO modify "pleasing"<br>
+                            BUT the original implies: "functionally [something] AND aesthetically pleasing"<br>
+                            The intended meaning is: "functional AND aesthetically pleasing" (two adjectives)<br><br>
+                            <strong>Why other parts are correct:</strong><br>
+                            • <strong>(A) "designed"</strong> = Correct past tense verb<br>
+                            • <strong>(B) "to be"</strong> = Correct infinitive<br>
+                            • <strong>(D) "aesthetically pleasing"</strong> = Correct adverb + adjective combo<br><br>
+                            <strong>Parallel Structure Examples:</strong><br>
+                            ✓ "She is <em>smart</em> and <em>beautiful</em>." (adj + adj)<br>
+                            ✓ "He speaks <em>clearly</em> and <em>confidently</em>." (adv + adv)<br>
+                            ✓ "I like <em>swimming</em> and <em>hiking</em>." (gerund + gerund)<br><br>
+                            <strong>Memory Tip:</strong> In "both A and B" — make sure A and B are the same word type!`
                         },
                         {
                             id: 27,
                             text: "The committee <span class='error-part'>(A) decided</span> to <span class='error-part'>(B) postpone</span> the event <span class='error-part'>(C) due to</span> there <span class='error-part'>(D) being</span> insufficient funds.",
                             options: ["A", "B", "C", "D"],
                             correct: 3,
-                            explanation: "Error in (D): Should be 'their being' (possessive + gerund) or rewrite the sentence."
+                            explanation: `<strong>💡 Error in (D): 'there being' is awkward; should be 'their being' or restructured</strong><br><br>
+                            <strong>Grammar Rule:</strong> When a gerund (-ing form used as a noun) has a subject, that subject should be in the <strong>possessive form</strong>.<br><br>
+                            <strong>The Error:</strong><br>
+                            • ❌ "due to <em>there being</em> insufficient funds" (awkward/incorrect)<br>
+                            • ✓ "due to <em>their being</em> insufficient funds" (possessive + gerund)<br>
+                            • ✓ Better: "due to <em>insufficient funds</em>" (simplified)<br><br>
+                            <strong>Understanding Possessive + Gerund:</strong><br>
+                            When someone/something "does" the -ing action, use possessive:<br>
+                            • ❌ "I appreciate <em>you helping</em> me."<br>
+                            • ✓ "I appreciate <em>your helping</em> me."<br><br>
+                            <strong>Why other parts are correct:</strong><br>
+                            • <strong>(A) "decided"</strong> = Correct verb<br>
+                            • <strong>(B) "postpone"</strong> = Correct infinitive after "decided to"<br>
+                            • <strong>(C) "due to"</strong> = Correct phrase meaning "because of"<br><br>
+                            <strong>More Examples:</strong><br>
+                            ✓ "I was surprised at <em>his winning</em> the prize." (not "him winning")<br>
+                            ✓ "<em>Your coming</em> late caused problems." (not "You coming")<br>
+                            ✓ "There's no chance of <em>our meeting</em> the deadline." (not "us meeting")<br><br>
+                            <strong>Simpler rewrites of the original:</strong><br>
+                            ✓ "...due to insufficient funds."<br>
+                            ✓ "...because there were insufficient funds."<br><br>
+                            <strong>Memory Tip:</strong> Before a gerund (-ing noun), possessive forms (my, your, his, their) are preferred in formal writing!`
                         },
                         {
                             id: 28,
                             text: "The <span class='error-part'>(A) criteria</span> for admission <span class='error-part'>(B) includes</span> academic performance and <span class='error-part'>(C) extracurricular</span> <span class='error-part'>(D) activities</span>.",
                             options: ["A", "B", "C", "D"],
                             correct: 1,
-                            explanation: "Error in (B): 'Criteria' is plural (singular: criterion), requiring 'include,' not 'includes.'"
+                            explanation: `<strong>💡 Error in (B): 'includes' should be 'include'</strong><br><br>
+                            <strong>Grammar Rule:</strong> "Criteria" is <strong>PLURAL</strong> (singular = criterion), so it needs the plural verb "include," not "includes."<br><br>
+                            <strong>The Error:</strong><br>
+                            • ❌ "The criteria <em>includes</em>..." (singular verb for plural noun)<br>
+                            • ✓ "The criteria <em>include</em>..." (plural verb for plural noun)<br><br>
+                            <strong>Understanding Greek/Latin Plurals:</strong><br>
+                            "Criteria" comes from Greek:<br>
+                            • Singular: criterion (one criterion)<br>
+                            • Plural: criteria (multiple criteria)<br><br>
+                            <strong>Common Mistakes with These Words:</strong><br>
+                            • ❌ "The criteria is..." → ✓ "The criteria are..."<br>
+                            • ❌ "The media is..." → ✓ "The media are..." (or treat as collective)<br>
+                            • ❌ "The data is..." → ✓ "The data are..." (formal) or "The data is..." (informal)<br><br>
+                            <strong>Why other parts are correct:</strong><br>
+                            • <strong>(A) "criteria"</strong> = Correct plural noun<br>
+                            • <strong>(C) "extracurricular"</strong> = Correct adjective<br>
+                            • <strong>(D) "activities"</strong> = Correct plural noun<br><br>
+                            <strong>Similar Greek/Latin Pairs:</strong><br>
+                            • criterion → criteria<br>
+                            • phenomenon → phenomena<br>
+                            • bacterium → bacteria<br>
+                            • medium → media<br>
+                            • analysis → analyses<br><br>
+                            <strong>Memory Tip:</strong> Words ending in "-a" (criteria, phenomena, bacteria) are usually PLURAL — use plural verbs!`
                         },
                         {
                             id: 29,
                             text: "She <span class='error-part'>(A) has been working</span> on her dissertation <span class='error-part'>(B) since</span> three years, <span class='error-part'>(C) but</span> has not <span class='error-part'>(D) yet</span> finished it.",
                             options: ["A", "B", "C", "D"],
                             correct: 1,
-                            explanation: "Error in (B): Use 'for' with duration: 'for three years,' not 'since three years.'"
+                            explanation: `<strong>💡 Error in (B): 'since' should be 'for'</strong><br><br>
+                            <strong>Grammar Rule:</strong> <br>
+                            • <strong>FOR</strong> = used with a <strong>duration/period of time</strong> (how long)<br>
+                            • <strong>SINCE</strong> = used with a <strong>specific point in time</strong> (when it started)<br><br>
+                            <strong>The Error:</strong><br>
+                            "Three years" is a duration (period of time), NOT a point in time.<br>
+                            • ❌ "<em>since</em> three years" (since + duration = WRONG)<br>
+                            • ✓ "<em>for</em> three years" (for + duration = CORRECT)<br>
+                            • ✓ "<em>since</em> 2022" (since + point in time = CORRECT)<br><br>
+                            <strong>FOR vs SINCE Comparison:</strong><br>
+                            | FOR (duration) | SINCE (point in time) |<br>
+                            |----------------|----------------------|<br>
+                            | for 3 years | since 2022 |<br>
+                            | for 2 hours | since 10 AM |<br>
+                            | for a long time | since I was young |<br>
+                            | for 6 months | since January |<br><br>
+                            <strong>Why other parts are correct:</strong><br>
+                            • <strong>(A) "has been working"</strong> = Correct present perfect continuous<br>
+                            • <strong>(C) "but"</strong> = Correct conjunction<br>
+                            • <strong>(D) "yet"</strong> = Correct adverb for negatives/questions in perfect tense<br><br>
+                            <strong>Examples:</strong><br>
+                            ✓ "I've lived here <em>for</em> ten years." (duration)<br>
+                            ✓ "I've lived here <em>since</em> 2015." (point in time)<br>
+                            ✓ "She's been waiting <em>for</em> an hour." (duration)<br>
+                            ✓ "She's been waiting <em>since</em> noon." (point in time)<br><br>
+                            <strong>Memory Tip:</strong> FOR = how long (duration); SINCE = when it started (specific time)!`
                         },
                         {
                             id: 30,
                             text: "The <span class='error-part'>(A) newly appointed</span> CEO, <span class='error-part'>(B) whom</span> has extensive experience, <span class='error-part'>(C) is expected</span> to <span class='error-part'>(D) revitalize</span> the company.",
                             options: ["A", "B", "C", "D"],
                             correct: 1,
-                            explanation: "Error in (B): 'Who' (subject) is needed, not 'whom' (object), as it's the subject of 'has.'"
+                            explanation: `<strong>💡 Error in (B): 'whom' should be 'who'</strong><br><br>
+                            <strong>Grammar Rule:</strong> <br>
+                            • <strong>WHO</strong> = subject of the clause (does the action)<br>
+                            • <strong>WHOM</strong> = object of the clause (receives the action)<br><br>
+                            <strong>The Error:</strong><br>
+                            In the relative clause "[who/whom] has extensive experience":<br>
+                            • The pronoun is the SUBJECT of "has" (it performs the action of having)<br>
+                            • ❌ "<em>whom</em> has experience" (whom can't be a subject)<br>
+                            • ✓ "<em>who</em> has experience" (who is the subject of "has")<br><br>
+                            <strong>Simple Test - Replace with he/him:</strong><br>
+                            "_____ has extensive experience"<br>
+                            • "He has experience" ✓ (sounds right) → use WHO<br>
+                            • "Him has experience" ✗ (sounds wrong) → don't use WHOM<br><br>
+                            <strong>Who vs Whom Rule:</strong><br>
+                            • WHO → replace with he/she/they (subjects)<br>
+                            • WHOM → replace with him/her/them (objects)<br><br>
+                            <strong>Why other parts are correct:</strong><br>
+                            • <strong>(A) "newly appointed"</strong> = Correct compound adjective<br>
+                            • <strong>(C) "is expected"</strong> = Correct passive voice<br>
+                            • <strong>(D) "revitalize"</strong> = Correct infinitive<br><br>
+                            <strong>Examples:</strong><br>
+                            ✓ "The man <em>who</em> called you..." (who = he called)<br>
+                            ✓ "The man <em>whom</em> you called..." (whom = you called him)<br>
+                            ✓ "The teacher <em>who</em> teaches us..." (who = she teaches)<br>
+                            ✓ "The teacher <em>whom</em> we respect..." (whom = we respect her)<br><br>
+                            <strong>Memory Tip:</strong> WHO does things (subject); WHOM has things done TO it (object). Test with "he" vs "him"!`
                         }
                     ]
                 },
@@ -1076,70 +1678,228 @@
                             text: "Choose the best word for blank 31:",
                             options: ["lasted", "extended", "spanned", "continued"],
                             correct: 2,
-                            explanation: "'Spanned' is the most appropriate word to describe a period covering several centuries."
+                            explanation: `<strong>💡 Why 'spanned' is correct:</strong><br><br>
+                            <strong>Definition:</strong> 'Span' means to extend across or stretch over a period of time or space — it's the perfect word for describing a historical period covering several centuries.<br><br>
+                            <strong>Context:</strong> "The Renaissance, which _____ from the 14th to the 17th century"<br>
+                            We need a word that elegantly describes a period covering approximately 300 years.<br><br>
+                            <strong>Why 'spanned' is best:</strong><br>
+                            "Spanned" gives a sense of the era stretching across centuries like a bridge spans a river — it's sophisticated and commonly used in historical writing.<br><br>
+                            <strong>Why other options are less ideal:</strong><br>
+                            • <strong>"lasted"</strong> = Grammatically possible but less elegant for historical periods<br>
+                            • <strong>"extended"</strong> = Usually implies stretching beyond original limits<br>
+                            • <strong>"continued"</strong> = Implies ongoing action, less suitable for a defined period<br><br>
+                            <strong>Common Collocations:</strong><br>
+                            ✓ "His career <em>spanned</em> four decades."<br>
+                            ✓ "The Roman Empire <em>spanned</em> three continents."<br>
+                            ✓ "Her influence <em>spanned</em> generations."<br><br>
+                            <strong>Memory Tip:</strong> Think of a bridge SPANNING a river — "span" means covering the distance/time from one point to another!`
                         },
                         {
                             id: 32,
                             text: "Choose the best word for blank 32:",
                             options: ["that", "which", "what", "when"],
                             correct: 1,
-                            explanation: "'Which' correctly refers to 'classical Greek and Roman learning' in a non-restrictive clause."
+                            explanation: `<strong>💡 Why 'which' is correct:</strong><br><br>
+                            <strong>Context:</strong> "...a renewed interest in classical Greek and Roman learning, _____ had been largely neglected..."<br><br>
+                            <strong>Grammar Point:</strong> This is a <strong>non-restrictive (non-defining) relative clause</strong> — notice the comma before the blank! The clause adds extra information about "classical Greek and Roman learning."<br><br>
+                            <strong>The Rule:</strong><br>
+                            • <strong>"which"</strong> = Used in non-restrictive clauses (WITH commas)<br>
+                            • <strong>"that"</strong> = Used in restrictive clauses (NO commas)<br><br>
+                            <strong>Why other options are wrong:</strong><br>
+                            • <strong>"that"</strong> = Cannot follow a comma in relative clauses<br>
+                            • <strong>"what"</strong> = Not a relative pronoun; means "the thing that"<br>
+                            • <strong>"when"</strong> = Used for time, not things<br><br>
+                            <strong>Understanding the Sentence:</strong><br>
+                            The main info: "a renewed interest in classical Greek and Roman learning"<br>
+                            Extra info: "which had been largely neglected" (this is additional, not essential)<br><br>
+                            <strong>Examples:</strong><br>
+                            ✓ "Tokyo, <em>which</em> is Japan's capital, is very crowded." (non-restrictive, comma)<br>
+                            ✓ "The city <em>that</em> I love is Tokyo." (restrictive, no comma)<br><br>
+                            <strong>Memory Tip:</strong> Comma + relative pronoun for things = WHICH, always!`
                         },
                         {
                             id: 33,
                             text: "Choose the best word for blank 33:",
                             options: ["where", "when", "which", "that"],
                             correct: 0,
-                            explanation: "'Where' correctly indicates the place (Italy) where wealthy families patronized artists."
+                            explanation: `<strong>💡 Why 'where' is correct:</strong><br><br>
+                            <strong>Context:</strong> "The movement began in Italy, _____ wealthy merchant families like the Medici patronized artists..."<br><br>
+                            <strong>Grammar Point:</strong> We need a relative pronoun/adverb that refers to a PLACE (Italy). "Where" is the relative adverb for places.<br><br>
+                            <strong>Why 'where' is correct:</strong><br>
+                            Italy is a place → "where" introduces information about what happened in that place.<br><br>
+                            <strong>Why other options are wrong:</strong><br>
+                            • <strong>"when"</strong> = Used for time, not places<br>
+                            • <strong>"which"</strong> = Could work ("in which") but "where" is more natural<br>
+                            • <strong>"that"</strong> = Cannot follow a comma; not for places<br><br>
+                            <strong>Relative Adverbs:</strong><br>
+                            • <strong>WHERE</strong> = for places (in which)<br>
+                            • <strong>WHEN</strong> = for time (at which, on which)<br>
+                            • <strong>WHY</strong> = for reasons (for which)<br><br>
+                            <strong>Examples:</strong><br>
+                            ✓ "Paris, <em>where</em> I studied art, is beautiful."<br>
+                            ✓ "The restaurant <em>where</em> we met is closing."<br>
+                            ✓ "1990, <em>when</em> I was born, was eventful." (time)<br><br>
+                            <strong>Memory Tip:</strong> Place → WHERE; Time → WHEN; Reason → WHY`
                         },
                         {
                             id: 34,
                             text: "Choose the best word for blank 34:",
                             options: ["when", "where", "which", "whose"],
                             correct: 1,
-                            explanation: "'Where' refers to Florence as the place where these artists produced their work."
+                            explanation: `<strong>💡 Why 'where' is correct:</strong><br><br>
+                            <strong>Context:</strong> "Florence became the epicenter of this cultural revolution, _____ talents such as Leonardo da Vinci...produced masterpieces..."<br><br>
+                            <strong>Grammar Point:</strong> Again, we're referring to a PLACE (Florence). We need "where" to introduce what happened in that place.<br><br>
+                            <strong>Why 'where' is correct:</strong><br>
+                            Florence is a city (place) → "where" = "in which place"<br>
+                            The clause tells us what the artists did IN Florence.<br><br>
+                            <strong>Why other options are wrong:</strong><br>
+                            • <strong>"when"</strong> = Used for time, not places<br>
+                            • <strong>"which"</strong> = Would need "in which" for the same meaning<br>
+                            • <strong>"whose"</strong> = Shows possession, doesn't fit here<br><br>
+                            <strong>Note:</strong> Two "where" answers in a row? Yes! Both blanks refer to places (Italy, then Florence).<br><br>
+                            <strong>Comparison:</strong><br>
+                            • "Florence, <em>where</em> artists worked" = artists worked there<br>
+                            • "Florence, <em>which</em> was beautiful" = describing Florence itself<br>
+                            • "Florence, <em>whose</em> museums are famous" = Florence's museums<br><br>
+                            <strong>Memory Tip:</strong> If you can replace with "in that place," use WHERE!`
                         },
                         {
                             id: 35,
                             text: "Choose the best word for blank 35:",
                             options: ["yet", "still", "even", "also"],
                             correct: 2,
-                            explanation: "'Even' emphasizes that the inspiration extends to modern times, which might be surprising."
+                            explanation: `<strong>💡 Why 'even' is correct:</strong><br><br>
+                            <strong>Context:</strong> "...masterpieces that continue to inspire _____ modern audiences."<br><br>
+                            <strong>Why 'even' fits:</strong><br>
+                            "Even" adds emphasis and suggests something surprising or noteworthy — in this case, that works from 500+ years ago STILL affect audiences today. It emphasizes the remarkable, continuing impact.<br><br>
+                            <strong>Meaning with 'even':</strong><br>
+                            "...inspire EVEN modern audiences" = surprisingly, modern audiences are inspired too (despite the passage of time)<br><br>
+                            <strong>Why other options are less ideal:</strong><br>
+                            • <strong>"yet"</strong> = Usually means "still" or "however" — doesn't fit the structure<br>
+                            • <strong>"still"</strong> = Would work before "continue" but not before "modern"<br>
+                            • <strong>"also"</strong> = Doesn't provide the emphasis of reaching across time<br><br>
+                            <strong>How 'even' works:</strong><br>
+                            "Even" emphasizes unexpected inclusivity or extremity:<br>
+                            ✓ "<em>Even</em> children understood the lecture." (surprising!)<br>
+                            ✓ "He works <em>even</em> on weekends." (impressive!)<br>
+                            ✓ "She can speak <em>even</em> Japanese." (unexpected!)<br><br>
+                            <strong>Memory Tip:</strong> "Even" = "surprisingly, also" — adds emphasis to something unexpected!`
                         },
                         {
                             id: 36,
                             text: "Choose the best word for blank 36:",
                             options: ["Because", "While", "Since", "Although"],
                             correct: 1,
-                            explanation: "'While' introduces a contrast between medieval and Renaissance thought."
+                            explanation: `<strong>💡 Why 'While' is correct:</strong><br><br>
+                            <strong>Context:</strong> "_____ medieval thought had focused primarily on religious doctrine, Renaissance thinkers believed in the importance of studying secular subjects."<br><br>
+                            <strong>Why 'While' is correct:</strong><br>
+                            The sentence CONTRASTS two things:<br>
+                            • Medieval thought → religious focus<br>
+                            • Renaissance thought → secular subjects<br>
+                            "While" can mean "whereas" or "in contrast," perfect for showing this opposition.<br><br>
+                            <strong>Why other options are wrong:</strong><br>
+                            • <strong>"Because"</strong> = Shows cause/reason, not contrast<br>
+                            • <strong>"Since"</strong> = Shows reason or time, not contrast<br>
+                            • <strong>"Although"</strong> = Shows concession, but the sentence structure doesn't need concession here<br><br>
+                            <strong>Two Meanings of 'While':</strong><br>
+                            1. <strong>Time:</strong> "While I was eating, the phone rang." (during)<br>
+                            2. <strong>Contrast:</strong> "While he likes coffee, she prefers tea." (whereas)<br><br>
+                            <strong>Examples of Contrast:</strong><br>
+                            ✓ "<em>While</em> Japan is an island, Korea is a peninsula."<br>
+                            ✓ "<em>While</em> some prefer cities, others like the countryside."<br><br>
+                            <strong>Memory Tip:</strong> When comparing two different ideas or approaches, "While" often means "on the other hand" or "in contrast"!`
                         },
                         {
                             id: 37,
                             text: "Choose the best word for blank 37:",
                             options: ["developing", "creating", "making", "forming"],
                             correct: 0,
-                            explanation: "'Developing' best describes the process of building moral and intellectual character."
+                            explanation: `<strong>💡 Why 'developing' is correct:</strong><br><br>
+                            <strong>Context:</strong> "...education in the humanities...as a means of _____ moral and intellectual character."<br><br>
+                            <strong>Why 'developing' is best:</strong><br>
+                            "Developing character" is a common and natural collocation. Character development implies gradual growth and improvement over time — exactly what education does!<br><br>
+                            <strong>Collocation Check:</strong><br>
+                            ✓ "develop character" — VERY common and natural<br>
+                            △ "create character" — less natural for personal qualities<br>
+                            △ "make character" — sounds unnatural<br>
+                            △ "form character" — possible but less common<br><br>
+                            <strong>Why other options are less ideal:</strong><br>
+                            • <strong>"creating"</strong> = Implies making from nothing; character is grown, not created<br>
+                            • <strong>"making"</strong> = Too casual; not typically used with "character"<br>
+                            • <strong>"forming"</strong> = Possible but less common than "developing"<br><br>
+                            <strong>Common Collocations with 'develop':</strong><br>
+                            ✓ develop skills, habits, character<br>
+                            ✓ develop a plan, strategy<br>
+                            ✓ develop relationships<br><br>
+                            <strong>Memory Tip:</strong> "Develop" implies gradual growth — perfect for character, skills, and personal qualities!`
                         },
                         {
                             id: 38,
                             text: "Choose the best word for blank 38:",
                             options: ["minor", "modest", "revolutionary", "limited"],
                             correct: 2,
-                            explanation: "'Revolutionary' captures the profound impact of the printing press on knowledge dissemination."
+                            explanation: `<strong>💡 Why 'revolutionary' is correct:</strong><br><br>
+                            <strong>Context:</strong> "The invention of the printing press by Johannes Gutenberg around 1440 had _____ consequences for the spread of Renaissance ideas."<br><br>
+                            <strong>Why 'revolutionary' is correct:</strong><br>
+                            The printing press is widely considered one of the most important inventions in human history! It completely transformed how knowledge was shared. "Revolutionary" means causing dramatic or far-reaching change — perfectly describing this impact.<br><br>
+                            <strong>Historical Context:</strong><br>
+                            Before printing press: books were hand-copied, extremely rare and expensive<br>
+                            After printing press: books became widely available, transforming society<br><br>
+                            <strong>Why other options are wrong:</strong><br>
+                            • <strong>"minor"</strong> = small, unimportant — opposite of reality!<br>
+                            • <strong>"modest"</strong> = limited, humble — understatement<br>
+                            • <strong>"limited"</strong> = restricted — opposite of the actual impact<br><br>
+                            <strong>Passage Evidence:</strong><br>
+                            The next sentences say books became more "accessible" and this "accelerated the exchange of ideas" and "contributed to the Protestant Reformation and Scientific Revolution" — clearly REVOLUTIONARY impact!<br><br>
+                            <strong>Memory Tip:</strong> The printing press = revolution in communication. "Revolutionary consequences" = massive, world-changing effects!`
                         },
                         {
                             id: 39,
                             text: "Choose the best word for blank 39:",
                             options: ["scarce", "accessible", "expensive", "exclusive"],
                             correct: 1,
-                            explanation: "'Accessible' fits the context of books becoming available to more people."
+                            explanation: `<strong>💡 Why 'accessible' is correct:</strong><br><br>
+                            <strong>Context:</strong> "Books, which had previously been rare and expensive manuscripts, became more _____."<br><br>
+                            <strong>Why 'accessible' is correct:</strong><br>
+                            The sentence contrasts "previously" (before printing press) with what happened after. Books were rare and expensive BEFORE → they became more _____ AFTER.<br>
+                            "Accessible" means easy to obtain or reach — the opposite of rare and expensive!<br><br>
+                            <strong>Logic of the Sentence:</strong><br>
+                            BEFORE: rare + expensive = hard to get<br>
+                            AFTER: more accessible = easy to get<br>
+                            This shows the positive change caused by the printing press.<br><br>
+                            <strong>Why other options are wrong:</strong><br>
+                            • <strong>"scarce"</strong> = rare, hard to find — this was the OLD situation<br>
+                            • <strong>"expensive"</strong> = costly — this was the OLD situation<br>
+                            • <strong>"exclusive"</strong> = limited to few people — this was the OLD situation<br><br>
+                            <strong>Common Usage:</strong><br>
+                            ✓ "Education should be more <em>accessible</em> to everyone."<br>
+                            ✓ "The internet made information <em>accessible</em> worldwide."<br><br>
+                            <strong>Memory Tip:</strong> "Accessible" = able to be accessed = easy to get/reach. It's the positive change from being rare/expensive!`
                         },
                         {
                             id: 40,
                             text: "Choose the best word for blank 40:",
                             options: ["contributed", "reduced", "opposed", "limited"],
                             correct: 0,
-                            explanation: "'Contributed to' correctly indicates that this helped bring about the Reformation and Scientific Revolution."
+                            explanation: `<strong>💡 Why 'contributed' is correct:</strong><br><br>
+                            <strong>Context:</strong> "This democratization of knowledge accelerated the exchange of ideas across Europe and _____ to the Protestant Reformation and the Scientific Revolution."<br><br>
+                            <strong>Why 'contributed' is correct:</strong><br>
+                            The sentence describes a positive chain of events:<br>
+                            Printing press → more books → knowledge spreads → helped cause major historical movements<br>
+                            "Contributed to" means helped to cause or bring about — perfect for describing how one thing helped lead to another.<br><br>
+                            <strong>Grammar Point:</strong><br>
+                            "Contribute TO" is a fixed phrase — the preposition "to" is already in the sentence, so "contributed" fits perfectly.<br><br>
+                            <strong>Why other options are wrong:</strong><br>
+                            • <strong>"reduced"</strong> = made smaller/less — doesn't make sense here<br>
+                            • <strong>"opposed"</strong> = went against — opposite meaning<br>
+                            • <strong>"limited"</strong> = restricted — opposite meaning<br><br>
+                            <strong>Common Collocations:</strong><br>
+                            ✓ "contribute to success/failure"<br>
+                            ✓ "contribute to a cause"<br>
+                            ✓ "contribute to development/progress"<br><br>
+                            <strong>Historical Fact:</strong><br>
+                            The printing press really did help cause the Protestant Reformation (Luther's ideas spread quickly through printed materials) and the Scientific Revolution (scientific discoveries could be shared widely).<br><br>
+                            <strong>Memory Tip:</strong> "Contributed TO" = helped cause or played a role in bringing about something!`
                         }
                     ]
                 },
@@ -1176,7 +1936,18 @@
                                 "They are easier to manufacture"
                             ],
                             correct: 1,
-                            explanation: "The passage states qubits 'can exist in multiple states simultaneously through a phenomenon called superposition.'"
+                            explanation: `<strong>💡 Why 'They can exist in multiple states simultaneously' is correct:</strong><br><br>
+                            <strong>📍 Evidence from the Passage:</strong><br>
+                            Paragraph 1 clearly states: "quantum computers utilize quantum bits, or qubits, which can exist in <strong>multiple states simultaneously</strong> through a phenomenon called superposition."<br><br>
+                            <strong>Understanding the Concept:</strong><br>
+                            • Traditional bits: Can only be 0 OR 1 (like a light switch — on or off)<br>
+                            • Qubits: Can be 0 AND 1 at the same time (called "superposition")<br>
+                            This is the fundamental difference and main advantage!<br><br>
+                            <strong>Why other options are wrong:</strong><br>
+                            • <strong>A) "more durable and less prone to errors"</strong> — Actually the OPPOSITE! Paragraph 4 says qubits are "extremely fragile" and susceptible to errors (decoherence).<br>
+                            • <strong>C) "consume less electrical power"</strong> — Not mentioned in the passage at all.<br>
+                            • <strong>D) "easier to manufacture"</strong> — Not mentioned; actually implied to be difficult (significant technical challenges).<br><br>
+                            <strong>Reading Tip:</strong> For "according to the passage" questions, look for direct statements in the text. The answer should be almost word-for-word from the passage!`
                         },
                         {
                             id: 42,
@@ -1188,7 +1959,18 @@
                                 "Classical computers have become too powerful"
                             ],
                             correct: 1,
-                            explanation: "The passage explains that quantum computers could factor large numbers quickly, which 'has profound implications for cryptography.'"
+                            explanation: `<strong>💡 Why 'Quantum computers could quickly factor large numbers' is correct:</strong><br><br>
+                            <strong>📍 Evidence from the Passage:</strong><br>
+                            Paragraph 2 states: "factoring large numbers—a task that would take conventional computers thousands of years—could potentially be accomplished in hours by a sufficiently powerful quantum computer. This capability has <strong>profound implications for cryptography</strong>, as many current encryption methods rely on the computational difficulty of factoring large numbers."<br><br>
+                            <strong>Breaking Down the Logic:</strong><br>
+                            1. Current encryption = based on large numbers being hard to factor<br>
+                            2. Quantum computers = can factor large numbers quickly<br>
+                            3. Therefore = encryption becomes vulnerable<br><br>
+                            <strong>Why other options are wrong:</strong><br>
+                            • <strong>A) "outdated algorithms from the 1980s"</strong> — No time period is mentioned for when algorithms were created.<br>
+                            • <strong>C) "too complex for users"</strong> — User complexity is never discussed.<br>
+                            • <strong>D) "Classical computers have become too powerful"</strong> — The passage says classical computers would take "thousands of years" — they're NOT too powerful!<br><br>
+                            <strong>Reading Tip:</strong> This is an inference question — you need to connect two pieces of information (quantum speed + encryption based on factoring difficulty).`
                         },
                         {
                             id: 43,
@@ -1200,7 +1982,19 @@
                                 "The difficulty of programming quantum computers"
                             ],
                             correct: 2,
-                            explanation: "The passage defines entanglement as qubits becoming 'intrinsically linked' so one's state affects another's."
+                            explanation: `<strong>💡 Why 'The intrinsic linking of qubits' states to each other' is correct:</strong><br><br>
+                            <strong>📍 Evidence from the Passage:</strong><br>
+                            Paragraph 3 defines entanglement: "When qubits become entangled, the state of one qubit becomes <strong>intrinsically linked</strong> to the state of another, regardless of the distance between them."<br><br>
+                            <strong>Understanding Entanglement (Simplified):</strong><br>
+                            Imagine two coins that are magically connected. If you flip one and it lands on heads, the other will INSTANTLY show tails — even if they're miles apart! This "magical connection" is like entanglement.<br><br>
+                            <strong>Why other options are wrong:</strong><br>
+                            • <strong>A) "physically connected through wires"</strong> — The passage says "regardless of the distance" — no physical connection needed!<br>
+                            • <strong>B) "computational errors"</strong> — This describes "decoherence," not entanglement.<br>
+                            • <strong>D) "difficulty of programming"</strong> — Not related to entanglement at all.<br><br>
+                            <strong>Key Vocabulary:</strong><br>
+                            "Intrinsically" = essentially, fundamentally, by its very nature<br>
+                            "Intrinsically linked" = connected at a fundamental level<br><br>
+                            <strong>Reading Tip:</strong> For definition questions, find where the word is explained in the passage — often in the same sentence or the one right after!`
                         },
                         {
                             id: 44,
@@ -1212,7 +2006,21 @@
                                 "The phenomenon of superposition in qubits"
                             ],
                             correct: 1,
-                            explanation: "Decoherence is described as qubits being 'susceptible to environmental interference.'"
+                            explanation: `<strong>💡 Why 'Environmental interference disrupting quantum states' is correct:</strong><br><br>
+                            <strong>📍 Evidence from the Passage:</strong><br>
+                            Paragraph 4 explains: "Qubits are extremely fragile and susceptible to <strong>environmental interference</strong>, a problem known as <strong>decoherence</strong>. Even minute temperature fluctuations or electromagnetic radiation can disrupt quantum states, causing errors in calculations."<br><br>
+                            <strong>Understanding Decoherence (Simplified):</strong><br>
+                            Imagine trying to balance a pencil on its tip — that's how delicate qubits are! Any tiny disturbance (heat, radiation, vibration) can knock them off balance and cause errors. This problem is called "decoherence."<br><br>
+                            <strong>Why other options are wrong:</strong><br>
+                            • <strong>A) "entangling qubits"</strong> — Entanglement is a separate concept (paragraph 3), a positive feature.<br>
+                            • <strong>C) "correcting computational errors"</strong> — Error correction is mentioned as a SOLUTION to decoherence, not decoherence itself.<br>
+                            • <strong>D) "superposition phenomenon"</strong> — Superposition is a different concept (paragraph 1).<br><br>
+                            <strong>Passage Structure Insight:</strong><br>
+                            Notice how the passage is organized:<br>
+                            • Paragraph 1-3: Advantages of quantum computing<br>
+                            • Paragraph 4: Challenges (including decoherence)<br>
+                            • Paragraph 5: Future outlook<br><br>
+                            <strong>Reading Tip:</strong> The word "decoherence" is directly defined in the passage — always look for definitions near technical terms!`
                         },
                         {
                             id: 45,
@@ -1224,7 +2032,28 @@
                                 "Overly enthusiastic"
                             ],
                             correct: 1,
-                            explanation: "The author acknowledges challenges but emphasizes 'remarkable pace' of progress and 'exciting' applications, showing cautious optimism."
+                            explanation: `<strong>💡 Why 'Cautiously optimistic' is correct:</strong><br><br>
+                            <strong>📍 Evidence from the Passage:</strong><br>
+                            The author shows BOTH caution AND optimism:<br><br>
+                            <strong>Caution (acknowledging challenges):</strong><br>
+                            • "significant technical challenges"<br>
+                            • "extremely fragile"<br>
+                            • "formidable obstacle"<br>
+                            • "may still be years away"<br><br>
+                            <strong>Optimism (positive outlook):</strong><br>
+                            • "progress...continues at a remarkable pace"<br>
+                            • "investing billions"<br>
+                            • "potential applications...make this one of the most exciting frontiers"<br><br>
+                            <strong>Why other options are wrong:</strong><br>
+                            • <strong>A) "Skeptical and dismissive"</strong> — The author doesn't doubt or dismiss quantum computing; they call it "exciting"!<br>
+                            • <strong>C) "Neutral and detached"</strong> — Words like "exciting" and "remarkable" show emotional investment, not neutrality.<br>
+                            • <strong>D) "Overly enthusiastic"</strong> — The author discusses real challenges; not blindly positive.<br><br>
+                            <strong>Tone Analysis Tips:</strong><br>
+                            Look for adjectives and adverbs that reveal the author's feelings:<br>
+                            • "remarkable pace" = impressed<br>
+                            • "exciting frontiers" = enthusiastic<br>
+                            • "formidable obstacle" = realistic about challenges<br><br>
+                            <strong>Reading Tip:</strong> For tone questions, find words that express emotion or opinion. "Cautiously optimistic" = acknowledges problems but believes in positive outcomes.`
                         },
                         {
                             id: 46,
@@ -1236,7 +2065,20 @@
                                 "They have developed better hearing"
                             ],
                             correct: 2,
-                            explanation: "The passage states birds 'sing at higher frequencies and increased volumes to overcome traffic and construction sounds.'"
+                            explanation: `<strong>💡 Why 'They sing at higher frequencies and volumes' is correct:</strong><br><br>
+                            <strong>📍 Evidence from the Passage:</strong><br>
+                            Paragraph 2 clearly states: "Studies show that birds in urban areas <strong>sing at higher frequencies and increased volumes</strong> to overcome traffic and construction sounds."<br><br>
+                            <strong>Understanding the Adaptation:</strong><br>
+                            • Problem: City noise (traffic, construction) is mostly low-frequency<br>
+                            • Solution: Birds sing HIGHER (different frequency) and LOUDER (more volume)<br>
+                            • Result: Their songs can be heard above the city noise<br><br>
+                            <strong>Why other options are wrong:</strong><br>
+                            • <strong>A) "stopped singing"</strong> — They still sing, just differently.<br>
+                            • <strong>B) "migrate to rural areas"</strong> — The passage is about birds that STAY and adapt, not leave.<br>
+                            • <strong>D) "developed better hearing"</strong> — The passage mentions changes in singing, not hearing.<br><br>
+                            <strong>Bonus Information from Passage:</strong><br>
+                            The passage also mentions some birds have "shifted their singing schedules to quieter early morning hours" — another adaptation strategy!<br><br>
+                            <strong>Reading Tip:</strong> This is a direct fact question — the answer is stated explicitly. Scan for keywords like "urban birds" and "noise"!`
                         },
                         {
                             id: 47,
@@ -1248,7 +2090,19 @@
                                 "Urban squirrels have longer tails"
                             ],
                             correct: 2,
-                            explanation: "The passage explicitly states 'Urban squirrels...tend to be larger and bolder than their forest-dwelling counterparts.'"
+                            explanation: `<strong>💡 Why 'Urban squirrels tend to be larger and bolder' is correct:</strong><br><br>
+                            <strong>📍 Evidence from the Passage:</strong><br>
+                            Paragraph 3 states: "Urban squirrels, for instance, tend to be <strong>larger and bolder</strong> than their forest-dwelling counterparts, traits that prove advantageous in navigating human environments and accessing anthropogenic food sources."<br><br>
+                            <strong>Understanding Why:</strong><br>
+                            • <strong>Larger:</strong> Cities have abundant food (trash, handouts, bird feeders) → more nutrition → bigger size<br>
+                            • <strong>Bolder:</strong> Need courage to approach humans and navigate busy areas → shy squirrels don't get the food!<br><br>
+                            <strong>Why other options are wrong:</strong><br>
+                            • <strong>A) "smaller and more timid"</strong> — Exact OPPOSITE of what the passage says!<br>
+                            • <strong>B) "different fur colors"</strong> — Not mentioned in the passage.<br>
+                            • <strong>D) "longer tails"</strong> — Not mentioned in the passage.<br><br>
+                            <strong>Vocabulary Note:</strong><br>
+                            "Anthropogenic food sources" = food produced by humans (anthropo = human, genic = created by)<br><br>
+                            <strong>Reading Tip:</strong> Watch out for trap answers that are the opposite of the correct answer! Option A reverses the characteristics mentioned in the passage.`
                         },
                         {
                             id: 48,
@@ -1260,7 +2114,22 @@
                                 "Cities have seasonal food shortages"
                             ],
                             correct: 0,
-                            explanation: "The passage indicates species exploit 'abundant food waste' and those 'unable to diversify their food sources typically struggle,' implying limited natural sources."
+                            explanation: `<strong>💡 Why 'Cities offer limited natural food sources' is correct:</strong><br><br>
+                            <strong>📍 Evidence from the Passage:</strong><br>
+                            Paragraph 4 states: "Raccoons, rats, and certain bird species have become opportunistic omnivores, exploiting the abundant food waste generated by human settlements. This dietary plasticity represents a crucial adaptation, as <strong>species unable to diversify their food sources typically struggle to establish urban populations</strong>."<br><br>
+                            <strong>Understanding the Logic:</strong><br>
+                            1. Natural foods (wild plants, insects, etc.) are limited in cities<br>
+                            2. Human food waste is abundant<br>
+                            3. Animals that can eat BOTH (flexible diet) survive<br>
+                            4. Animals that can ONLY eat natural foods struggle<br><br>
+                            <strong>Why other options are wrong:</strong><br>
+                            • <strong>B) "need more calories"</strong> — Not stated or implied in the passage.<br>
+                            • <strong>C) "human food is more nutritious"</strong> — Not claimed; actually, the passage just says it's "abundant," not better.<br>
+                            • <strong>D) "seasonal food shortages"</strong> — Not mentioned in the passage.<br><br>
+                            <strong>Key Vocabulary:</strong><br>
+                            • "Dietary plasticity" = flexibility in diet; ability to eat different things<br>
+                            • "Opportunistic omnivores" = animals that eat whatever is available (both plants and animals)<br><br>
+                            <strong>Reading Tip:</strong> This is an inference question. The passage doesn't directly say "cities offer limited natural food," but it's implied by why dietary flexibility matters!`
                         },
                         {
                             id: 49,
@@ -1272,7 +2141,24 @@
                                 "A neighborhood with high population density"
                             ],
                             correct: 1,
-                            explanation: "The passage defines urban heat islands as 'areas significantly warmer than surrounding rural regions.'"
+                            explanation: `<strong>💡 Why 'An area warmer than surrounding rural regions' is correct:</strong><br><br>
+                            <strong>📍 Evidence from the Passage:</strong><br>
+                            Paragraph 5 defines the term directly: "urban heat islands—<strong>areas significantly warmer than surrounding rural regions</strong>—alter local microclimates..."<br><br>
+                            <strong>Understanding Urban Heat Islands:</strong><br>
+                            • Cities have lots of concrete, asphalt, and buildings<br>
+                            • These materials absorb and retain heat<br>
+                            • Less vegetation = less cooling from trees<br>
+                            • Result: Cities are hotter than nearby countryside<br><br>
+                            <strong>Why other options are wrong:</strong><br>
+                            • <strong>A) "park or green space"</strong> — Actually, parks would be COOLER parts of cities!<br>
+                            • <strong>C) "wildlife sanctuary"</strong> — Nothing to do with the term; completely different concept.<br>
+                            • <strong>D) "high population density"</strong> — While related to cities, this isn't the definition given.<br><br>
+                            <strong>Reading Strategy:</strong><br>
+                            The passage uses a dash (—) to define the term! This is a common pattern:<br>
+                            "technical term—definition—continues with explanation"<br><br>
+                            <strong>Real-World Example:</strong><br>
+                            On a hot summer day, downtown Tokyo might be 3-5°C hotter than the surrounding suburban areas — that's the urban heat island effect!<br><br>
+                            <strong>Reading Tip:</strong> Look for definition markers like dashes, commas, or phrases like "known as," "called," or "refers to"!`
                         },
                         {
                             id: 50,
@@ -1284,7 +2170,27 @@
                                 "Promote wildlife conservation programs"
                             ],
                             correct: 1,
-                            explanation: "The passage focuses on explaining various adaptations and challenges of wildlife living in urban environments."
+                            explanation: `<strong>💡 Why 'Explain how wildlife adapts to urban environments' is correct:</strong><br><br>
+                            <strong>📍 Evidence - The Entire Passage Structure:</strong><br>
+                            • <strong>Paragraph 1:</strong> Introduces the topic — wildlife choosing to adapt to cities<br>
+                            • <strong>Paragraph 2:</strong> Example — birds changing their songs<br>
+                            • <strong>Paragraph 3:</strong> Example — physical changes (larger squirrels, stress hormones)<br>
+                            • <strong>Paragraph 4:</strong> Example — dietary flexibility<br>
+                            • <strong>Paragraph 5:</strong> Challenges of urban life for wildlife<br><br>
+                            The ENTIRE passage is about how different species adapt! This is clearly explanatory/informative writing.<br><br>
+                            <strong>Why other options are wrong:</strong><br>
+                            • <strong>A) "cities should be built in rural areas"</strong> — The passage never argues WHERE to build cities; it's about adaptation.<br>
+                            • <strong>C) "criticize urban development"</strong> — The author is neutral/informative, not critical.<br>
+                            • <strong>D) "promote wildlife conservation"</strong> — While mentioned briefly at the end, this is NOT the main purpose; conservation is just one application of understanding adaptations.<br><br>
+                            <strong>Main Purpose Question Strategy:</strong><br>
+                            Ask yourself: "If I had to summarize this passage in one sentence, what would it be?"<br>
+                            Answer: "This passage explains the various ways wildlife adapts to living in cities."<br><br>
+                            <strong>Identifying Author's Purpose:</strong><br>
+                            • <strong>Explain/Inform:</strong> Presents facts objectively ← This passage<br>
+                            • <strong>Argue/Persuade:</strong> Takes a clear position, tries to convince<br>
+                            • <strong>Criticize:</strong> Points out flaws, uses negative language<br>
+                            • <strong>Promote:</strong> Encourages action, calls readers to do something<br><br>
+                            <strong>Reading Tip:</strong> For "main purpose" questions, consider the passage as a whole. Don't get distracted by minor details — focus on the overall message!`
                         }
                     ]
                 }
@@ -1297,6 +2203,8 @@
         let timeLeft = 60 * 60; // 60 minutes in seconds
         let timerInterval;
         let isReviewMode = false;
+        let isTrialMode = false;
+        let checkedAnswers = {}; // Track which answers have been checked in trial mode
 
         // DOM Elements
         const startScreen = document.getElementById('startScreen');
@@ -1305,6 +2213,7 @@
         const quizContent = document.getElementById('quizContent');
         const timerDisplay = document.getElementById('timerDisplay');
         const timerBox = document.getElementById('timerBox');
+        const trialBadge = document.getElementById('trialBadge');
         const answeredCount = document.getElementById('answeredCount');
         const progressFill = document.getElementById('progressFill');
         const reviewScorePill = document.getElementById('reviewScorePill');
@@ -1315,10 +2224,22 @@
         const questionNav = document.getElementById('questionNav');
 
         // Initialize
-        function startQuiz() {
+        function startQuiz(trialMode = false) {
+            isTrialMode = trialMode;
             startScreen.classList.add('hidden');
             quizScreen.classList.remove('hidden');
-            startTimer();
+            
+            if (isTrialMode) {
+                // Trial mode: hide timer, show trial badge
+                timerBox.style.display = 'none';
+                trialBadge.classList.remove('hidden');
+            } else {
+                // Normal mode: show timer, start countdown
+                timerBox.style.display = 'flex';
+                trialBadge.classList.add('hidden');
+                startTimer();
+            }
+            
             renderSection(1);
             renderQuestionNav();
             setupSectionNav();
@@ -1433,14 +2354,18 @@
 
         function renderQuestion(question, sectionId) {
             const selectedAnswer = answers[question.id];
+            const isChecked = checkedAnswers[question.id];
             
             let questionText = question.text;
             if (sectionId !== 3) { // Not error identification
                 questionText = question.text.replace('_______', '<span class="blank">_______</span>');
             }
 
+            // Add class if answer has been revealed in trial mode
+            const revealedClass = isChecked ? 'answer-revealed' : '';
+
             let html = `
-                <div class="question-block">
+                <div class="question-block ${revealedClass}" data-question-id="${question.id}">
                     <div class="question-text">
                         <span class="question-number">${question.id}</span>
                         ${questionText}
@@ -1454,15 +2379,17 @@
                 const isCorrect = index === question.correct;
                 
                 let extraClass = '';
-                if (isReviewMode) {
+                if (isReviewMode || isChecked) {
                     if (isCorrect) extraClass = 'correct';
                     else if (isSelected && !isCorrect) extraClass = 'incorrect';
                 }
 
+                const isDisabled = isReviewMode || isChecked;
+
                 html += `
                     <label class="option-label ${extraClass}">
                         <input type="radio" name="q${question.id}" value="${index}" 
-                            ${isSelected ? 'checked' : ''} ${isReviewMode ? 'disabled' : ''}>
+                            ${isSelected ? 'checked' : ''} ${isDisabled ? 'disabled' : ''}>
                         <span class="option-letter">${letters[index]}</span>
                         <span class="option-text">${option}</span>
                     </label>
@@ -1470,6 +2397,18 @@
             });
 
             html += `</div>`;
+
+            // Add Check Answer button for trial mode
+            if (isTrialMode && !isReviewMode) {
+                const btnClass = isChecked ? 'check-answer-btn checked' : 'check-answer-btn';
+                const btnText = isChecked ? '✓ Answer Checked' : '🔍 Check Answer';
+                const btnDisabled = isChecked ? 'disabled' : '';
+                html += `
+                    <button class="${btnClass}" onclick="checkAnswer(${question.id})" ${btnDisabled}>
+                        ${btnText}
+                    </button>
+                `;
+            }
             
             // Add explanation for review mode
             html += `
@@ -1491,6 +2430,55 @@
             renderQuestionNav();
         }
 
+        // Check answer function for trial mode
+        function checkAnswer(questionId) {
+            // Must have selected an answer first
+            if (answers[questionId] === undefined) {
+                alert('Please select an answer first!');
+                return;
+            }
+
+            // Mark as checked
+            checkedAnswers[questionId] = true;
+
+            // Find the question data to check if correct
+            let question = null;
+            for (const section of quizData.sections) {
+                question = section.questions.find(q => q.id === questionId);
+                if (question) break;
+            }
+
+            // Update the question block UI
+            const questionBlock = document.querySelector(`.question-block[data-question-id="${questionId}"]`);
+            if (questionBlock) {
+                questionBlock.classList.add('answer-revealed');
+                
+                // Update option labels
+                const optionLabels = questionBlock.querySelectorAll('.option-label');
+                optionLabels.forEach((label, index) => {
+                    const input = label.querySelector('input');
+                    input.disabled = true;
+                    
+                    if (index === question.correct) {
+                        label.classList.add('correct');
+                    } else if (input.checked) {
+                        label.classList.add('incorrect');
+                    }
+                });
+
+                // Update the check answer button
+                const checkBtn = questionBlock.querySelector('.check-answer-btn');
+                if (checkBtn) {
+                    checkBtn.classList.add('checked');
+                    checkBtn.innerHTML = '✓ Answer Checked';
+                    checkBtn.disabled = true;
+                }
+            }
+
+            // Update question navigator
+            renderQuestionNav();
+        }
+
         function updateProgress() {
             const count = Object.keys(answers).length;
             answeredCount.textContent = count;
@@ -1503,8 +2491,20 @@
             
             section.questions.forEach(q => {
                 const isAnswered = answers[q.id] !== undefined;
+                const isChecked = checkedAnswers[q.id];
+                
+                let btnClass = 'q-nav-btn';
+                if (isChecked) {
+                    // Find if the answer was correct
+                    const question = section.questions.find(sq => sq.id === q.id);
+                    const isCorrect = answers[q.id] === question.correct;
+                    btnClass += isCorrect ? ' checked' : ' checked-wrong';
+                } else if (isAnswered) {
+                    btnClass += ' answered';
+                }
+                
                 html += `
-                    <button class="q-nav-btn ${isAnswered ? 'answered' : ''}" 
+                    <button class="${btnClass}" 
                             onclick="scrollToQuestion(${q.id})">
                         ${q.id}
                     </button>
@@ -1693,24 +2693,25 @@
 
             // Reset state
             answers = {};
+            checkedAnswers = {};
             timeLeft = 60 * 60;
             currentSection = 1;
             isReviewMode = false;
+            isTrialMode = false;
 
             // Reset UI
             timerBox.style.display = 'flex';
+            trialBadge.classList.add('hidden');
             timerBox.classList.remove('warning', 'danger');
             clearReviewScore();
             updateTimerDisplay();
             updateProgress();
 
-            // Show quiz
+            // Show start screen to choose mode again
             resultsScreen.classList.add('hidden');
-            quizScreen.classList.remove('hidden');
+            quizScreen.classList.add('hidden');
+            startScreen.classList.remove('hidden');
             quizContent.classList.remove('review-mode');
-            
-            startTimer();
-            renderSection(1);
         }
 
         function goToDashboard() {
