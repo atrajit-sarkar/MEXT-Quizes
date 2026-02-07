@@ -4,7 +4,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MEXT English Quizzes - Practice Portal</title>
+    <title>MEXT Graduate Programme English Quiz Prep</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -13,1869 +16,649 @@
         }
 
         :root {
-            --primary: #1a365d;
-            --primary-light: #2c5282;
-            --accent: #e53e3e;
-            --accent-light: #fc8181;
-            --gold: #d69e2e;
-            --success: #38a169;
-            --warning: #dd6b20;
-            --bg-light: #f7fafc;
-            --bg-dark: #edf2f7;
-            --text-dark: #1a202c;
-            --text-muted: #718096;
-            --border: #e2e8f0;
-            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            --ink: #0b1f33;
+            --ink-soft: #2a3b52;
+            --accent: #c23b22;
+            --accent-soft: #f2b78f;
+            --teal: #1f7a8c;
+            --gold: #f4d35e;
+            --paper: #f8f3ea;
+            --surface: #ffffff;
+            --muted: #6a7b8f;
+            --border: rgba(11, 31, 51, 0.15);
+            --shadow: 0 18px 40px rgba(11, 31, 51, 0.16);
+            --shadow-soft: 0 10px 30px rgba(11, 31, 51, 0.12);
+            --radius-lg: 28px;
+            --radius-md: 18px;
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: var(--bg-light);
+            font-family: 'Space Grotesk', sans-serif;
+            background: radial-gradient(circle at top left, #fef6e9 0%, #f7f0e3 45%, #eef2f7 100%);
+            color: var(--ink);
             min-height: 100vh;
-            color: var(--text-dark);
             line-height: 1.6;
+            opacity: 0;
+            transform: translateY(8px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        body.loaded {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .ambient {
+            position: fixed;
+            inset: 0;
+            z-index: -2;
+            background: radial-gradient(circle at 15% 20%, rgba(194, 59, 34, 0.15), transparent 45%),
+                radial-gradient(circle at 85% 15%, rgba(31, 122, 140, 0.18), transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(244, 211, 94, 0.2), transparent 55%);
         }
 
         .container {
-            max-width: 1200px;
+            width: min(1200px, 92vw);
             margin: 0 auto;
-            padding: 20px;
         }
 
-        /* Navigation */
-        .navbar {
-            background: white;
-            box-shadow: var(--shadow);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-
-        .nav-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 16px 20px;
+        .nav {
             display: flex;
+            align-items: center;
             justify-content: space-between;
-            align-items: center;
+            padding: 28px 0 12px;
         }
 
-        .nav-brand {
+        .brand {
             display: flex;
             align-items: center;
             gap: 12px;
-            font-size: 1.4rem;
-            font-weight: 700;
-            color: var(--primary);
-            text-decoration: none;
-        }
-
-        .nav-brand span {
-            font-size: 1.8rem;
-        }
-
-        .nav-user {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
-
-        .user-info {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .user-avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            border: 2px solid var(--primary);
-        }
-
-        .user-name {
             font-weight: 600;
-            color: var(--text-dark);
+            text-decoration: none;
+            color: var(--ink);
+            letter-spacing: 0.02em;
         }
 
-        .user-email {
-            font-size: 0.8rem;
-            color: var(--text-muted);
+        .brand-mark {
+            width: 42px;
+            height: 42px;
+            border-radius: 14px;
+            display: grid;
+            place-items: center;
+            background: linear-gradient(135deg, var(--ink), var(--teal));
+            color: white;
+            font-weight: 700;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 22px;
+            font-size: 0.95rem;
+        }
+
+        .nav-links a {
+            color: var(--ink-soft);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .announcement {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            padding: 14px 20px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.75);
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-soft);
+            font-size: 0.95rem;
+        }
+
+        .announcement span {
+            font-weight: 600;
+        }
+
+        .announcement a {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .hero {
+            padding: 40px 0 60px;
+        }
+
+        .hero-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 32px;
+            align-items: center;
+            margin-top: 32px;
+        }
+
+        .eyebrow {
+            text-transform: uppercase;
+            letter-spacing: 0.18em;
+            font-size: 0.75rem;
+            color: var(--teal);
+            font-weight: 600;
+        }
+
+        h1,
+        h2,
+        h3 {
+            font-family: 'Fraunces', serif;
+            font-weight: 700;
+            color: var(--ink);
+        }
+
+        h1 {
+            font-size: clamp(2.4rem, 3.5vw, 3.4rem);
+            margin: 12px 0 16px;
+            line-height: 1.1;
+        }
+
+        .hero-copy p {
+            font-size: 1.05rem;
+            color: var(--ink-soft);
+            margin-bottom: 24px;
+        }
+
+        .cta-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 14px;
+            margin-bottom: 20px;
         }
 
         .btn {
-            padding: 10px 20px;
             border: none;
-            border-radius: 8px;
+            padding: 14px 22px;
+            border-radius: 999px;
             font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
+            text-decoration: none;
             display: inline-flex;
             align-items: center;
+            justify-content: center;
             gap: 8px;
-            text-decoration: none;
-            font-size: 0.95rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
 
         .btn-primary {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            background: linear-gradient(135deg, var(--accent), #8f2a18);
             color: white;
+            box-shadow: var(--shadow-soft);
         }
 
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-lg);
-        }
-
-        .btn-google {
+        .btn-secondary {
             background: white;
-            color: var(--text-dark);
-            border: 2px solid var(--border);
+            color: var(--ink);
+            border: 1px solid var(--border);
         }
 
-        .btn-google:hover {
-            background: var(--bg-light);
-            border-color: var(--primary);
-        }
-
-        .btn-outline {
-            background: transparent;
-            color: var(--text-muted);
-            border: 2px solid var(--border);
-        }
-
-        .btn-outline:hover {
-            border-color: var(--accent);
-            color: var(--accent);
-        }
-
-        .btn-accent {
-            background: linear-gradient(135deg, var(--accent) 0%, #c53030 100%);
-            color: white;
-        }
-
-        .btn-accent:hover {
+        .btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(229, 62, 62, 0.4);
+            box-shadow: var(--shadow);
         }
 
-        /* Auth Screen */
-        .auth-screen {
-            min-height: calc(100vh - 80px);
+        .hero-badges {
             display: flex;
-            align-items: center;
-            justify-content: center;
-            background: linear-gradient(135deg, #1a365d 0%, #2c5282 50%, #e53e3e 100%);
-            padding: 40px 20px;
+            flex-wrap: wrap;
+            gap: 10px;
         }
 
-        .auth-card {
+        .badge {
+            padding: 8px 14px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.8);
+            border: 1px solid var(--border);
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .hero-panel {
             background: white;
-            border-radius: 20px;
-            padding: 48px;
-            max-width: 450px;
-            width: 100%;
-            text-align: center;
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
-        }
-
-        .auth-logo {
-            font-size: 4rem;
-            margin-bottom: 16px;
-        }
-
-        .auth-card h1 {
-            color: var(--primary);
-            font-size: 1.8rem;
-            margin-bottom: 8px;
-        }
-
-        .auth-card p {
-            color: var(--text-muted);
-            margin-bottom: 32px;
-        }
-
-        .google-btn {
-            width: 100%;
-            padding: 14px 24px;
-            font-size: 1rem;
-            justify-content: center;
-        }
-
-        .google-btn img {
-            width: 20px;
-            height: 20px;
-        }
-
-        .auth-features {
-            margin-top: 32px;
-            padding-top: 24px;
-            border-top: 1px solid var(--border);
-            text-align: left;
-        }
-
-        .auth-features h3 {
-            font-size: 0.9rem;
-            color: var(--text-muted);
-            margin-bottom: 16px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .feature-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 8px 0;
-            color: var(--text-dark);
-            font-size: 0.95rem;
-        }
-
-        .feature-item span:first-child {
-            font-size: 1.2rem;
-        }
-
-        /* Dashboard */
-        .dashboard {
-            display: none;
-        }
-
-        .dashboard.active {
-            display: block;
-        }
-
-        /* Hero Section */
-        .hero {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
-            border-radius: 20px;
-            padding: 40px;
-            margin-bottom: 30px;
-            color: white;
+            border-radius: var(--radius-lg);
+            padding: 28px;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(11, 31, 51, 0.08);
             position: relative;
             overflow: hidden;
         }
 
-        .hero::before {
-            content: '🎌';
+        .hero-panel::after {
+            content: "";
             position: absolute;
-            right: 40px;
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 8rem;
-            opacity: 0.1;
+            width: 200px;
+            height: 200px;
+            right: -80px;
+            top: -80px;
+            background: radial-gradient(circle, rgba(244, 211, 94, 0.35), transparent 70%);
         }
 
-        .hero h1 {
-            font-size: 2rem;
+        .panel-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--teal);
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            margin-bottom: 16px;
+        }
+
+        .panel-title {
+            font-size: 1.6rem;
             margin-bottom: 8px;
         }
 
-        .hero p {
-            opacity: 0.9;
-            max-width: 500px;
+        .panel-meta {
+            color: var(--muted);
+            margin-bottom: 18px;
         }
 
-        /* Stats Grid */
-        .stats-grid {
+        .panel-list {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
+            gap: 10px;
+            font-size: 0.95rem;
+            color: var(--ink-soft);
+        }
+
+        .panel-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 16px;
+            margin: 40px 0;
         }
 
         .stat-card {
             background: white;
-            border-radius: 16px;
-            padding: 24px;
-            box-shadow: var(--shadow);
-            display: flex;
-            align-items: center;
-            gap: 16px;
+            padding: 20px;
+            border-radius: var(--radius-md);
+            border: 1px solid rgba(11, 31, 51, 0.08);
+            box-shadow: var(--shadow-soft);
         }
 
-        .stat-icon {
-            width: 56px;
-            height: 56px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
+        .stat-card h3 {
+            font-size: 1.4rem;
         }
 
-        .stat-icon.blue {
-            background: #ebf8ff;
-        }
-
-        .stat-icon.green {
-            background: #f0fff4;
-        }
-
-        .stat-icon.orange {
-            background: #fffaf0;
-        }
-
-        .stat-icon.purple {
-            background: #faf5ff;
-        }
-
-        .stat-info h3 {
-            font-size: 1.8rem;
-            color: var(--text-dark);
-            line-height: 1;
-        }
-
-        .stat-info p {
-            color: var(--text-muted);
+        .stat-card p {
+            color: var(--muted);
             font-size: 0.9rem;
         }
 
-        /* Main Content Grid */
-        .main-grid {
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 30px;
+        section {
+            padding: 50px 0;
         }
 
-        @media (max-width: 968px) {
-            .main-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        /* Section Title */
         .section-title {
             display: flex;
+            align-items: center;
             justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .section-title h2 {
-            font-size: 1.3rem;
-            color: var(--text-dark);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        /* Quiz Cards */
-        .quiz-list {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
-
-        .quiz-card {
-            background: white;
-            border-radius: 16px;
-            padding: 20px;
-            box-shadow: var(--shadow);
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            transition: all 0.3s ease;
-            flex-wrap: wrap;
-        }
-
-        .quiz-card:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-lg);
-        }
-
-        .quiz-number {
-            width: 52px;
-            height: 52px;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 1.3rem;
-            font-weight: 700;
-            flex-shrink: 0;
-        }
-
-        .quiz-info {
-            flex: 1;
-            min-width: 150px;
-        }
-
-        .quiz-info h3 {
-            font-size: 1.05rem;
-            color: var(--text-dark);
-            margin-bottom: 4px;
-        }
-
-        .quiz-meta {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px 16px;
-            color: var(--text-muted);
-            font-size: 0.8rem;
-        }
-
-        .quiz-status {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            flex-wrap: wrap;
-            justify-content: flex-end;
-        }
-
-        .quiz-status .btn {
-            padding: 8px 14px;
-            font-size: 0.8rem;
-            white-space: nowrap;
-        }
-
-        .quiz-status .btn-outline {
-            padding: 7px 12px;
-        }
-
-        .status-badge {
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: 600;
-        }
-
-        .status-badge.completed {
-            background: #f0fff4;
-            color: var(--success);
-        }
-
-        .status-badge.in-progress {
-            background: #fffaf0;
-            color: var(--warning);
-        }
-
-        .status-badge.not-started {
-            background: var(--bg-light);
-            color: var(--text-muted);
-        }
-
-        .status-badge.locked {
-            background: var(--bg-dark);
-            color: var(--text-muted);
-        }
-
-        .quiz-score {
-            font-weight: 700;
-            color: var(--primary);
-        }
-
-        /* Analytics Panel */
-        .analytics-panel {
-            background: white;
-            border-radius: 16px;
-            padding: 24px;
-            box-shadow: var(--shadow);
-        }
-
-        .analytics-panel h3 {
-            font-size: 1.1rem;
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .chart-container {
+            gap: 20px;
             margin-bottom: 24px;
         }
 
-        .progress-ring {
-            width: 160px;
-            height: 160px;
-            margin: 0 auto 20px;
-            position: relative;
+        .section-title p {
+            max-width: 540px;
+            color: var(--ink-soft);
         }
 
-        .progress-ring svg {
-            transform: rotate(-90deg);
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 20px;
         }
 
-        .progress-ring circle {
-            fill: none;
-            stroke-width: 12;
-        }
-
-        .progress-ring .bg {
-            stroke: var(--bg-dark);
-        }
-
-        .progress-ring .progress {
-            stroke: var(--success);
-            stroke-linecap: round;
-            transition: stroke-dashoffset 1s ease;
-        }
-
-        .progress-center {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            text-align: center;
-        }
-
-        .progress-center .value {
-            font-size: 2rem;
-            font-weight: 700;
-            color: var(--text-dark);
-        }
-
-        .progress-center .label {
-            font-size: 0.85rem;
-            color: var(--text-muted);
-        }
-
-        /* Section Breakdown */
-        .section-breakdown {
-            margin-top: 24px;
-        }
-
-        .breakdown-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 12px 0;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .breakdown-item:last-child {
-            border-bottom: none;
-        }
-
-        .breakdown-name {
-            font-size: 0.9rem;
-            color: var(--text-dark);
-            min-width: 80px;
-        }
-
-        .breakdown-bar {
-            flex: 1;
-            margin: 0 16px;
-            height: 8px;
-            background: var(--bg-dark);
-            border-radius: 4px;
-            overflow: hidden;
-        }
-
-        .breakdown-fill {
-            height: 100%;
-            border-radius: 4px;
-            transition: width 0.5s ease;
-        }
-
-        .breakdown-fill.excellent {
-            background: var(--success);
-        }
-
-        .breakdown-fill.good {
-            background: #48bb78;
-        }
-
-        .breakdown-fill.average {
-            background: var(--warning);
-        }
-
-        .breakdown-fill.poor {
-            background: var(--accent);
-        }
-
-        .breakdown-score {
-            font-weight: 600;
-            font-size: 0.9rem;
-            min-width: 50px;
-            text-align: right;
-        }
-
-        /* Recent Activity */
-        .activity-list {
-            margin-top: 16px;
-        }
-
-        .activity-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 12px 0;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .activity-item:last-child {
-            border-bottom: none;
-        }
-
-        .activity-icon {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1rem;
-        }
-
-        .activity-icon.complete {
-            background: #f0fff4;
-        }
-
-        .activity-icon.attempt {
-            background: #ebf8ff;
-        }
-
-        .activity-info {
-            flex: 1;
-        }
-
-        .activity-info p {
-            font-size: 0.9rem;
-            color: var(--text-dark);
-        }
-
-        .activity-info span {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-        }
-
-        /* Loading State */
-        .loading {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 60px;
-        }
-
-        .spinner {
-            width: 40px;
-            height: 40px;
-            border: 4px solid var(--border);
-            border-top-color: var(--primary);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            to {
-                transform: rotate(360deg);
-            }
-        }
-
-        /* Hidden */
-        .hidden {
-            display: none !important;
-        }
-
-        /* History Modal */
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.6);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-            padding: 20px;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s ease;
-        }
-
-        .modal-overlay.active {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        .modal {
+        .info-card {
             background: white;
-            border-radius: 16px;
-            width: 100%;
-            max-width: 600px;
-            max-height: 80vh;
-            overflow: hidden;
-            transform: translateY(-20px);
-            transition: transform 0.3s ease;
+            padding: 24px;
+            border-radius: var(--radius-md);
+            border: 1px solid rgba(11, 31, 51, 0.08);
+            box-shadow: var(--shadow-soft);
         }
 
-        .modal-overlay.active .modal {
+        .info-card h3 {
+            font-size: 1.2rem;
+            margin-bottom: 8px;
+        }
+
+        .info-card p {
+            color: var(--muted);
+        }
+
+        .format {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 24px;
+            align-items: center;
+        }
+
+        .format-card {
+            background: linear-gradient(140deg, #ffffff, #f4f0e8);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            border: 1px solid rgba(11, 31, 51, 0.1);
+            box-shadow: var(--shadow-soft);
+        }
+
+        .pill-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 18px;
+        }
+
+        .pill {
+            padding: 8px 12px;
+            border-radius: 999px;
+            background: white;
+            border: 1px solid var(--border);
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .cta-band {
+            background: linear-gradient(135deg, rgba(31, 122, 140, 0.1), rgba(194, 59, 34, 0.08));
+            border-radius: var(--radius-lg);
+            padding: 36px;
+            border: 1px solid rgba(11, 31, 51, 0.1);
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 20px;
+            align-items: center;
+        }
+
+        .cta-band h2 {
+            font-size: 2rem;
+        }
+
+        .faq {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 18px;
+        }
+
+        .faq-card {
+            background: white;
+            border-radius: var(--radius-md);
+            padding: 20px;
+            border: 1px solid rgba(11, 31, 51, 0.08);
+        }
+
+        .faq-card h3 {
+            font-size: 1rem;
+            margin-bottom: 8px;
+        }
+
+        footer {
+            padding: 40px 0 60px;
+            color: var(--muted);
+            font-size: 0.9rem;
+        }
+
+        footer a {
+            color: var(--ink);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+            transition-delay: var(--delay, 0s);
+        }
+
+        .reveal.is-visible {
+            opacity: 1;
             transform: translateY(0);
         }
 
-        .modal-header {
-            padding: 20px 24px;
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: linear-gradient(135deg, var(--primary), var(--primary-light));
-            color: white;
-        }
-
-        .modal-header h2 {
-            font-size: 1.2rem;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .modal-close {
-            background: rgba(255, 255, 255, 0.2);
-            border: none;
-            color: white;
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            cursor: pointer;
-            font-size: 1.2rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: background 0.2s;
-        }
-
-        .modal-close:hover {
-            background: rgba(255, 255, 255, 0.3);
-        }
-
-        .modal-body {
-            padding: 24px;
-            overflow-y: auto;
-            max-height: calc(80vh - 80px);
-        }
-
-        .history-item {
-            display: flex;
-            align-items: center;
-            padding: 16px;
-            background: var(--bg-light);
-            border-radius: 12px;
-            margin-bottom: 12px;
-            gap: 16px;
-            transition: all 0.2s;
-            cursor: pointer;
-        }
-
-        .history-item:hover {
-            background: var(--bg-dark);
-            transform: translateX(4px);
-        }
-
-        .history-item:last-child {
-            margin-bottom: 0;
-        }
-
-        .history-rank {
-            width: 40px;
-            height: 40px;
-            background: linear-gradient(135deg, var(--primary), var(--primary-light));
-            color: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            font-size: 0.9rem;
-            flex-shrink: 0;
-        }
-
-        .history-rank.best {
-            background: linear-gradient(135deg, var(--gold), #f6ad55);
-        }
-
-        .history-details {
-            flex: 1;
-        }
-
-        .history-score {
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: var(--text-dark);
-            margin-bottom: 4px;
-        }
-
-        .history-score .percentage {
-            font-size: 0.85rem;
-            font-weight: 500;
-            color: var(--text-muted);
-            margin-left: 8px;
-        }
-
-        .history-date {
-            font-size: 0.85rem;
-            color: var(--text-muted);
-        }
-
-        .history-actions {
-            display: flex;
-            gap: 8px;
-        }
-
-        .history-btn {
-            padding: 8px 16px;
-            border-radius: 8px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            cursor: pointer;
-            border: none;
-            transition: all 0.2s;
-        }
-
-        .history-btn.review {
-            background: var(--primary);
-            color: white;
-        }
-
-        .history-btn.review:hover {
-            background: var(--primary-light);
-        }
-
-        .no-history {
-            text-align: center;
-            padding: 40px 20px;
-            color: var(--text-muted);
-        }
-
-        .no-history .icon {
-            font-size: 3rem;
-            margin-bottom: 12px;
-        }
-
-        /* Empty State */
-        .empty-state {
-            text-align: center;
-            padding: 40px;
-            color: var(--text-muted);
-        }
-
-        .empty-state .icon {
-            font-size: 3rem;
-            margin-bottom: 16px;
-        }
-
-        /* Best Scores */
-        .best-scores {
-            margin-top: 20px;
-            padding-top: 20px;
-            border-top: 1px solid var(--border);
-        }
-
-        .best-score-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 0;
-        }
-
-        .best-score-item .quiz-name {
-            font-size: 0.9rem;
-            color: var(--text-dark);
-        }
-
-        .best-score-item .score {
-            font-weight: 700;
-            color: var(--success);
-        }
-
-        /* Responsive */
-        @media (max-width: 1024px) {
-            .quiz-card {
-                padding: 16px;
-            }
-
-            .quiz-number {
-                width: 50px;
-                height: 50px;
-                font-size: 1.2rem;
-            }
-
-            .quiz-status {
-                width: 100%;
-                justify-content: flex-start;
-                margin-top: 8px;
-                padding-top: 12px;
-                border-top: 1px solid var(--border);
-            }
-        }
-
-        @media (max-width: 768px) {
-            .nav-content {
-                flex-direction: column;
-                gap: 16px;
-            }
-
-            .hero {
-                padding: 24px;
-            }
-
-            .hero h1 {
-                font-size: 1.5rem;
-            }
-
-            .hero::before {
+        @media (max-width: 760px) {
+            .nav-links {
                 display: none;
             }
 
-            .auth-card {
-                padding: 32px 24px;
-            }
-
-            .stats-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-            .quiz-card {
+            .announcement {
                 flex-direction: column;
-                text-align: center;
+                align-items: flex-start;
+            }
+
+            .hero {
+                padding-top: 20px;
+            }
+
+            .cta-row {
+                flex-direction: column;
                 align-items: stretch;
             }
 
-            .quiz-number {
+            .btn {
                 width: 100%;
-                height: auto;
-                padding: 12px;
-                border-radius: 10px;
-                font-size: 1rem;
-            }
-
-            .quiz-number::before {
-                content: 'Quiz ';
-            }
-
-            .quiz-meta {
-                justify-content: center;
-            }
-
-            .quiz-status {
-                justify-content: center;
-                border-top: 1px solid var(--border);
-                padding-top: 12px;
-                margin-top: 8px;
-            }
-
-            .quiz-status .btn {
-                flex: 1;
-                min-width: 80px;
             }
         }
 
-        @media (max-width: 480px) {
-            .stats-grid {
-                grid-template-columns: 1fr 1fr;
-                gap: 10px;
-            }
-
-            .stat-card {
-                padding: 16px 12px;
-            }
-
-            .quiz-status {
-                flex-direction: column;
-                gap: 8px;
-            }
-
-            .quiz-status .btn {
-                width: 100%;
-            }
-
-            .status-badge {
-                width: 100%;
-                text-align: center;
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation: none !important;
+                transition: none !important;
             }
         }
     </style>
 </head>
 
 <body>
-    <!-- Navigation -->
-    <nav class="navbar">
-        <div class="nav-content">
-            <a href="#" class="nav-brand">
-                <span>🎌</span>
-                MEXT Quiz Portal
+    <div class="ambient"></div>
+    <header class="hero container" id="top">
+        <nav class="nav">
+            <a class="brand" href="#top">
+                <span class="brand-mark">MX</span>
+                MEXT Graduate Quiz Prep
             </a>
-            <div class="nav-user" id="navUser">
-                <!-- User info will be populated here -->
+            <div class="nav-links">
+                <a href="#overview">Overview</a>
+                <a href="#format">Exam Format</a>
+                <a href="#benefits">Why Join</a>
+                <a href="#faq">FAQ</a>
             </div>
+        </nav>
+
+        <div class="announcement reveal" style="--delay: 0.05s">
+            <span>New: Mock Examination 10 is live now.</span>
+            <a href="portal.html?next=quiz-10/index.html">Sign up to start the current quiz</a>
         </div>
-    </nav>
 
-    <!-- Auth Screen -->
-    <div class="auth-screen" id="authScreen">
-        <div class="auth-card">
-            <div class="auth-logo">🎌</div>
-            <h1>Welcome to MEXT Quiz Portal</h1>
-            <p>Sign in to track your progress and access all mock examinations</p>
+        <div class="hero-grid">
+            <div class="hero-copy">
+                <div class="eyebrow">MEXT Graduate Programme</div>
+                <h1>Master the English exam with full-length mock quizzes that feel real.</h1>
+                <p>Prepare with structured, timed quizzes built for the MEXT graduate programme English examination. Build speed, accuracy, and confidence across vocabulary, grammar, error identification, cloze, and reading.</p>
+                <div class="cta-row">
+                    <a class="btn btn-primary" href="portal.html?next=quiz-10/index.html">Sign up and start Mock Exam 10</a>
+                    <a class="btn btn-secondary" href="portal.html">Sign in to track progress</a>
+                </div>
+                <div class="hero-badges">
+                    <span class="badge">10 mock exams</span>
+                    <span class="badge">500 total questions</span>
+                    <span class="badge">60 minutes each</span>
+                    <span class="badge">5 exam sections</span>
+                </div>
+            </div>
 
-            <button class="btn btn-google google-btn" onclick="signInWithGoogle()">
-                <svg width="20" height="20" viewBox="0 0 24 24">
-                    <path fill="#4285F4"
-                        d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
-                    <path fill="#34A853"
-                        d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
-                    <path fill="#FBBC05"
-                        d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
-                    <path fill="#EA4335"
-                        d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
-                </svg>
-                Sign in with Google
-            </button>
-
-            <div class="auth-features">
-                <h3>What you'll get:</h3>
-                <div class="feature-item">
-                    <span>📊</span>
-                    <span>Track your progress across all quizzes</span>
+            <div class="hero-panel reveal" style="--delay: 0.15s">
+                <div class="panel-label">Current Quiz</div>
+                <div class="panel-title">Mock Examination 10</div>
+                <div class="panel-meta">Full-length practice exam for graduate applicants.</div>
+                <div class="panel-list">
+                    <div>50 questions across all exam sections</div>
+                    <div>Timed practice to simulate the real test</div>
+                    <div>Instant scoring and review after completion</div>
                 </div>
-                <div class="feature-item">
-                    <span>📈</span>
-                    <span>Detailed analytics and performance reports</span>
-                </div>
-                <div class="feature-item">
-                    <span>💾</span>
-                    <span>Save and resume quizzes anytime</span>
-                </div>
-                <div class="feature-item">
-                    <span>🏆</span>
-                    <span>Track your best scores</span>
+                <div class="panel-actions">
+                    <a class="btn btn-primary" href="portal.html?next=quiz-10/index.html">Sign up and start</a>
+                    <a class="btn btn-secondary" href="quiz-10/index.html">Preview quiz</a>
                 </div>
             </div>
         </div>
-    </div>
 
-    <!-- Dashboard -->
-    <div class="dashboard" id="dashboard">
-        <div class="container">
-            <!-- Hero Section -->
-            <div class="hero">
-                <h1 id="welcomeMessage">Welcome back!</h1>
-                <p>Continue your MEXT English exam preparation. Practice makes perfect!</p>
+        <div class="stats">
+            <div class="stat-card reveal" style="--delay: 0.1s">
+                <h3>10</h3>
+                <p>Full-length mock examinations</p>
             </div>
+            <div class="stat-card reveal" style="--delay: 0.2s">
+                <h3>500</h3>
+                <p>Practice questions across the bank</p>
+            </div>
+            <div class="stat-card reveal" style="--delay: 0.3s">
+                <h3>60 min</h3>
+                <p>Timed simulation per exam</p>
+            </div>
+            <div class="stat-card reveal" style="--delay: 0.4s">
+                <h3>5</h3>
+                <p>Targeted English sections</p>
+            </div>
+        </div>
+    </header>
 
-            <!-- Stats Grid -->
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-icon blue">📝</div>
-                    <div class="stat-info">
-                        <h3 id="statAttempts">0</h3>
-                        <p>Quizzes Attempted</p>
+    <main>
+        <section id="overview" class="container">
+            <div class="section-title">
+                <h2>Everything you need for serious MEXT English prep</h2>
+                <p>Build a realistic preparation routine with full-length quizzes, focused review, and the tools to track your improvement over time.</p>
+            </div>
+            <div class="card-grid">
+                <div class="info-card reveal" style="--delay: 0.05s">
+                    <h3>Graduate-focused practice</h3>
+                    <p>Questions are curated to reflect the graduate programme English exam style and pacing.</p>
+                </div>
+                <div class="info-card reveal" style="--delay: 0.15s">
+                    <h3>Structured study flow</h3>
+                    <p>Sign in, take a timed mock exam, and immediately review your score and section performance.</p>
+                </div>
+                <div class="info-card reveal" style="--delay: 0.25s">
+                    <h3>Progress tracking</h3>
+                    <p>Use the portal to save attempts, revisit best scores, and watch your accuracy improve.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="format" class="container">
+            <div class="section-title">
+                <h2>Know the exam format before you sit for it</h2>
+                <p>Each mock exam matches the timing and section breakdown expected in the MEXT graduate programme English test.</p>
+            </div>
+            <div class="format">
+                <div class="reveal" style="--delay: 0.1s">
+                    <h3>Exam structure at a glance</h3>
+                    <p>Practice under real exam pressure with time limits, mixed difficulty, and a steady progression from vocabulary to reading.</p>
+                    <div class="pill-row">
+                        <span class="pill">Vocabulary</span>
+                        <span class="pill">Grammar</span>
+                        <span class="pill">Error Identification</span>
+                        <span class="pill">Cloze Test</span>
+                        <span class="pill">Reading</span>
                     </div>
                 </div>
-                <div class="stat-card">
-                    <div class="stat-icon green">✅</div>
-                    <div class="stat-info">
-                        <h3 id="statCompleted">0</h3>
-                        <p>Quizzes Completed</p>
-                    </div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon orange">🎯</div>
-                    <div class="stat-info">
-                        <h3 id="statAvgScore">0%</h3>
-                        <p>Average Score</p>
-                    </div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon purple">⏱️</div>
-                    <div class="stat-info">
-                        <h3 id="statTotalTime">0m</h3>
-                        <p>Total Time Spent</p>
+                <div class="format-card reveal" style="--delay: 0.2s">
+                    <h3>Recommended routine</h3>
+                    <p>Take one full mock exam per week, then review incorrect answers and retake a section-focused quiz mid-week.</p>
+                    <div class="panel-list">
+                        <div>60 minutes timed practice</div>
+                        <div>Immediate scoring and feedback</div>
+                        <div>Builds test-day stamina</div>
                     </div>
                 </div>
             </div>
+        </section>
 
-            <!-- Main Content -->
-            <div class="main-grid">
-                <!-- Quiz List -->
+        <section id="benefits" class="container">
+            <div class="section-title">
+                <h2>Why students choose this MEXT quiz portal</h2>
+                <p>Designed to keep you consistent, confident, and ready for the graduate programme English assessment.</p>
+            </div>
+            <div class="card-grid">
+                <div class="info-card reveal" style="--delay: 0.05s">
+                    <h3>Authentic pacing</h3>
+                    <p>Keep your timing tight with mock exams built around a 60-minute window.</p>
+                </div>
+                <div class="info-card reveal" style="--delay: 0.15s">
+                    <h3>Smart review</h3>
+                    <p>Use section breakdowns to focus your next study session on weaker topics.</p>
+                </div>
+                <div class="info-card reveal" style="--delay: 0.25s">
+                    <h3>Confidence builder</h3>
+                    <p>Practice under exam-like pressure so the real test feels familiar.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="container">
+            <div class="cta-band reveal" style="--delay: 0.05s">
                 <div>
-                    <div class="section-title">
-                        <h2>📚 Available Quizzes</h2>
-                    </div>
-                    <div class="quiz-list" id="quizList">
-                        <!-- Quiz cards will be populated here -->
-                        <div class="loading">
-                            <div class="spinner"></div>
-                        </div>
-                    </div>
+                    <h2>Your next mock exam is waiting.</h2>
+                    <p>Sign up to unlock the quiz portal, track your progress, and begin Mock Examination 10.</p>
                 </div>
-
-                <!-- Analytics Panel -->
-                <div>
-                    <div class="analytics-panel">
-                        <h3>📊 Performance Analytics</h3>
-
-                        <div class="chart-container">
-                            <div class="progress-ring">
-                                <svg width="160" height="160">
-                                    <circle class="bg" cx="80" cy="80" r="68" />
-                                    <circle class="progress" id="overallProgress" cx="80" cy="80" r="68"
-                                        stroke-dasharray="427" stroke-dashoffset="427" />
-                                </svg>
-                                <div class="progress-center">
-                                    <div class="value" id="overallScore">0%</div>
-                                    <div class="label">Overall Score</div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="section-breakdown">
-                            <h4 style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 12px;">Section
-                                Performance</h4>
-                            <div id="sectionBreakdown">
-                                <div class="breakdown-item">
-                                    <span class="breakdown-name">Vocabulary</span>
-                                    <div class="breakdown-bar">
-                                        <div class="breakdown-fill" style="width: 0%"></div>
-                                    </div>
-                                    <span class="breakdown-score">-</span>
-                                </div>
-                                <div class="breakdown-item">
-                                    <span class="breakdown-name">Grammar</span>
-                                    <div class="breakdown-bar">
-                                        <div class="breakdown-fill" style="width: 0%"></div>
-                                    </div>
-                                    <span class="breakdown-score">-</span>
-                                </div>
-                                <div class="breakdown-item">
-                                    <span class="breakdown-name">Error ID</span>
-                                    <div class="breakdown-bar">
-                                        <div class="breakdown-fill" style="width: 0%"></div>
-                                    </div>
-                                    <span class="breakdown-score">-</span>
-                                </div>
-                                <div class="breakdown-item">
-                                    <span class="breakdown-name">Cloze Test</span>
-                                    <div class="breakdown-bar">
-                                        <div class="breakdown-fill" style="width: 0%"></div>
-                                    </div>
-                                    <span class="breakdown-score">-</span>
-                                </div>
-                                <div class="breakdown-item">
-                                    <span class="breakdown-name">Reading</span>
-                                    <div class="breakdown-bar">
-                                        <div class="breakdown-fill" style="width: 0%"></div>
-                                    </div>
-                                    <span class="breakdown-score">-</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="best-scores">
-                            <h4 style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 12px;">🏆 Best Scores
-                            </h4>
-                            <div id="bestScores">
-                                <div class="empty-state" style="padding: 20px;">
-                                    <p>Complete quizzes to see your best scores</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Recent Activity -->
-                    <div class="analytics-panel" style="margin-top: 20px;">
-                        <h3>🕐 Recent Activity</h3>
-                        <div class="activity-list" id="activityList">
-                            <div class="empty-state">
-                                <div class="icon">📋</div>
-                                <p>No activity yet. Start a quiz!</p>
-                            </div>
-                        </div>
-                    </div>
+                <div class="cta-row">
+                    <a class="btn btn-primary" href="portal.html?next=quiz-10/index.html">Start Mock Exam 10</a>
+                    <a class="btn btn-secondary" href="portal.html">Explore all quizzes</a>
                 </div>
             </div>
-        </div>
-    </div>
+        </section>
 
-    <!-- History Modal -->
-    <div class="modal-overlay" id="historyModal">
-        <div class="modal">
-            <div class="modal-header">
-                <h2>📊 <span id="historyTitle">Quiz History</span></h2>
-                <button class="modal-close" onclick="closeHistoryModal()">×</button>
+        <section id="faq" class="container">
+            <div class="section-title">
+                <h2>Frequently asked questions</h2>
+                <p>Quick answers to help you plan your study schedule.</p>
             </div>
-            <div class="modal-body" id="historyBody">
-                <!-- History items will be populated here -->
+            <div class="faq">
+                <div class="faq-card reveal" style="--delay: 0.05s">
+                    <h3>Is this official MEXT material?</h3>
+                    <p>This portal is an independent practice resource created to help graduate applicants prepare. It is not affiliated with the MEXT organization.</p>
+                </div>
+                <div class="faq-card reveal" style="--delay: 0.15s">
+                    <h3>Can I take quizzes without signing in?</h3>
+                    <p>You can preview any quiz, but signing in lets you save scores, track progress, and return to unfinished attempts.</p>
+                </div>
+                <div class="faq-card reveal" style="--delay: 0.25s">
+                    <h3>How often should I practice?</h3>
+                    <p>Most students improve by taking one full exam weekly and reviewing weak sections in between.</p>
+                </div>
             </div>
-        </div>
-    </div>
+        </section>
+    </main>
 
-    <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-analytics-compat.js"></script>
-
-    <!-- Shared Firebase Config -->
-    <script src="js/firebase-config.js"></script>
+    <footer class="container">
+        <div>Need to jump straight into the current quiz? <a href="portal.html?next=quiz-10/index.html">Sign up here</a>.</div>
+        <div>Looking for the full portal experience? <a href="portal.html">Open the quiz dashboard</a>.</div>
+    </footer>
 
     <script>
-        // Quiz data structure
-        const quizzes = [
-            {
-                id: 'quiz-1',
-                title: 'Mock Examination 1',
-                description: 'Complete MEXT English practice test',
-                questions: 50,
-                duration: 60,
-                path: 'quiz-1/index.html',
-                available: true
-            },
-            {
-                id: 'quiz-2',
-                title: 'Mock Examination 2',
-                description: 'Additional practice questions',
-                questions: 50,
-                duration: 60,
-                path: 'quiz-2/index.html',
-                available: true
-            },
-            {
-                id: 'quiz-3',
-                title: 'Mock Examination 3',
-                description: 'Advanced difficulty test',
-                questions: 50,
-                duration: 60,
-                path: 'quiz-3/index.html',
-                available: true
-            },
-            {
-                id: 'quiz-4',
-                title: 'Mock Examination 4',
-                description: 'Comprehensive practice exam',
-                questions: 50,
-                duration: 60,
-                path: 'quiz-4/index.html',
-                available: true
-            },
-            {
-                id: 'quiz-5',
-                title: 'Mock Examination 5',
-                description: 'Advanced mock examination',
-                questions: 50,
-                duration: 60,
-                path: 'quiz-5/index.html',
-                available: true
-            },
-            {
-                id: 'quiz-6',
-                title: 'Mock Examination 6',
-                description: 'Expert level practice exam',
-                questions: 50,
-                duration: 60,
-                path: 'quiz-6/index.html',
-                available: true
-            },
-            {
-                id: 'quiz-7',
-                title: 'Mock Examination 7',
-                description: 'Full-length practice exam',
-                questions: 50,
-                duration: 60,
-                path: 'quiz-7/index.html',
-                available: true
-            },
-            {
-                id: 'quiz-8',
-                title: 'Mock Examination 8',
-                description: 'Full-length practice exam',
-                questions: 50,
-                duration: 60,
-                path: 'quiz-8/index.html',
-                available: true
-            },
-            {
-                id: 'quiz-9',
-                title: 'Mock Examination 9',
-                description: 'Full-length practice exam',
-                questions: 50,
-                duration: 60,
-                path: 'quiz-9/index.html',
-                available: true
-            },
-            {
-                id: 'quiz-10',
-                title: 'Mock Examination 10',
-                description: 'Full-length practice exam',
-                questions: 50,
-                duration: 60,
-                path: 'quiz-10/index.html',
-                available: true
-            }
-        ];
+        window.addEventListener('DOMContentLoaded', () => {
+            document.body.classList.add('loaded');
+            const reveals = document.querySelectorAll('.reveal');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.2 });
 
-        // Current user data
-        let currentUser = null;
-        let userData = null;
-
-        // DOM Elements
-        const authScreen = document.getElementById('authScreen');
-        const dashboard = document.getElementById('dashboard');
-        const navUser = document.getElementById('navUser');
-
-        // Auth State Observer
-        auth.onAuthStateChanged(async (user) => {
-            if (user) {
-                currentUser = user;
-                await loadUserData();
-                showDashboard();
-                analytics.logEvent('login', { method: 'Google' });
-            } else {
-                currentUser = null;
-                userData = null;
-                showAuthScreen();
-            }
+            reveals.forEach((el) => observer.observe(el));
         });
-
-        // Google Sign In
-        function signInWithGoogle() {
-            const provider = new firebase.auth.GoogleAuthProvider();
-            auth.signInWithPopup(provider)
-                .catch((error) => {
-                    console.error('Sign in error:', error);
-                    alert('Sign in failed. Please try again.');
-                });
-        }
-
-        // Sign Out
-        function signOut() {
-            auth.signOut();
-        }
-
-        // Show Auth Screen
-        function showAuthScreen() {
-            authScreen.classList.remove('hidden');
-            dashboard.classList.remove('active');
-            navUser.innerHTML = '';
-        }
-
-        // Show Dashboard
-        function showDashboard() {
-            authScreen.classList.add('hidden');
-            dashboard.classList.add('active');
-            updateNavUser();
-            updateDashboard();
-        }
-
-        // Update Navigation User Info
-        function updateNavUser() {
-            navUser.innerHTML = `
-                <div class="user-info">
-                    <img src="${currentUser.photoURL || 'https://via.placeholder.com/40'}" 
-                         alt="Avatar" class="user-avatar" referrerpolicy="no-referrer">
-                    <div>
-                        <div class="user-name">${currentUser.displayName || 'User'}</div>
-                        <div class="user-email">${currentUser.email}</div>
-                    </div>
-                </div>
-                <button class="btn btn-outline" onclick="signOut()">Sign Out</button>
-            `;
-        }
-
-        // Load User Data from Firestore
-        async function loadUserData() {
-            try {
-                const userDoc = await db.collection('users').doc(currentUser.uid).get();
-
-                if (userDoc.exists) {
-                    userData = userDoc.data();
-                } else {
-                    // Create new user document
-                    userData = {
-                        email: currentUser.email,
-                        displayName: currentUser.displayName,
-                        photoURL: currentUser.photoURL,
-                        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-                        quizAttempts: {},
-                        stats: {
-                            totalAttempts: 0,
-                            totalCompleted: 0,
-                            totalTimeSpent: 0,
-                            sectionScores: {
-                                vocabulary: { total: 0, correct: 0 },
-                                grammar: { total: 0, correct: 0 },
-                                errorId: { total: 0, correct: 0 },
-                                cloze: { total: 0, correct: 0 },
-                                reading: { total: 0, correct: 0 }
-                            }
-                        }
-                    };
-                    await db.collection('users').doc(currentUser.uid).set(userData);
-                }
-            } catch (error) {
-                console.error('Error loading user data:', error);
-                userData = {
-                    stats: {
-                        totalAttempts: 0,
-                        totalCompleted: 0,
-                        totalTimeSpent: 0,
-                        sectionScores: {}
-                    },
-                    quizAttempts: {}
-                };
-            }
-        }
-
-        // Update Dashboard
-        function updateDashboard() {
-            // Welcome message
-            const firstName = currentUser.displayName ? currentUser.displayName.split(' ')[0] : 'Student';
-            document.getElementById('welcomeMessage').textContent = `Welcome back, ${firstName}! 🎌`;
-
-            // Update stats
-            const stats = userData.stats || {};
-            document.getElementById('statAttempts').textContent = stats.totalAttempts || 0;
-            document.getElementById('statCompleted').textContent = stats.totalCompleted || 0;
-
-            // Calculate average score
-            let avgScore = 0;
-            if (stats.totalCompleted > 0 && userData.quizAttempts) {
-                const attempts = Object.values(userData.quizAttempts).filter(a => a.completed);
-                if (attempts.length > 0) {
-                    const totalScore = attempts.reduce((sum, a) => sum + (a.bestScore || a.score || 0), 0);
-                    avgScore = Math.round((totalScore / (attempts.length * 50)) * 100);
-                }
-            }
-            document.getElementById('statAvgScore').textContent = avgScore + '%';
-
-            // Total time
-            const totalMinutes = Math.round((stats.totalTimeSpent || 0) / 60);
-            document.getElementById('statTotalTime').textContent = totalMinutes + 'm';
-
-            // Update progress ring
-            updateProgressRing(avgScore);
-
-            // Update section breakdown
-            updateSectionBreakdown();
-
-            // Render quiz list
-            renderQuizList();
-
-            // Render activity
-            renderActivity();
-
-            // Render best scores
-            renderBestScores();
-        }
-
-        // Update Progress Ring
-        function updateProgressRing(percentage) {
-            const circle = document.getElementById('overallProgress');
-            const circumference = 2 * Math.PI * 68; // 68 is the radius
-            const offset = circumference - (percentage / 100) * circumference;
-            circle.style.strokeDashoffset = offset;
-            document.getElementById('overallScore').textContent = percentage + '%';
-        }
-
-        // Update Section Breakdown
-        function updateSectionBreakdown() {
-            const sections = userData.stats?.sectionScores || {};
-            const sectionNames = {
-                vocabulary: 'Vocabulary',
-                grammar: 'Grammar',
-                errorId: 'Error ID',
-                cloze: 'Cloze Test',
-                reading: 'Reading'
-            };
-
-            let html = '';
-            for (const [key, name] of Object.entries(sectionNames)) {
-                const data = sections[key] || { total: 0, correct: 0 };
-                const percentage = data.total > 0 ? Math.round((data.correct / data.total) * 100) : 0;
-                const colorClass = percentage >= 80 ? 'excellent' : percentage >= 60 ? 'good' : percentage >= 40 ? 'average' : 'poor';
-
-                html += `
-                    <div class="breakdown-item">
-                        <span class="breakdown-name">${name}</span>
-                        <div class="breakdown-bar">
-                            <div class="breakdown-fill ${colorClass}" style="width: ${percentage}%"></div>
-                        </div>
-                        <span class="breakdown-score">${data.total > 0 ? percentage + '%' : '-'}</span>
-                    </div>
-                `;
-            }
-            document.getElementById('sectionBreakdown').innerHTML = html;
-        }
-
-        // Render Quiz List
-        function renderQuizList() {
-            const quizList = document.getElementById('quizList');
-            let html = '';
-
-            quizzes.forEach((quiz, index) => {
-                const attempt = userData.quizAttempts?.[quiz.id];
-                let status = 'not-started';
-                let statusText = 'Not Started';
-                let scoreText = '';
-                let buttonText = 'Start Quiz';
-                let buttonClass = 'btn-accent';
-
-                if (!quiz.available) {
-                    status = 'locked';
-                    statusText = 'Coming Soon';
-                    buttonText = 'Locked 🔒';
-                    buttonClass = 'btn-outline';
-                } else if (attempt) {
-                    if (attempt.completed) {
-                        status = 'completed';
-                        statusText = 'Completed';
-                        scoreText = `Best: ${attempt.bestScore || attempt.score}/50`;
-                        buttonText = 'Retake Quiz';
-                    } else {
-                        status = 'in-progress';
-                        statusText = 'In Progress';
-                        buttonText = 'Continue';
-                    }
-                }
-
-                const hasHistory = attempt && (attempt.attempts > 0 || attempt.completed);
-
-                html += `
-                    <div class="quiz-card">
-                        <div class="quiz-number">${String(index + 1).padStart(2, '0')}</div>
-                        <div class="quiz-info">
-                            <h3>${quiz.title}</h3>
-                            <div class="quiz-meta">
-                                <span>⏱️ ${quiz.duration} min</span>
-                                <span>📝 ${quiz.questions} questions</span>
-                                ${attempt?.attempts ? `<span>🔄 ${attempt.attempts} attempt${attempt.attempts > 1 ? 's' : ''}</span>` : ''}
-                            </div>
-                        </div>
-                        <div class="quiz-status">
-                            <span class="status-badge ${status}">${statusText}</span>
-                            ${scoreText ? `<span class="quiz-score">${scoreText}</span>` : ''}
-                            ${hasHistory ? `
-                                <button class="btn btn-outline" onclick="showHistory('${quiz.id}', '${quiz.title}', '${quiz.path}')">
-                                    📊 History
-                                </button>
-                            ` : ''}
-                            <button class="btn ${buttonClass}" 
-                                ${!quiz.available ? 'disabled' : ''}
-                                onclick="${quiz.available ? `startQuiz('${quiz.id}', '${quiz.path}')` : ''}">
-                                ${buttonText}
-                            </button>
-                        </div>
-                    </div>
-                `;
-            });
-
-            quizList.innerHTML = html;
-        }
-
-        // Review Quiz - Open quiz in review mode
-        function reviewQuiz(quizId, path) {
-            // Store review mode flag in session
-            sessionStorage.setItem('reviewMode', 'true');
-            sessionStorage.setItem('reviewQuizId', quizId);
-
-            // Store user info
-            FirebaseHelper.saveSessionUser(currentUser);
-            FirebaseHelper.setCurrentQuizId(quizId);
-
-            // Navigate to quiz
-            window.location.href = path;
-
-            analytics.logEvent('quiz_review', { quiz_id: quizId });
-        }
-
-        // Review specific history attempt
-        function reviewHistoryAttempt(quizId, path, attemptId) {
-            sessionStorage.setItem('reviewMode', 'true');
-            sessionStorage.setItem('reviewQuizId', quizId);
-            sessionStorage.setItem('reviewAttemptId', attemptId);
-
-            FirebaseHelper.saveSessionUser(currentUser);
-            FirebaseHelper.setCurrentQuizId(quizId);
-
-            closeHistoryModal();
-            window.location.href = path;
-
-            analytics.logEvent('quiz_history_review', { quiz_id: quizId, attempt_id: attemptId });
-        }
-
-        // Show History Modal
-        async function showHistory(quizId, quizTitle, quizPath) {
-            const modal = document.getElementById('historyModal');
-            const titleEl = document.getElementById('historyTitle');
-            const bodyEl = document.getElementById('historyBody');
-
-            titleEl.textContent = `${quizTitle} - History`;
-            bodyEl.innerHTML = '<div class="loading"><div class="spinner"></div></div>';
-            modal.classList.add('active');
-
-            try {
-                // Fetch history from subcollection
-                const historyRef = db.collection('users').doc(currentUser.uid)
-                    .collection('quizHistory').doc(quizId)
-                    .collection('attempts');
-
-                const historySnap = await historyRef.orderBy('timestamp', 'desc').limit(20).get();
-
-                if (historySnap.empty) {
-                    // No history subcollection yet, show current attempt info
-                    const attempt = userData.quizAttempts?.[quizId];
-                    if (attempt && attempt.completed) {
-                        const date = attempt.lastAttempt?.toDate?.() || new Date();
-                        bodyEl.innerHTML = `
-                            <div class="history-item" onclick="reviewQuiz('${quizId}', '${quizPath}')">
-                                <div class="history-rank best">1</div>
-                                <div class="history-details">
-                                    <div class="history-score">
-                                        ${attempt.bestScore || attempt.score}/50
-                                        <span class="percentage">(${Math.round(((attempt.bestScore || attempt.score) / 50) * 100)}%)</span>
-                                    </div>
-                                    <div class="history-date">📅 ${formatDate(date)}</div>
-                                </div>
-                                <div class="history-actions">
-                                    <button class="history-btn review">📖 Review</button>
-                                </div>
-                            </div>
-                            <p style="text-align: center; color: var(--text-muted); margin-top: 16px; font-size: 0.85rem;">
-                                Future attempts will be saved here automatically
-                            </p>
-                        `;
-                    } else {
-                        bodyEl.innerHTML = `
-                            <div class="no-history">
-                                <div class="icon">📭</div>
-                                <p>No attempt history yet</p>
-                                <p style="font-size: 0.85rem; margin-top: 8px;">Complete a quiz to see your history</p>
-                            </div>
-                        `;
-                    }
-                    return;
-                }
-
-                // Find best score
-                let bestScore = 0;
-                historySnap.docs.forEach(doc => {
-                    const score = doc.data().score || 0;
-                    if (score > bestScore) bestScore = score;
-                });
-
-                let html = '';
-                historySnap.docs.forEach((doc, index) => {
-                    const data = doc.data();
-                    const date = data.timestamp?.toDate?.() || new Date();
-                    const isBest = data.score === bestScore;
-                    const percentage = Math.round((data.score / 50) * 100);
-
-                    html += `
-                        <div class="history-item" onclick="reviewHistoryAttempt('${quizId}', '${quizPath}', '${doc.id}')">
-                            <div class="history-rank ${isBest ? 'best' : ''}">${index + 1}</div>
-                            <div class="history-details">
-                                <div class="history-score">
-                                    ${data.score}/50
-                                    <span class="percentage">(${percentage}%)</span>
-                                    ${isBest ? '<span style="color: var(--gold); margin-left: 8px;">🏆 Best</span>' : ''}
-                                </div>
-                                <div class="history-date">📅 ${formatDate(date)} • ⏱️ ${formatTimeSpent(data.timeSpent)}</div>
-                            </div>
-                            <div class="history-actions">
-                                <button class="history-btn review">📖 Review</button>
-                            </div>
-                        </div>
-                    `;
-                });
-
-                bodyEl.innerHTML = html;
-
-            } catch (error) {
-                console.error('Error loading history:', error);
-                bodyEl.innerHTML = `
-                    <div class="no-history">
-                        <div class="icon">⚠️</div>
-                        <p>Error loading history</p>
-                        <p style="font-size: 0.85rem; margin-top: 8px;">${error.message}</p>
-                    </div>
-                `;
-            }
-        }
-
-        // Close History Modal
-        function closeHistoryModal() {
-            document.getElementById('historyModal').classList.remove('active');
-        }
-
-        // Close modal when clicking outside
-        document.getElementById('historyModal').addEventListener('click', (e) => {
-            if (e.target.id === 'historyModal') {
-                closeHistoryModal();
-            }
-        });
-
-        // Format date helper
-        function formatDate(date) {
-            return new Intl.DateTimeFormat('en-US', {
-                month: 'short',
-                day: 'numeric',
-                year: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit'
-            }).format(date);
-        }
-
-        // Format time spent helper
-        function formatTimeSpent(seconds) {
-            if (!seconds) return '--';
-            const mins = Math.floor(seconds / 60);
-            const secs = seconds % 60;
-            return `${mins}m ${secs}s`;
-        }
-
-        // Render Activity
-        function renderActivity() {
-            const activityList = document.getElementById('activityList');
-
-            if (!userData.quizAttempts || Object.keys(userData.quizAttempts).length === 0) {
-                activityList.innerHTML = `
-                    <div class="empty-state">
-                        <div class="icon">📋</div>
-                        <p>No activity yet. Start a quiz!</p>
-                    </div>
-                `;
-                return;
-            }
-
-            // Get attempts sorted by date
-            const attempts = Object.entries(userData.quizAttempts)
-                .map(([id, data]) => ({ id, ...data }))
-                .filter(a => a.lastAttempt)
-                .sort((a, b) => {
-                    const dateA = a.lastAttempt?.toDate?.() || new Date(a.lastAttempt);
-                    const dateB = b.lastAttempt?.toDate?.() || new Date(b.lastAttempt);
-                    return dateB - dateA;
-                })
-                .slice(0, 5);
-
-            if (attempts.length === 0) {
-                activityList.innerHTML = `
-                    <div class="empty-state">
-                        <div class="icon">📋</div>
-                        <p>No activity yet. Start a quiz!</p>
-                    </div>
-                `;
-                return;
-            }
-
-            let html = '';
-            attempts.forEach(attempt => {
-                const quiz = quizzes.find(q => q.id === attempt.id);
-                const date = attempt.lastAttempt?.toDate?.() || new Date(attempt.lastAttempt);
-                const dateStr = formatDate(date);
-                const icon = attempt.completed ? '✅' : '📝';
-                const iconClass = attempt.completed ? 'complete' : 'attempt';
-                const action = attempt.completed ? `Completed with ${attempt.score}/50` : 'Started quiz';
-
-                html += `
-                    <div class="activity-item">
-                        <div class="activity-icon ${iconClass}">${icon}</div>
-                        <div class="activity-info">
-                            <p>${action} - ${quiz?.title || attempt.id}</p>
-                            <span>${dateStr}</span>
-                        </div>
-                    </div>
-                `;
-            });
-
-            activityList.innerHTML = html;
-        }
-
-        // Render Best Scores
-        function renderBestScores() {
-            const bestScoresDiv = document.getElementById('bestScores');
-
-            if (!userData.quizAttempts) {
-                bestScoresDiv.innerHTML = `
-                    <div class="empty-state" style="padding: 20px;">
-                        <p>Complete quizzes to see your best scores</p>
-                    </div>
-                `;
-                return;
-            }
-
-            const completedAttempts = Object.entries(userData.quizAttempts)
-                .filter(([id, data]) => data.completed)
-                .map(([id, data]) => ({
-                    id,
-                    quiz: quizzes.find(q => q.id === id),
-                    score: data.bestScore || data.score || 0
-                }))
-                .sort((a, b) => b.score - a.score);
-
-            if (completedAttempts.length === 0) {
-                bestScoresDiv.innerHTML = `
-                    <div class="empty-state" style="padding: 20px;">
-                        <p>Complete quizzes to see your best scores</p>
-                    </div>
-                `;
-                return;
-            }
-
-            let html = '';
-            completedAttempts.forEach(attempt => {
-                const percentage = Math.round((attempt.score / 50) * 100);
-                html += `
-                    <div class="best-score-item">
-                        <span class="quiz-name">${attempt.quiz?.title || attempt.id}</span>
-                        <span class="score">${attempt.score}/50 (${percentage}%)</span>
-                    </div>
-                `;
-            });
-
-            bestScoresDiv.innerHTML = html;
-        }
-
-        // Format Date
-        function formatDate(date) {
-            const now = new Date();
-            const diff = now - date;
-            const minutes = Math.floor(diff / 60000);
-            const hours = Math.floor(diff / 3600000);
-            const days = Math.floor(diff / 86400000);
-
-            if (minutes < 1) return 'Just now';
-            if (minutes < 60) return `${minutes} min ago`;
-            if (hours < 24) return `${hours} hours ago`;
-            if (days < 7) return `${days} days ago`;
-            return date.toLocaleDateString();
-        }
-
-        // Start Quiz
-        function startQuiz(quizId, path) {
-            // Store user info in sessionStorage for the quiz page FIRST
-            sessionStorage.setItem('mextUser', JSON.stringify({
-                uid: currentUser.uid,
-                email: currentUser.email,
-                displayName: currentUser.displayName,
-                photoURL: currentUser.photoURL
-            }));
-            sessionStorage.setItem('currentQuizId', quizId);
-
-            // Save quiz start to Firestore (don't wait for it)
-            const attemptRef = db.collection('users').doc(currentUser.uid);
-
-            attemptRef.set({
-                [`quizAttempts`]: {
-                    [quizId]: {
-                        started: true,
-                        lastAttempt: firebase.firestore.FieldValue.serverTimestamp()
-                    }
-                }
-            }, { merge: true }).catch(error => {
-                console.error('Error saving quiz start:', error);
-            });
-
-            analytics.logEvent('quiz_start', { quiz_id: quizId });
-
-            // Navigate to quiz immediately
-            window.location.href = path;
-        }
     </script>
 </body>
 
