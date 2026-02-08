@@ -29,12 +29,37 @@
             --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
         }
 
+        html {
+            scroll-behavior: smooth;
+        }
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: var(--bg-light);
             min-height: 100vh;
             color: var(--text-dark);
             line-height: 1.6;
+        }
+
+        /* Animated background gradient */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background:
+                radial-gradient(circle at 20% 20%, rgba(26, 54, 93, 0.04), transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(229, 62, 62, 0.04), transparent 50%),
+                radial-gradient(circle at 50% 50%, rgba(56, 161, 105, 0.03), transparent 60%);
+            z-index: -1;
+            animation: bgShift 20s ease-in-out infinite alternate;
+        }
+
+        @keyframes bgShift {
+            0% { opacity: 0.6; }
+            100% { opacity: 1; }
         }
 
         .container {
@@ -45,11 +70,20 @@
 
         /* Navigation */
         .navbar {
-            background: white;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
             box-shadow: var(--shadow);
             position: sticky;
             top: 0;
             z-index: 100;
+            border-bottom: 1px solid rgba(226, 232, 240, 0.6);
+            animation: slideDown 0.5s ease;
+        }
+
+        @keyframes slideDown {
+            from { transform: translateY(-100%); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
         }
 
         .nav-content {
@@ -110,12 +144,32 @@
             border-radius: 8px;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
             display: inline-flex;
             align-items: center;
             gap: 8px;
             text-decoration: none;
             font-size: 0.95rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.5s ease, height 0.5s ease;
+        }
+
+        .btn:hover::after {
+            width: 300px;
+            height: 300px;
         }
 
         .btn-primary {
@@ -167,7 +221,15 @@
             align-items: center;
             justify-content: center;
             background: linear-gradient(135deg, #1a365d 0%, #2c5282 50%, #e53e3e 100%);
+            background-size: 200% 200%;
+            animation: authGradient 8s ease infinite;
             padding: 40px 20px;
+        }
+
+        @keyframes authGradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
 
         .auth-card {
@@ -178,11 +240,23 @@
             width: 100%;
             text-align: center;
             box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+            animation: authCardIn 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        @keyframes authCardIn {
+            from { opacity: 0; transform: translateY(30px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
         }
 
         .auth-logo {
             font-size: 4rem;
             margin-bottom: 16px;
+            animation: logoFloat 3s ease-in-out infinite;
+        }
+
+        @keyframes logoFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
         }
 
         .auth-card h1 {
@@ -242,6 +316,8 @@
             padding: 20px 24px;
             border-radius: 16px;
             background: linear-gradient(135deg, rgba(26, 54, 93, 0.95), rgba(229, 62, 62, 0.95));
+            background-size: 200% 200%;
+            animation: heroGradient 6s ease infinite;
             color: white;
             box-shadow: var(--shadow-lg);
             margin-bottom: 24px;
@@ -249,6 +325,12 @@
 
         .next-banner.active {
             display: flex;
+            animation: bannerSlideIn 0.6s cubic-bezier(0.22, 1, 0.36, 1), heroGradient 6s ease infinite;
+        }
+
+        @keyframes bannerSlideIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .next-banner .label {
@@ -278,6 +360,12 @@
             padding: 14px 24px;
             font-size: 1rem;
             justify-content: center;
+            transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .google-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
         }
 
         .google-btn img {
@@ -320,11 +408,19 @@
 
         .dashboard.active {
             display: block;
+            animation: dashFadeIn 0.5s ease;
+        }
+
+        @keyframes dashFadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
 
         /* Hero Section */
         .hero {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 50%, #3182ce 100%);
+            background-size: 200% 200%;
+            animation: heroGradient 6s ease infinite;
             border-radius: 20px;
             padding: 40px;
             margin-bottom: 30px;
@@ -333,14 +429,39 @@
             overflow: hidden;
         }
 
+        @keyframes heroGradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
         .hero::before {
-            content: '🎌';
+            content: '';
             position: absolute;
             right: 40px;
             top: 50%;
-            transform: translateY(-50%);
-            font-size: 8rem;
-            opacity: 0.1;
+            width: 120px;
+            height: 120px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 50%;
+            animation: heroPulse 4s ease-in-out infinite;
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            right: 100px;
+            top: 20%;
+            width: 60px;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 50%;
+            animation: heroPulse 4s ease-in-out infinite 1s;
+        }
+
+        @keyframes heroPulse {
+            0%, 100% { transform: scale(1); opacity: 0.6; }
+            50% { transform: scale(1.3); opacity: 0.3; }
         }
 
         .hero h1 {
@@ -369,6 +490,55 @@
             display: flex;
             align-items: center;
             gap: 16px;
+            transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+            position: relative;
+            overflow: hidden;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: statCardIn 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        }
+
+        .stat-card:nth-child(1) { animation-delay: 0.1s; }
+        .stat-card:nth-child(2) { animation-delay: 0.2s; }
+        .stat-card:nth-child(3) { animation-delay: 0.3s; }
+        .stat-card:nth-child(4) { animation-delay: 0.4s; }
+
+        @keyframes statCardIn {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--accent), var(--gold));
+            background-size: 200% 100%;
+            animation: gradientSlide 3s ease infinite;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .stat-card:hover::before {
+            opacity: 1;
+        }
+
+        @keyframes gradientSlide {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes quizCardIn {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .stat-card:hover {
+            transform: translateY(-6px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
         }
 
         .stat-icon {
@@ -379,6 +549,11 @@
             align-items: center;
             justify-content: center;
             font-size: 1.5rem;
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover .stat-icon {
+            transform: scale(1.15) rotate(5deg);
         }
 
         .stat-icon.blue {
@@ -452,13 +627,30 @@
             display: flex;
             align-items: center;
             gap: 16px;
-            transition: all 0.3s ease;
+            transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
             flex-wrap: wrap;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .quiz-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(26, 54, 93, 0.03), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .quiz-card:hover::after {
+            left: 100%;
         }
 
         .quiz-card:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-lg);
+            transform: translateY(-4px) scale(1.01);
+            box-shadow: 0 16px 32px rgba(0, 0, 0, 0.12);
         }
 
         .quiz-number {
@@ -473,6 +665,12 @@
             font-size: 1.3rem;
             font-weight: 700;
             flex-shrink: 0;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .quiz-card:hover .quiz-number {
+            transform: scale(1.1) rotate(-3deg);
+            box-shadow: 0 6px 16px rgba(26, 54, 93, 0.3);
         }
 
         .quiz-info {
@@ -517,16 +715,30 @@
             border-radius: 20px;
             font-size: 0.8rem;
             font-weight: 600;
+            transition: transform 0.3s ease;
         }
 
         .status-badge.completed {
             background: #f0fff4;
             color: var(--success);
+            animation: badgePop 0.4s ease;
+        }
+
+        @keyframes badgePop {
+            0% { transform: scale(0.8); }
+            60% { transform: scale(1.1); }
+            100% { transform: scale(1); }
         }
 
         .status-badge.in-progress {
             background: #fffaf0;
             color: var(--warning);
+            animation: inProgressPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes inProgressPulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
         }
 
         .status-badge.not-started {
@@ -550,6 +762,11 @@
             border-radius: 16px;
             padding: 24px;
             box-shadow: var(--shadow);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .analytics-panel:hover {
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
         }
 
         .analytics-panel h3 {
@@ -587,7 +804,8 @@
         .progress-ring .progress {
             stroke: var(--success);
             stroke-linecap: round;
-            transition: stroke-dashoffset 1s ease;
+            transition: stroke-dashoffset 1.5s cubic-bezier(0.22, 1, 0.36, 1);
+            filter: drop-shadow(0 0 6px rgba(56, 161, 105, 0.4));
         }
 
         .progress-center {
@@ -602,11 +820,20 @@
             font-size: 2rem;
             font-weight: 700;
             color: var(--text-dark);
+            transition: color 0.3s;
         }
 
         .progress-center .label {
             font-size: 0.85rem;
             color: var(--text-muted);
+        }
+
+        .progress-ring:hover .progress {
+            filter: drop-shadow(0 0 10px rgba(56, 161, 105, 0.6));
+        }
+
+        .progress-ring:hover .value {
+            color: var(--success);
         }
 
         /* Section Breakdown */
@@ -644,7 +871,25 @@
         .breakdown-fill {
             height: 100%;
             border-radius: 4px;
-            transition: width 0.5s ease;
+            transition: width 1s cubic-bezier(0.22, 1, 0.36, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .breakdown-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            animation: barShimmer 2s ease-in-out infinite;
+        }
+
+        @keyframes barShimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
         }
 
         .breakdown-fill.excellent {
@@ -681,6 +926,15 @@
             gap: 12px;
             padding: 12px 0;
             border-bottom: 1px solid var(--border);
+            transition: transform 0.3s ease, background 0.3s ease;
+            border-radius: 8px;
+            padding-left: 8px;
+            padding-right: 8px;
+        }
+
+        .activity-item:hover {
+            transform: translateX(4px);
+            background: rgba(247, 250, 252, 0.8);
         }
 
         .activity-item:last-child {
@@ -732,8 +986,9 @@
             height: 40px;
             border: 4px solid var(--border);
             border-top-color: var(--primary);
+            border-right-color: var(--accent);
             border-radius: 50%;
-            animation: spin 1s linear infinite;
+            animation: spin 0.8s linear infinite;
         }
 
         @keyframes spin {
@@ -755,6 +1010,8 @@
             right: 0;
             bottom: 0;
             background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -777,12 +1034,12 @@
             max-width: 600px;
             max-height: 80vh;
             overflow: hidden;
-            transform: translateY(-20px);
-            transition: transform 0.3s ease;
+            transform: translateY(-20px) scale(0.95);
+            transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
         }
 
         .modal-overlay.active .modal {
-            transform: translateY(0);
+            transform: translateY(0) scale(1);
         }
 
         .modal-header {
@@ -791,7 +1048,9 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            background: linear-gradient(135deg, var(--primary), var(--primary-light), #3182ce);
+            background-size: 200% 200%;
+            animation: heroGradient 6s ease infinite;
             color: white;
         }
 
@@ -864,6 +1123,12 @@
 
         .history-rank.best {
             background: linear-gradient(135deg, var(--gold), #f6ad55);
+            animation: goldPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes goldPulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(214, 158, 46, 0.3); }
+            50% { box-shadow: 0 0 0 8px rgba(214, 158, 46, 0); }
         }
 
         .history-details {
@@ -948,6 +1213,11 @@
             justify-content: space-between;
             align-items: center;
             padding: 10px 0;
+            transition: transform 0.3s ease;
+        }
+
+        .best-score-item:hover {
+            transform: translateX(4px);
         }
 
         .best-score-item .quiz-name {
@@ -1073,6 +1343,14 @@
             .status-badge {
                 width: 100%;
                 text-align: center;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
             }
         }
     </style>
@@ -1559,16 +1837,31 @@
             }
         }
 
+        // Animated count-up helper
+        function animateCountUp(el, target, suffix, duration = 1500) {
+            const start = performance.now();
+            const numTarget = parseInt(target) || 0;
+            function update(now) {
+                const elapsed = now - start;
+                const progress = Math.min(elapsed / duration, 1);
+                const eased = 1 - Math.pow(1 - progress, 4);
+                const current = Math.round(numTarget * eased);
+                el.textContent = current + (suffix || '');
+                if (progress < 1) requestAnimationFrame(update);
+            }
+            requestAnimationFrame(update);
+        }
+
         // Update Dashboard
         function updateDashboard() {
             // Welcome message
             const firstName = currentUser.displayName ? currentUser.displayName.split(' ')[0] : 'Student';
-            document.getElementById('welcomeMessage').textContent = `Welcome back, ${firstName}! 🎌`;
+            document.getElementById('welcomeMessage').textContent = `Welcome back, ${firstName}!`;
 
-            // Update stats
+            // Update stats with count-up animation
             const stats = userData.stats || {};
-            document.getElementById('statAttempts').textContent = stats.totalAttempts || 0;
-            document.getElementById('statCompleted').textContent = stats.totalCompleted || 0;
+            animateCountUp(document.getElementById('statAttempts'), stats.totalAttempts || 0, '');
+            animateCountUp(document.getElementById('statCompleted'), stats.totalCompleted || 0, '');
 
             // Calculate average score
             let avgScore = 0;
@@ -1579,14 +1872,14 @@
                     avgScore = Math.round((totalScore / (attempts.length * 50)) * 100);
                 }
             }
-            document.getElementById('statAvgScore').textContent = avgScore + '%';
+            animateCountUp(document.getElementById('statAvgScore'), avgScore, '%');
 
             // Total time
             const totalMinutes = Math.round((stats.totalTimeSpent || 0) / 60);
-            document.getElementById('statTotalTime').textContent = totalMinutes + 'm';
+            animateCountUp(document.getElementById('statTotalTime'), totalMinutes, 'm');
 
-            // Update progress ring
-            updateProgressRing(avgScore);
+            // Update progress ring with delay for visual effect
+            setTimeout(() => updateProgressRing(avgScore), 300);
 
             // Update section breakdown
             updateSectionBreakdown();
@@ -1674,7 +1967,7 @@
                 const hasHistory = attempt && (attempt.attempts > 0 || attempt.completed);
 
                 html += `
-                    <div class="quiz-card">
+                    <div class="quiz-card" style="opacity: 0; animation: quizCardIn 0.5s cubic-bezier(0.22, 1, 0.36, 1) ${index * 0.08}s forwards;">
                         <div class="quiz-number">${String(index + 1).padStart(2, '0')}</div>
                         <div class="quiz-info">
                             <h3>${quiz.title}</h3>
