@@ -1806,6 +1806,8 @@
         // Current user data
         let currentUser = null;
         let userData = null;
+        let quizProgressData = {}; // In-progress quiz state data
+        let userDataUnsubscribe = null; // Firestore realtime listener
 
         // DOM Elements
         const authScreen = document.getElementById('authScreen');
@@ -1829,6 +1831,11 @@
             } else {
                 currentUser = null;
                 userData = null;
+                quizProgressData = {};
+                if (userDataUnsubscribe) {
+                    userDataUnsubscribe();
+                    userDataUnsubscribe = null;
+                }
                 showAuthScreen();
             }
         });
@@ -1906,8 +1913,15 @@
 
         // Load User Data from Firestore
         async function loadUserData() {
+            // Unsubscribe from previous listener if any
+            if (userDataUnsubscribe) {
+                userDataUnsubscribe();
+                userDataUnsubscribe = null;
+            }
+
             try {
-                const userDoc = await db.collection('users').doc(currentUser.uid).get();
+                const userDocRef = db.collection('users').doc(currentUser.uid);
+                const userDoc = await userDocRef.get();
 
                 if (userDoc.exists) {
                     userData = userDoc.data();
@@ -1932,8 +1946,43 @@
                             }
                         }
                     };
-                    await db.collection('users').doc(currentUser.uid).set(userData);
+                    await userDocRef.set(userData);
                 }
+
+                // Load quiz progress data (in-progress states)
+                quizProgressData = await FirebaseHelper.checkAllQuizProgress(currentUser.uid);
+
+                // Set up realtime listener for future updates
+                userDataUnsubscribe = userDocRef.onSnapshot((doc) => {
+                    if (doc.exists) {
+                        userData = doc.data();
+                        // Re-check quiz progress from localStorage (sync)
+                        const localProgress = {};
+                        for (let i = 1; i <= 10; i++) {
+                            const qId = `quiz-${i}`;
+                            try {
+                                const stored = localStorage.getItem(`quizState_${currentUser.uid}_${qId}`);
+                                if (stored) {
+                                    const state = JSON.parse(stored);
+                                    if (state && Object.keys(state.answers || {}).length > 0) {
+                                        localProgress[qId] = state;
+                                    }
+                                }
+                            } catch (e) {}
+                        }
+                        // Merge with existing Firestore progress
+                        Object.keys(localProgress).forEach(k => {
+                            quizProgressData[k] = localProgress[k];
+                        });
+                        // Refresh the dashboard UI
+                        if (dashboard.classList.contains('active')) {
+                            updateDashboard();
+                        }
+                    }
+                }, (error) => {
+                    console.error('Realtime listener error:', error);
+                });
+
             } catch (error) {
                 console.error('Error loading user data:', error);
                 userData = {
@@ -1945,6 +1994,7 @@
                     },
                     quizAttempts: {}
                 };
+                quizProgressData = {};
             }
         }
 
@@ -2051,6 +2101,7 @@
 
             quizzes.forEach((quiz, index) => {
                 const attempt = userData.quizAttempts?.[quiz.id];
+                const inProgressState = quizProgressData[quiz.id];
                 let status = 'not-started';
                 let statusText = 'Not Started';
                 let scoreText = '';
@@ -2062,17 +2113,27 @@
                     statusText = 'Coming Soon';
                     buttonText = 'Locked 🔒';
                     buttonClass = 'btn-outline';
-                } else if (attempt) {
-                    if (attempt.completed) {
-                        status = 'completed';
-                        statusText = 'Completed';
-                        scoreText = `Best: ${attempt.bestScore || attempt.score}/50`;
-                        buttonText = 'Retake Quiz';
-                    } else {
+                } else if (attempt && attempt.completed) {
+                    status = 'completed';
+                    statusText = 'Completed';
+                    scoreText = `Best: ${attempt.bestScore || attempt.score}/50`;
+                    buttonText = 'Retake Quiz';
+                    // Check if there's also an in-progress session after completion
+                    if (inProgressState) {
+                        const answered = Object.keys(inProgressState.answers || {}).length;
+                        statusText = `In Progress (${answered}/50)`;
                         status = 'in-progress';
-                        statusText = 'In Progress';
                         buttonText = 'Continue';
                     }
+                } else if (inProgressState) {
+                    const answered = Object.keys(inProgressState.answers || {}).length;
+                    status = 'in-progress';
+                    statusText = `In Progress (${answered}/50)`;
+                    buttonText = 'Continue';
+                } else if (attempt) {
+                    status = 'in-progress';
+                    statusText = 'In Progress';
+                    buttonText = 'Continue';
                 }
 
                 const hasHistory = attempt && (attempt.attempts > 0 || attempt.completed);
@@ -2398,6 +2459,14 @@
                 photoURL: currentUser.photoURL
             }));
             sessionStorage.setItem('currentQuizId', quizId);
+
+            // Check if there's saved progress — set autoResume flag
+            const inProgressState = quizProgressData[quizId];
+            if (inProgressState && Object.keys(inProgressState.answers || {}).length > 0) {
+                sessionStorage.setItem('autoResume', 'true');
+            } else {
+                sessionStorage.removeItem('autoResume');
+            }
 
             // Save quiz start to Firestore (don't wait for it)
             const attemptRef = db.collection('users').doc(currentUser.uid);

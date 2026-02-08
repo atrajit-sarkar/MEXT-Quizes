@@ -157,6 +157,169 @@ const FirebaseHelper = {
             console.error('Error saving quiz start:', error);
             return false;
         }
+    },
+
+    // Save in-progress quiz state to Firestore + localStorage backup
+    saveQuizState: async function (userId, quizId, state) {
+        const stateData = {
+            answers: state.answers || {},
+            checkedAnswers: state.checkedAnswers || {},
+            currentSection: state.currentSection || 1,
+            timeLeft: state.timeLeft,
+            isTrialMode: state.isTrialMode || false,
+            savedAt: Date.now()
+        };
+        // Always save to localStorage first (synchronous, instant)
+        try {
+            localStorage.setItem(
+                `quizState_${userId}_${quizId}`,
+                JSON.stringify(stateData)
+            );
+        } catch (e) {
+            console.warn('localStorage save failed:', e);
+        }
+        // Then save to Firestore (async)
+        try {
+            await db.collection('users').doc(userId)
+                .collection('quizProgress').doc(quizId).set({
+                    ...stateData,
+                    savedAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+            console.log('Quiz state saved to Firebase.');
+            return true;
+        } catch (error) {
+            console.error('Error saving quiz state:', error);
+            return false;
+        }
+    },
+
+    // Synchronous save to localStorage only (for beforeunload)
+    saveQuizStateSync: function (userId, quizId, state) {
+        try {
+            localStorage.setItem(
+                `quizState_${userId}_${quizId}`,
+                JSON.stringify({
+                    answers: state.answers || {},
+                    checkedAnswers: state.checkedAnswers || {},
+                    currentSection: state.currentSection || 1,
+                    timeLeft: state.timeLeft,
+                    isTrialMode: state.isTrialMode || false,
+                    savedAt: Date.now()
+                })
+            );
+            console.log('Quiz state saved to localStorage (sync).');
+        } catch (e) {
+            console.warn('localStorage sync save failed:', e);
+        }
+        // Also fire-and-forget Firestore write (may or may not complete)
+        db.collection('users').doc(userId)
+            .collection('quizProgress').doc(quizId).set({
+                answers: state.answers || {},
+                checkedAnswers: state.checkedAnswers || {},
+                currentSection: state.currentSection || 1,
+                timeLeft: state.timeLeft,
+                isTrialMode: state.isTrialMode || false,
+                savedAt: firebase.firestore.FieldValue.serverTimestamp()
+            }).catch(() => {});
+    },
+
+    // Load in-progress quiz state (checks localStorage first, then Firestore)
+    loadQuizState: async function (userId, quizId) {
+        let localState = null;
+        let firestoreState = null;
+
+        // Check localStorage first (instant)
+        try {
+            const stored = localStorage.getItem(`quizState_${userId}_${quizId}`);
+            if (stored) {
+                localState = JSON.parse(stored);
+            }
+        } catch (e) {
+            console.warn('localStorage load failed:', e);
+        }
+
+        // Also check Firestore
+        try {
+            const doc = await db.collection('users').doc(userId)
+                .collection('quizProgress').doc(quizId).get();
+            if (doc.exists) {
+                firestoreState = doc.data();
+            }
+        } catch (error) {
+            console.error('Error loading quiz state from Firestore:', error);
+        }
+
+        // Return whichever is newer, preferring the one with more answers
+        if (localState && firestoreState) {
+            const localAnswerCount = Object.keys(localState.answers || {}).length;
+            const firestoreAnswerCount = Object.keys(firestoreState.answers || {}).length;
+            // Use the one with more answers, or if equal, the newer one
+            if (localAnswerCount > firestoreAnswerCount) {
+                return localState;
+            } else if (firestoreAnswerCount > localAnswerCount) {
+                return firestoreState;
+            }
+            // Same answer count — use most recent by timestamp
+            const localTime = localState.savedAt || 0;
+            const firestoreTime = firestoreState.savedAt?.toMillis?.() || firestoreState.savedAt || 0;
+            return localTime > firestoreTime ? localState : firestoreState;
+        }
+        return firestoreState || localState || null;
+    },
+
+    // Clear saved quiz state (after submission or retry)
+    clearQuizState: async function (userId, quizId) {
+        // Clear localStorage
+        try {
+            localStorage.removeItem(`quizState_${userId}_${quizId}`);
+        } catch (e) {
+            console.warn('localStorage clear failed:', e);
+        }
+        // Clear Firestore
+        try {
+            await db.collection('users').doc(userId)
+                .collection('quizProgress').doc(quizId).delete();
+            console.log('Saved quiz state cleared.');
+            return true;
+        } catch (error) {
+            console.error('Error clearing quiz state:', error);
+            return false;
+        }
+    },
+
+    // Check if any quiz has saved progress (for dashboard)
+    checkAllQuizProgress: async function (userId) {
+        const progress = {};
+        // Check localStorage for all quizzes
+        for (let i = 1; i <= 10; i++) {
+            const quizId = `quiz-${i}`;
+            try {
+                const stored = localStorage.getItem(`quizState_${userId}_${quizId}`);
+                if (stored) {
+                    const state = JSON.parse(stored);
+                    if (state && Object.keys(state.answers || {}).length > 0) {
+                        progress[quizId] = state;
+                    }
+                }
+            } catch (e) {}
+        }
+        // Check Firestore quizProgress subcollection
+        try {
+            const snapshot = await db.collection('users').doc(userId)
+                .collection('quizProgress').get();
+            snapshot.forEach(doc => {
+                const data = doc.data();
+                if (data && Object.keys(data.answers || {}).length > 0) {
+                    const quizId = doc.id;
+                    if (!progress[quizId]) {
+                        progress[quizId] = data;
+                    }
+                }
+            });
+        } catch (error) {
+            console.error('Error checking quiz progress:', error);
+        }
+        return progress;
     }
 };
 
