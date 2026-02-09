@@ -1401,10 +1401,10 @@
             <p>Sign in to track your progress and access all mock examinations</p>
 
             <div class="auth-alert" id="authNext">
-                <span class="badge">Next</span>
+                <span class="badge">Tip</span>
                 <div>
-                    <strong id="authNextTitle">Mock Examination</strong>
-                    <span id="authNextMeta">Sign in to jump straight to the current quiz.</span>
+                    <strong id="authNextTitle">10 mock exams available</strong>
+                    <span id="authNextMeta">Sign in to track your scores and pick up where you left off.</span>
                 </div>
             </div>
 
@@ -1463,13 +1463,13 @@
                 </div>
             </div>
 
-            <div class="next-banner" id="nextQuizBanner">
+            <!-- Study Tip -->
+            <div class="next-banner active" id="studyTipBanner" style="animation: bannerSlideIn 0.6s cubic-bezier(0.22, 1, 0.36, 1), heroGradient 6s ease infinite;">
                 <div>
-                    <div class="label">Current Quiz</div>
-                    <h2 id="nextQuizTitle">Mock Examination</h2>
-                    <p id="nextQuizDesc">Full-length practice exam</p>
+                    <div class="label">Study Tip</div>
+                    <h2>Consistency beats cramming</h2>
+                    <p>Take one full mock exam per week and review your weakest sections in between for the best results.</p>
                 </div>
-                <button class="btn btn-primary" id="nextQuizCta">Start Quiz</button>
             </div>
 
             <!-- Stats Grid -->
@@ -1593,14 +1593,16 @@
 
                     <!-- Recent Activity -->
                     <div class="analytics-panel" style="margin-top: 20px;">
-                        <h3>🕐 Recent Activity</h3>
+                        <h3>📋 Recent Activity</h3>
                         <div class="activity-list" id="activityList">
                             <div class="empty-state">
-                                <div class="icon">📋</div>
+                                <div class="icon">📝</div>
                                 <p>No activity yet. Start a quiz!</p>
                             </div>
                         </div>
                     </div>
+                </div>
+
                 </div>
             </div>
         </div>
@@ -1738,10 +1740,6 @@
         const authNext = document.getElementById('authNext');
         const authNextTitle = document.getElementById('authNextTitle');
         const authNextMeta = document.getElementById('authNextMeta');
-        const nextQuizBanner = document.getElementById('nextQuizBanner');
-        const nextQuizTitle = document.getElementById('nextQuizTitle');
-        const nextQuizDesc = document.getElementById('nextQuizDesc');
-        const nextQuizCta = document.getElementById('nextQuizCta');
 
         // Auth State Observer
         auth.onAuthStateChanged(async (user) => {
@@ -1795,26 +1793,11 @@
         }
 
         function updateNextQuizUI(isSignedIn) {
-            if (!nextQuiz) {
-                authNext.classList.remove('active');
-                nextQuizBanner.classList.remove('active');
-                return;
-            }
-
-            authNextTitle.textContent = nextQuiz.title;
-            authNextMeta.textContent = 'Sign in to jump straight to the current quiz.';
-            authNext.classList.add('active');
-
-            nextQuizTitle.textContent = nextQuiz.title;
-            nextQuizDesc.textContent = `${nextQuiz.questions} questions • ${nextQuiz.duration} minutes`;
-            nextQuizCta.onclick = () => {
-                window.location.href = nextQuiz.path;
-            };
-
-            if (isSignedIn) {
-                nextQuizBanner.classList.add('active');
+            // Show the auth tip when not signed in
+            if (!isSignedIn) {
+                authNext.classList.add('active');
             } else {
-                nextQuizBanner.classList.remove('active');
+                authNext.classList.remove('active');
             }
         }
 
@@ -2260,7 +2243,7 @@
             if (!userData.quizAttempts || Object.keys(userData.quizAttempts).length === 0) {
                 activityList.innerHTML = `
                     <div class="empty-state">
-                        <div class="icon">📋</div>
+                        <div class="icon">📝</div>
                         <p>No activity yet. Start a quiz!</p>
                     </div>
                 `;
@@ -2281,7 +2264,7 @@
             if (attempts.length === 0) {
                 activityList.innerHTML = `
                     <div class="empty-state">
-                        <div class="icon">📋</div>
+                        <div class="icon">📝</div>
                         <p>No activity yet. Start a quiz!</p>
                     </div>
                 `;
