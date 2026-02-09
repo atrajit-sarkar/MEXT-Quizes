@@ -728,6 +728,86 @@
             padding: 7px 12px;
         }
 
+        /* Practice Sets */
+        .practice-sets {
+            margin-top: 28px;
+        }
+
+        .practice-grid {
+            display: grid;
+            gap: 16px;
+        }
+
+        .practice-group {
+            background: white;
+            border-radius: 18px;
+            padding: 18px;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(26, 54, 93, 0.08);
+        }
+
+        .practice-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .practice-header h3 {
+            font-size: 1rem;
+            color: var(--text-dark);
+        }
+
+        .practice-tag {
+            background: #ebf8ff;
+            color: var(--primary);
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 999px;
+            white-space: nowrap;
+        }
+
+        .practice-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .practice-card {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 14px;
+            padding: 12px 14px;
+            border-radius: 12px;
+            background: #f8fafc;
+            border: 1px solid var(--border);
+        }
+
+        .practice-card h4 {
+            font-size: 0.95rem;
+            margin-bottom: 4px;
+            color: var(--text-dark);
+        }
+
+        .practice-card p {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            margin: 0;
+        }
+
+        .practice-card .btn {
+            padding: 6px 10px;
+            font-size: 0.75rem;
+        }
+
+        .practice-card .btn[disabled] {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
         .status-badge {
             padding: 6px 12px;
             border-radius: 20px;
@@ -1403,7 +1483,7 @@
             <div class="auth-alert" id="authNext">
                 <span class="badge">Tip</span>
                 <div>
-                    <strong id="authNextTitle">11 mock exams available</strong>
+                    <strong id="authNextTitle">12 mock exams available</strong>
                     <span id="authNextMeta">Sign in to track your scores and pick up where you left off.</span>
                 </div>
             </div>
@@ -1515,6 +1595,163 @@
                         <!-- Quiz cards will be populated here -->
                         <div class="loading">
                             <div class="spinner"></div>
+                        </div>
+                    </div>
+
+                    <div class="practice-sets">
+                        <div class="section-title">
+                            <h2>🎯 Section Practice Sets</h2>
+                        </div>
+                        <div class="practice-grid">
+                            <div class="practice-group">
+                                <div class="practice-header">
+                                    <h3>Vocabulary in Context</h3>
+                                    <span class="practice-tag">Section I</span>
+                                </div>
+                                <div class="practice-list">
+                                    <div class="practice-card">
+                                        <div>
+                                            <h4>Vocabulary Sprint 1</h4>
+                                            <p>20 questions • 15 min • Nuance focus</p>
+                                        </div>
+                                        <button class="btn btn-outline" disabled>Coming soon</button>
+                                    </div>
+                                    <div class="practice-card">
+                                        <div>
+                                            <h4>Vocabulary Sprint 2</h4>
+                                            <p>25 questions • 18 min • Academic usage</p>
+                                        </div>
+                                        <button class="btn btn-outline" disabled>Coming soon</button>
+                                    </div>
+                                    <div class="practice-card">
+                                        <div>
+                                            <h4>Vocabulary Sprint 3</h4>
+                                            <p>30 questions • 20 min • Synonym traps</p>
+                                        </div>
+                                        <button class="btn btn-outline" disabled>Coming soon</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="practice-group">
+                                <div class="practice-header">
+                                    <h3>Grammar & Phrasing</h3>
+                                    <span class="practice-tag">Section II</span>
+                                </div>
+                                <div class="practice-list">
+                                    <div class="practice-card">
+                                        <div>
+                                            <h4>Grammar Focus 1</h4>
+                                            <p>20 questions • 15 min • Conditionals</p>
+                                        </div>
+                                        <button class="btn btn-outline" disabled>Coming soon</button>
+                                    </div>
+                                    <div class="practice-card">
+                                        <div>
+                                            <h4>Grammar Focus 2</h4>
+                                            <p>25 questions • 18 min • Inversion & emphasis</p>
+                                        </div>
+                                        <button class="btn btn-outline" disabled>Coming soon</button>
+                                    </div>
+                                    <div class="practice-card">
+                                        <div>
+                                            <h4>Grammar Focus 3</h4>
+                                            <p>30 questions • 20 min • Prepositions</p>
+                                        </div>
+                                        <button class="btn btn-outline" disabled>Coming soon</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="practice-group">
+                                <div class="practice-header">
+                                    <h3>Error Identification</h3>
+                                    <span class="practice-tag">Section III</span>
+                                </div>
+                                <div class="practice-list">
+                                    <div class="practice-card">
+                                        <div>
+                                            <h4>Error Hunt 1</h4>
+                                            <p>15 questions • 15 min • Subject-verb agreement</p>
+                                        </div>
+                                        <button class="btn btn-outline" disabled>Coming soon</button>
+                                    </div>
+                                    <div class="practice-card">
+                                        <div>
+                                            <h4>Error Hunt 2</h4>
+                                            <p>20 questions • 18 min • Tense consistency</p>
+                                        </div>
+                                        <button class="btn btn-outline" disabled>Coming soon</button>
+                                    </div>
+                                    <div class="practice-card">
+                                        <div>
+                                            <h4>Error Hunt 3</h4>
+                                            <p>20 questions • 18 min • Articles & modifiers</p>
+                                        </div>
+                                        <button class="btn btn-outline" disabled>Coming soon</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="practice-group">
+                                <div class="practice-header">
+                                    <h3>Cloze Test</h3>
+                                    <span class="practice-tag">Section IV</span>
+                                </div>
+                                <div class="practice-list">
+                                    <div class="practice-card">
+                                        <div>
+                                            <h4>Cloze Builder 1</h4>
+                                            <p>10 blanks • 18 min • Cohesion & flow</p>
+                                        </div>
+                                        <button class="btn btn-outline" disabled>Coming soon</button>
+                                    </div>
+                                    <div class="practice-card">
+                                        <div>
+                                            <h4>Cloze Builder 2</h4>
+                                            <p>10 blanks • 18 min • Connectors & tense</p>
+                                        </div>
+                                        <button class="btn btn-outline" disabled>Coming soon</button>
+                                    </div>
+                                    <div class="practice-card">
+                                        <div>
+                                            <h4>Cloze Builder 3</h4>
+                                            <p>10 blanks • 20 min • Narrative flow</p>
+                                        </div>
+                                        <button class="btn btn-outline" disabled>Coming soon</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="practice-group">
+                                <div class="practice-header">
+                                    <h3>Reading Comprehension</h3>
+                                    <span class="practice-tag">Section V</span>
+                                </div>
+                                <div class="practice-list">
+                                    <div class="practice-card">
+                                        <div>
+                                            <h4>Reading Drill 1</h4>
+                                            <p>1 passage • 5 questions • Inference focus</p>
+                                        </div>
+                                        <button class="btn btn-outline" disabled>Coming soon</button>
+                                    </div>
+                                    <div class="practice-card">
+                                        <div>
+                                            <h4>Reading Drill 2</h4>
+                                            <p>1 passage • 5 questions • Detail checks</p>
+                                        </div>
+                                        <button class="btn btn-outline" disabled>Coming soon</button>
+                                    </div>
+                                    <div class="practice-card">
+                                        <div>
+                                            <h4>Reading Drill 3</h4>
+                                            <p>1 passage • 5 questions • Main idea & tone</p>
+                                        </div>
+                                        <button class="btn btn-outline" disabled>Coming soon</button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1732,6 +1969,15 @@
                 duration: 60,
                 path: 'quiz-11/index.html',
                 available: true
+            },
+            {
+                id: 'quiz-12',
+                title: 'Mock Examination 12',
+                description: 'Full-length practice exam',
+                questions: 50,
+                duration: 60,
+                path: 'quiz-12/index.html',
+                available: true
             }
         ];
         const nextQuiz = nextPath ? quizzes.find((quiz) => quiz.path === nextPath) : null;
@@ -1813,7 +2059,7 @@
             liveProgressInterval = setInterval(() => {
                 if (!currentUser || !dashboard.classList.contains('active')) return;
                 let changed = false;
-                for (let i = 1; i <= 11; i++) {
+                for (let i = 1; i <= 12; i++) {
                     const qId = `quiz-${i}`;
                     try {
                         const stored = localStorage.getItem(`quizState_${currentUser.uid}_${qId}`);
@@ -1926,7 +2172,7 @@
                         userData = doc.data();
                         // Re-check quiz progress from localStorage (sync)
                         const localProgress = {};
-                        for (let i = 1; i <= 11; i++) {
+                        for (let i = 1; i <= 12; i++) {
                             const qId = `quiz-${i}`;
                             try {
                                 const stored = localStorage.getItem(`quizState_${currentUser.uid}_${qId}`);
