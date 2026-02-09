@@ -1270,6 +1270,18 @@
             };
         }
 
+        function buildReadingFullSection(sectionTemplate, quizDataList) {
+            const data = quizDataList[sectionTemplate.source.quiz];
+            const section = data.sections.find(s => s.id === sectionTemplate.source.section);
+            return {
+                id: 1,
+                title: sectionTemplate.title,
+                description: sectionTemplate.description,
+                passages: section.passages.map(passage => ({ ...passage })),
+                questions: reindexQuestions(cloneQuestions(section.questions))
+            };
+        }
+
         function updateStartScreen() {
             startTitle.textContent = practiceMeta.title;
             startSubtitle.textContent = practiceMeta.subtitle;
@@ -1317,6 +1329,8 @@
             let section;
             if (plan.type === 'cloze') {
                 section = buildClozeSection(plan.section, quizDataList);
+            } else if (plan.type === 'reading-full') {
+                section = buildReadingFullSection(plan.section, quizDataList);
             } else if (plan.type === 'reading') {
                 section = buildReadingSection(plan.section, quizDataList);
             } else {
