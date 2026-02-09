@@ -1663,6 +1663,10 @@
                 FirebaseHelper.clearQuizState(mextUser.uid, practiceQuizId);
             }
 
+            // Calculate time spent
+            const totalDuration = practiceMeta?.duration ? practiceMeta.duration * 60 : 720;
+            const timeSpent = Math.max(0, totalDuration - timeLeft);
+
             let totalCorrect = 0;
             const sectionScores = [];
 
@@ -1680,6 +1684,11 @@
                     total: section.questions.length
                 });
             });
+
+            // Save to Firebase if user is logged in
+            if (mextUser && mextUser.uid && typeof FirebaseHelper !== 'undefined') {
+                FirebaseHelper.savePracticeResults(mextUser.uid, practiceQuizId, totalCorrect, totalQuestions, timeSpent);
+            }
 
             quizScreen.classList.add('hidden');
             resultsScreen.classList.remove('hidden');

@@ -94,6 +94,41 @@ const FirebaseHelper = {
         }
     },
 
+    // Save practice set results to Firestore
+    savePracticeResults: async function (userId, practiceId, score, totalQuestions, timeSpent) {
+        try {
+            const userRef = db.collection('users').doc(userId);
+            const userDoc = await userRef.get();
+            const existingData = userDoc.exists ? userDoc.data() : {};
+
+            const currentBest = existingData.practiceAttempts?.[practiceId]?.bestScore || 0;
+            const newBest = Math.max(currentBest, score);
+
+            await userRef.set({
+                practiceAttempts: {
+                    [practiceId]: {
+                        completed: true,
+                        score: score,
+                        totalQuestions: totalQuestions,
+                        bestScore: newBest,
+                        lastAttempt: firebase.firestore.FieldValue.serverTimestamp(),
+                        attempts: firebase.firestore.FieldValue.increment(1),
+                        timeSpent: timeSpent
+                    }
+                },
+                stats: {
+                    totalTimeSpent: firebase.firestore.FieldValue.increment(timeSpent)
+                }
+            }, { merge: true });
+
+            console.log('Practice results saved to Firebase!');
+            return true;
+        } catch (error) {
+            console.error('Error saving practice results:', error);
+            return false;
+        }
+    },
+
     // Create or update user document
     createUserDocument: async function (user) {
         try {

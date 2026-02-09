@@ -813,11 +813,20 @@
             background: #fffaf0;
         }
 
+        .practice-card.completed {
+            border-color: var(--success);
+            background: #f0fff4;
+        }
+
         .practice-card .practice-status {
             font-size: 0.72rem;
             font-weight: 600;
             color: var(--warning);
             margin-top: 2px;
+        }
+
+        .practice-card.completed .practice-status {
+            color: var(--success);
         }
 
         .practice-card .btn.btn-accent {
@@ -2143,12 +2152,31 @@
         // Periodically sync in-progress quiz data from localStorage for live updates
         let liveProgressInterval = null;
         const practiceSetKeys = [
-            'vocab-1','vocab-2','vocab-3',
-            'grammar-1','grammar-2','grammar-3',
-            'error-1','error-2','error-3',
-            'cloze-1','cloze-2','cloze-3',
-            'reading-1','reading-2','reading-3'
+            'vocab-1','vocab-2','vocab-3','vocab-4','vocab-5',
+            'grammar-1','grammar-2','grammar-3','grammar-4','grammar-5',
+            'error-1','error-2','error-3','error-4','error-5',
+            'cloze-1','cloze-2','cloze-3','cloze-4','cloze-5',
+            'reading-1','reading-2','reading-3','reading-4','reading-5'
         ];
+
+        // Practice set name mapping for display
+        const practiceNameMap = {
+            'practice-vocab-1': 'Vocabulary Sprint 1', 'practice-vocab-2': 'Vocabulary Sprint 2',
+            'practice-vocab-3': 'Vocabulary Sprint 3', 'practice-vocab-4': 'Vocabulary Sprint 4',
+            'practice-vocab-5': 'Vocabulary Sprint 5',
+            'practice-grammar-1': 'Grammar Focus 1', 'practice-grammar-2': 'Grammar Focus 2',
+            'practice-grammar-3': 'Grammar Focus 3', 'practice-grammar-4': 'Grammar Focus 4',
+            'practice-grammar-5': 'Grammar Focus 5',
+            'practice-error-1': 'Error Hunt 1', 'practice-error-2': 'Error Hunt 2',
+            'practice-error-3': 'Error Hunt 3', 'practice-error-4': 'Error Hunt 4',
+            'practice-error-5': 'Error Hunt 5',
+            'practice-cloze-1': 'Cloze Builder 1', 'practice-cloze-2': 'Cloze Builder 2',
+            'practice-cloze-3': 'Cloze Builder 3', 'practice-cloze-4': 'Cloze Builder 4',
+            'practice-cloze-5': 'Cloze Builder 5',
+            'practice-reading-1': 'Reading Drill 1', 'practice-reading-2': 'Reading Drill 2',
+            'practice-reading-3': 'Reading Drill 3', 'practice-reading-4': 'Reading Drill 4',
+            'practice-reading-5': 'Reading Drill 5'
+        };
         function startLiveProgressSync() {
             if (liveProgressInterval) clearInterval(liveProgressInterval);
             liveProgressInterval = setInterval(() => {
@@ -2262,6 +2290,7 @@
                         photoURL: currentUser.photoURL,
                         createdAt: firebase.firestore.FieldValue.serverTimestamp(),
                         quizAttempts: {},
+                        practiceAttempts: {},
                         stats: {
                             totalAttempts: 0,
                             totalCompleted: 0,
@@ -2285,7 +2314,7 @@
                 userDataUnsubscribe = userDocRef.onSnapshot((doc) => {
                     if (doc.exists) {
                         userData = doc.data();
-                        // Re-check quiz progress from localStorage (sync)
+                        // Re-check quiz + practice progress from localStorage (sync)
                         const localProgress = {};
                         for (let i = 1; i <= 12; i++) {
                             const qId = `quiz-${i}`;
@@ -2295,6 +2324,18 @@
                                     const state = JSON.parse(stored);
                                     if (state && Object.keys(state.answers || {}).length > 0) {
                                         localProgress[qId] = state;
+                                    }
+                                }
+                            } catch (e) {}
+                        }
+                        for (const key of practiceSetKeys) {
+                            const pId = `practice-${key}`;
+                            try {
+                                const stored = localStorage.getItem(`quizState_${currentUser.uid}_${pId}`);
+                                if (stored) {
+                                    const state = JSON.parse(stored);
+                                    if (state && Object.keys(state.answers || {}).length > 0) {
+                                        localProgress[pId] = state;
                                     }
                                 }
                             } catch (e) {}
@@ -2321,7 +2362,8 @@
                         totalTimeSpent: 0,
                         sectionScores: {}
                     },
-                    quizAttempts: {}
+                    quizAttempts: {},
+                    practiceAttempts: {}
                 };
                 quizProgressData = {};
             }
@@ -2381,14 +2423,9 @@
 
             // Total time = saved stats time + time spent on in-progress quizzes/practice
             let totalTimeSeconds = stats.totalTimeSpent || 0;
-            // Duration map: quiz IDs default to 3600s (60 min), practice sets have custom durations
-            const durationMap = {
-                'practice-vocab-1': 900, 'practice-vocab-2': 1080, 'practice-vocab-3': 1200,
-                'practice-grammar-1': 900, 'practice-grammar-2': 1080, 'practice-grammar-3': 1200,
-                'practice-error-1': 900, 'practice-error-2': 1080, 'practice-error-3': 1080,
-                'practice-cloze-1': 1080, 'practice-cloze-2': 1080, 'practice-cloze-3': 1200,
-                'practice-reading-1': 1080, 'practice-reading-2': 1080, 'practice-reading-3': 1080
-            };
+            // Duration map: quiz IDs default to 3600s (60 min), all practice sets are 720s (12 min)
+            const durationMap = {};
+            practiceSetKeys.forEach(k => { durationMap[`practice-${k}`] = 720; });
             Object.entries(quizProgressData).forEach(([id, state]) => {
                 if (state && typeof state.timeLeft === 'number') {
                     const totalDuration = durationMap[id] || 3600;
@@ -2697,51 +2734,90 @@
         function renderActivity() {
             const activityList = document.getElementById('activityList');
 
-            if (!userData.quizAttempts || Object.keys(userData.quizAttempts).length === 0) {
+            // Merge quiz attempts and practice attempts into a single list
+            const allActivities = [];
+
+            // Add quiz activities
+            if (userData.quizAttempts) {
+                Object.entries(userData.quizAttempts).forEach(([id, data]) => {
+                    if (data.lastAttempt) {
+                        const quiz = quizzes.find(q => q.id === id);
+                        allActivities.push({
+                            id,
+                            type: 'quiz',
+                            title: quiz?.title || id,
+                            ...data
+                        });
+                    }
+                });
+            }
+
+            // Add practice activities
+            if (userData.practiceAttempts) {
+                Object.entries(userData.practiceAttempts).forEach(([id, data]) => {
+                    if (data.lastAttempt) {
+                        allActivities.push({
+                            id,
+                            type: 'practice',
+                            title: practiceNameMap[id] || id,
+                            totalQuestions: data.totalQuestions || 10,
+                            ...data
+                        });
+                    }
+                });
+            }
+
+            if (allActivities.length === 0) {
                 activityList.innerHTML = `
                     <div class="empty-state">
                         <div class="icon">📝</div>
-                        <p>No activity yet. Start a quiz!</p>
+                        <p>No activity yet. Start a quiz or practice set!</p>
                     </div>
                 `;
                 return;
             }
 
-            // Get attempts sorted by date
-            const attempts = Object.entries(userData.quizAttempts)
-                .map(([id, data]) => ({ id, ...data }))
-                .filter(a => a.lastAttempt)
-                .sort((a, b) => {
-                    const dateA = a.lastAttempt?.toDate?.() || new Date(a.lastAttempt);
-                    const dateB = b.lastAttempt?.toDate?.() || new Date(b.lastAttempt);
-                    return dateB - dateA;
-                })
-                .slice(0, 5);
-
-            if (attempts.length === 0) {
-                activityList.innerHTML = `
-                    <div class="empty-state">
-                        <div class="icon">📝</div>
-                        <p>No activity yet. Start a quiz!</p>
-                    </div>
-                `;
-                return;
-            }
+            // Sort by date (newest first) and take top 8
+            allActivities.sort((a, b) => {
+                const dateA = a.lastAttempt?.toDate?.() || new Date(a.lastAttempt);
+                const dateB = b.lastAttempt?.toDate?.() || new Date(b.lastAttempt);
+                return dateB - dateA;
+            });
+            const recentActivities = allActivities.slice(0, 8);
 
             let html = '';
-            attempts.forEach(attempt => {
-                const quiz = quizzes.find(q => q.id === attempt.id);
-                const date = attempt.lastAttempt?.toDate?.() || new Date(attempt.lastAttempt);
+            recentActivities.forEach(activity => {
+                const date = activity.lastAttempt?.toDate?.() || new Date(activity.lastAttempt);
                 const dateStr = formatDate(date);
-                const icon = attempt.completed ? '✅' : '📝';
-                const iconClass = attempt.completed ? 'complete' : 'attempt';
-                const action = attempt.completed ? `Completed with ${attempt.score}/50` : 'Started quiz';
+
+                let icon, iconClass, action;
+                if (activity.type === 'practice') {
+                    if (activity.completed) {
+                        icon = '🎯';
+                        iconClass = 'complete';
+                        action = `Completed ${activity.score}/${activity.totalQuestions}`;
+                    } else {
+                        icon = '🏋️';
+                        iconClass = 'attempt';
+                        action = 'Started practice';
+                    }
+                } else {
+                    if (activity.completed) {
+                        icon = '✅';
+                        iconClass = 'complete';
+                        action = `Completed with ${activity.score}/50`;
+                    } else {
+                        icon = '📝';
+                        iconClass = 'attempt';
+                        action = 'Started quiz';
+                    }
+                }
 
                 html += `
                     <div class="activity-item">
                         <div class="activity-icon ${iconClass}">${icon}</div>
                         <div class="activity-info">
-                            <p>${action} - ${quiz?.title || attempt.id}</p>
+                            <p>${action} - ${activity.title}</p>
                             <span>${dateStr}</span>
                         </div>
                     </div>
@@ -2850,33 +2926,48 @@
             window.location.href = path;
         }
 
-        // Update practice card UI based on in-progress state
+        // Update practice card UI based on in-progress and completed state
         function updatePracticeCards() {
             document.querySelectorAll('.practice-card[data-practice-id]').forEach(card => {
                 const setKey = card.dataset.practiceId;
                 const practiceId = `practice-${setKey}`;
                 const state = quizProgressData[practiceId];
+                const attempt = userData.practiceAttempts?.[practiceId];
                 const btn = card.querySelector('.btn');
                 // Remove previous status indicator if any
                 const oldStatus = card.querySelector('.practice-status');
                 if (oldStatus) oldStatus.remove();
 
                 if (state && Object.keys(state.answers || {}).length > 0) {
+                    // In-progress
                     const answered = Object.keys(state.answers).length;
                     card.classList.add('in-progress');
-                    // Add status text
+                    card.classList.remove('completed');
                     const infoDiv = card.querySelector('div:first-child');
                     const statusEl = document.createElement('div');
                     statusEl.className = 'practice-status';
                     statusEl.textContent = `⏳ In Progress (${answered} answered)`;
                     infoDiv.appendChild(statusEl);
-                    // Update button
                     if (btn) {
                         btn.textContent = 'Continue';
                         btn.className = 'btn btn-accent';
                     }
+                } else if (attempt && attempt.completed) {
+                    // Completed
+                    card.classList.remove('in-progress');
+                    card.classList.add('completed');
+                    const infoDiv = card.querySelector('div:first-child');
+                    const statusEl = document.createElement('div');
+                    statusEl.className = 'practice-status';
+                    statusEl.textContent = `✅ Best: ${attempt.bestScore}/${attempt.totalQuestions || 10}`;
+                    infoDiv.appendChild(statusEl);
+                    if (btn) {
+                        btn.textContent = 'Retry';
+                        btn.className = 'btn btn-outline';
+                    }
                 } else {
                     card.classList.remove('in-progress');
+                    card.classList.remove('completed');
                     if (btn) {
                         btn.textContent = 'Start';
                         btn.className = 'btn btn-outline';
@@ -2912,6 +3003,21 @@
                         }
                     }
                 } catch (e) {}
+            }
+
+            // Save practice start to Firestore (don't wait for it)
+            if (currentUser) {
+                const userRef = db.collection('users').doc(currentUser.uid);
+                userRef.set({
+                    practiceAttempts: {
+                        [practiceId]: {
+                            started: true,
+                            lastAttempt: firebase.firestore.FieldValue.serverTimestamp()
+                        }
+                    }
+                }, { merge: true }).catch(error => {
+                    console.error('Error saving practice start:', error);
+                });
             }
 
             analytics.logEvent('practice_start', { practice_id: practiceId });
