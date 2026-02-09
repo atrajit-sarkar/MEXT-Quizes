@@ -1355,6 +1355,128 @@
             color: var(--success);
         }
 
+        /* Practice Analytics */
+        .practice-analytics-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .pa-stat {
+            background: var(--bg-light);
+            border-radius: 12px;
+            padding: 14px;
+            text-align: center;
+            border: 1px solid var(--border);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .pa-stat:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        .pa-stat .pa-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .pa-stat .pa-label {
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        .pa-section-group {
+            margin-bottom: 16px;
+        }
+
+        .pa-section-group h5 {
+            font-size: 0.82rem;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .pa-section-group h5 .pa-section-tag {
+            font-size: 0.68rem;
+            background: var(--bg-dark);
+            color: var(--text-muted);
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-weight: 500;
+        }
+
+        .pa-card-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.85rem;
+        }
+
+        .pa-card-row:last-child {
+            border-bottom: none;
+        }
+
+        .pa-card-name {
+            color: var(--text-dark);
+            flex: 1;
+        }
+
+        .pa-card-score {
+            font-weight: 700;
+            min-width: 65px;
+            text-align: right;
+        }
+
+        .pa-card-score.excellent { color: var(--success); }
+        .pa-card-score.good { color: #48bb78; }
+        .pa-card-score.average { color: var(--warning); }
+        .pa-card-score.poor { color: var(--accent); }
+        .pa-card-score.none { color: var(--text-muted); }
+
+        .pa-overall-bar {
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid var(--border);
+        }
+
+        .pa-overall-bar .pa-bar-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.82rem;
+            margin-bottom: 6px;
+        }
+
+        .pa-overall-bar .pa-bar-label span:first-child {
+            color: var(--text-muted);
+        }
+
+        .pa-overall-bar .pa-bar-label span:last-child {
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+
+        .pa-bar-track {
+            height: 10px;
+            background: var(--bg-dark);
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .pa-bar-fill {
+            height: 100%;
+            border-radius: 5px;
+            transition: width 1s cubic-bezier(0.22, 1, 0.36, 1);
+            background: linear-gradient(90deg, var(--success), #48bb78);
+        }
+
         /* Responsive */
         @media (max-width: 1024px) {
             .quiz-card {
@@ -1714,6 +1836,16 @@
                             <div class="empty-state">
                                 <div class="icon">📝</div>
                                 <p>No activity yet. Start a quiz!</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Practice Set Analytics -->
+                    <div class="analytics-panel" style="margin-top: 20px;">
+                        <h3>🎯 Practice Set Performance</h3>
+                        <div id="practiceAnalytics">
+                            <div class="empty-state" style="padding: 20px;">
+                                <p>Complete practice sets to see your performance</p>
                             </div>
                         </div>
                     </div>
@@ -2224,6 +2356,9 @@
 
             // Update practice card states
             updatePracticeCards();
+
+            // Render practice analytics
+            renderPracticeAnalytics();
         }
 
         // Update Progress Ring
@@ -2642,6 +2777,118 @@
             });
 
             bestScoresDiv.innerHTML = html;
+        }
+
+        // Render Practice Set Analytics
+        function renderPracticeAnalytics() {
+            const container = document.getElementById('practiceAnalytics');
+            const attempts = userData.practiceAttempts || {};
+            const completed = Object.entries(attempts).filter(([, d]) => d.completed);
+
+            if (completed.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state" style="padding: 20px;">
+                        <p>Complete practice sets to see your performance</p>
+                    </div>
+                `;
+                return;
+            }
+
+            // Overall stats
+            const totalCompleted = completed.length;
+            const totalSets = practiceSetKeys.length;
+            const totalScore = completed.reduce((s, [, d]) => s + (d.bestScore || d.score || 0), 0);
+            const totalQs = completed.reduce((s, [, d]) => s + (d.totalQuestions || 10), 0);
+            const overallPct = totalQs > 0 ? Math.round((totalScore / totalQs) * 100) : 0;
+            const totalTime = completed.reduce((s, [, d]) => s + (d.timeSpent || 0), 0);
+            const totalMins = Math.round(totalTime / 60);
+
+            let html = `
+                <div class="practice-analytics-stats">
+                    <div class="pa-stat">
+                        <div class="pa-value">${totalCompleted}/${totalSets}</div>
+                        <div class="pa-label">Sets Completed</div>
+                    </div>
+                    <div class="pa-stat">
+                        <div class="pa-value">${overallPct}%</div>
+                        <div class="pa-label">Avg Accuracy</div>
+                    </div>
+                    <div class="pa-stat">
+                        <div class="pa-value">${totalScore}</div>
+                        <div class="pa-label">Total Correct</div>
+                    </div>
+                    <div class="pa-stat">
+                        <div class="pa-value">${totalMins}m</div>
+                        <div class="pa-label">Time Practiced</div>
+                    </div>
+                </div>
+            `;
+
+            // Per-section breakdown
+            const sectionGroups = {
+                'Vocabulary': { tag: 'Section I', prefix: 'practice-vocab-' },
+                'Grammar': { tag: 'Section II', prefix: 'practice-grammar-' },
+                'Error ID': { tag: 'Section III', prefix: 'practice-error-' },
+                'Cloze Test': { tag: 'Section IV', prefix: 'practice-cloze-' },
+                'Reading': { tag: 'Section V', prefix: 'practice-reading-' }
+            };
+
+            for (const [name, { tag, prefix }] of Object.entries(sectionGroups)) {
+                const sectionCards = Object.entries(attempts)
+                    .filter(([id]) => id.startsWith(prefix));
+
+                if (sectionCards.length === 0) continue;
+
+                const completedCards = sectionCards.filter(([, d]) => d.completed);
+                const sectionScore = completedCards.reduce((s, [, d]) => s + (d.bestScore || d.score || 0), 0);
+                const sectionTotal = completedCards.reduce((s, [, d]) => s + (d.totalQuestions || 10), 0);
+                const sectionPct = sectionTotal > 0 ? Math.round((sectionScore / sectionTotal) * 100) : 0;
+
+                html += `
+                    <div class="pa-section-group">
+                        <h5>${name} <span class="pa-section-tag">${tag}</span>
+                            <span style="margin-left:auto; font-weight:700; color: var(--text-dark);">${completedCards.length > 0 ? sectionPct + '%' : '-'}</span>
+                        </h5>
+                `;
+
+                sectionCards
+                    .sort(([a], [b]) => a.localeCompare(b))
+                    .forEach(([id, data]) => {
+                        const title = practiceNameMap[id] || id;
+                        let scoreText, colorClass;
+                        if (data.completed) {
+                            const pct = Math.round(((data.bestScore || data.score || 0) / (data.totalQuestions || 10)) * 100);
+                            scoreText = `${data.bestScore || data.score}/${data.totalQuestions || 10} (${pct}%)`;
+                            colorClass = pct >= 80 ? 'excellent' : pct >= 60 ? 'good' : pct >= 40 ? 'average' : 'poor';
+                        } else {
+                            scoreText = 'Started';
+                            colorClass = 'none';
+                        }
+                        html += `
+                            <div class="pa-card-row">
+                                <span class="pa-card-name">${title}</span>
+                                <span class="pa-card-score ${colorClass}">${scoreText}</span>
+                            </div>
+                        `;
+                    });
+
+                html += '</div>';
+            }
+
+            // Overall accuracy bar
+            html += `
+                <div class="pa-overall-bar">
+                    <div class="pa-bar-label">
+                        <span>Overall Practice Accuracy</span>
+                        <span>${overallPct}%</span>
+                    </div>
+                    <div class="pa-bar-track">
+                        <div class="pa-bar-fill" style="width: ${overallPct}%"></div>
+                    </div>
+                </div>
+            `;
+
+            container.innerHTML = html;
         }
 
         // Format Date
