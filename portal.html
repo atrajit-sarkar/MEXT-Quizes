@@ -1781,6 +1781,10 @@
             dashboard.classList.remove('active');
             navUser.innerHTML = '';
             updateNextQuizUI(false);
+            if (liveProgressInterval) {
+                clearInterval(liveProgressInterval);
+                liveProgressInterval = null;
+            }
         }
 
         // Show Dashboard
@@ -1790,7 +1794,57 @@
             updateNavUser();
             updateDashboard();
             updateNextQuizUI(true);
+            startLiveProgressSync();
         }
+
+        // Periodically sync in-progress quiz data from localStorage for live updates
+        let liveProgressInterval = null;
+        function startLiveProgressSync() {
+            if (liveProgressInterval) clearInterval(liveProgressInterval);
+            liveProgressInterval = setInterval(() => {
+                if (!currentUser || !dashboard.classList.contains('active')) return;
+                let changed = false;
+                for (let i = 1; i <= 10; i++) {
+                    const qId = `quiz-${i}`;
+                    try {
+                        const stored = localStorage.getItem(`quizState_${currentUser.uid}_${qId}`);
+                        if (stored) {
+                            const state = JSON.parse(stored);
+                            if (state && Object.keys(state.answers || {}).length > 0) {
+                                const prev = quizProgressData[qId];
+                                if (!prev || JSON.stringify(prev) !== stored) {
+                                    quizProgressData[qId] = state;
+                                    changed = true;
+                                }
+                            }
+                        } else if (quizProgressData[qId]) {
+                            // Quiz state was cleared (quiz submitted)
+                            delete quizProgressData[qId];
+                            changed = true;
+                        }
+                    } catch (e) {}
+                }
+                if (changed) updateDashboard();
+            }, 5000); // Check every 5 seconds
+        }
+
+        // Also listen for storage events from other tabs
+        window.addEventListener('storage', (e) => {
+            if (!currentUser || !e.key || !e.key.startsWith('quizState_')) return;
+            if (!dashboard.classList.contains('active')) return;
+            const qId = e.key.replace(`quizState_${currentUser.uid}_`, '');
+            try {
+                if (e.newValue) {
+                    const state = JSON.parse(e.newValue);
+                    if (state && Object.keys(state.answers || {}).length > 0) {
+                        quizProgressData[qId] = state;
+                    }
+                } else {
+                    delete quizProgressData[qId];
+                }
+                updateDashboard();
+            } catch (err) {}
+        });
 
         function updateNextQuizUI(isSignedIn) {
             // Show the auth tip when not signed in
@@ -1924,14 +1978,29 @@
             const firstName = currentUser.displayName ? currentUser.displayName.split(' ')[0] : 'Student';
             document.getElementById('welcomeMessage').textContent = `Welcome back, ${firstName}!`;
 
-            // Update stats with count-up animation
+            // Compute stats from actual data (quizAttempts + in-progress states)
             const stats = userData.stats || {};
-            animateCountUp(document.getElementById('statAttempts'), stats.totalAttempts || 0, '');
-            animateCountUp(document.getElementById('statCompleted'), stats.totalCompleted || 0, '');
+
+            // Count quizzes attempted = any quiz with a completed attempt OR an in-progress session
+            const attemptedQuizIds = new Set();
+            if (userData.quizAttempts) {
+                Object.keys(userData.quizAttempts).forEach(id => attemptedQuizIds.add(id));
+            }
+            Object.keys(quizProgressData).forEach(id => attemptedQuizIds.add(id));
+            const totalAttempted = attemptedQuizIds.size;
+
+            // Count completed quizzes
+            let totalCompleted = 0;
+            if (userData.quizAttempts) {
+                totalCompleted = Object.values(userData.quizAttempts).filter(a => a.completed).length;
+            }
+
+            animateCountUp(document.getElementById('statAttempts'), totalAttempted, '');
+            animateCountUp(document.getElementById('statCompleted'), totalCompleted, '');
 
             // Calculate average score
             let avgScore = 0;
-            if (stats.totalCompleted > 0 && userData.quizAttempts) {
+            if (totalCompleted > 0 && userData.quizAttempts) {
                 const attempts = Object.values(userData.quizAttempts).filter(a => a.completed);
                 if (attempts.length > 0) {
                     const totalScore = attempts.reduce((sum, a) => sum + (a.bestScore || a.score || 0), 0);
@@ -1940,8 +2009,15 @@
             }
             animateCountUp(document.getElementById('statAvgScore'), avgScore, '%');
 
-            // Total time
-            const totalMinutes = Math.round((stats.totalTimeSpent || 0) / 60);
+            // Total time = saved stats time + time spent on in-progress quizzes
+            let totalTimeSeconds = stats.totalTimeSpent || 0;
+            Object.values(quizProgressData).forEach(state => {
+                if (state && typeof state.timeLeft === 'number') {
+                    // Each quiz has 3600s (60 min); time spent = 3600 - timeLeft
+                    totalTimeSeconds += Math.max(0, 3600 - state.timeLeft);
+                }
+            });
+            const totalMinutes = Math.round(totalTimeSeconds / 60);
             animateCountUp(document.getElementById('statTotalTime'), totalMinutes, 'm');
 
             // Update progress ring with delay for visual effect
