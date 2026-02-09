@@ -808,6 +808,24 @@
             cursor: not-allowed;
         }
 
+        .practice-card.in-progress {
+            border-color: var(--warning);
+            background: #fffaf0;
+        }
+
+        .practice-card .practice-status {
+            font-size: 0.72rem;
+            font-weight: 600;
+            color: var(--warning);
+            margin-top: 2px;
+        }
+
+        .practice-card .btn.btn-accent {
+            background: linear-gradient(135deg, var(--accent) 0%, #c53030 100%);
+            color: white;
+            border: none;
+        }
+
         .status-badge {
             padding: 6px 12px;
             border-radius: 20px;
@@ -1609,21 +1627,21 @@
                                     <span class="practice-tag">Section I</span>
                                 </div>
                                 <div class="practice-list">
-                                    <div class="practice-card">
+                                    <div class="practice-card" data-practice-id="vocab-1">
                                         <div>
                                             <h4>Vocabulary Sprint 1</h4>
                                             <p>20 questions • 15 min • Nuance focus</p>
                                         </div>
                                         <a class="btn btn-outline" href="practice/index.html?set=vocab-1" onclick="startPractice('vocab-1'); return false;">Start</a>
                                     </div>
-                                    <div class="practice-card">
+                                    <div class="practice-card" data-practice-id="vocab-2">
                                         <div>
                                             <h4>Vocabulary Sprint 2</h4>
                                             <p>25 questions • 18 min • Academic usage</p>
                                         </div>
                                         <a class="btn btn-outline" href="practice/index.html?set=vocab-2" onclick="startPractice('vocab-2'); return false;">Start</a>
                                     </div>
-                                    <div class="practice-card">
+                                    <div class="practice-card" data-practice-id="vocab-3">
                                         <div>
                                             <h4>Vocabulary Sprint 3</h4>
                                             <p>30 questions • 20 min • Synonym traps</p>
@@ -1639,21 +1657,21 @@
                                     <span class="practice-tag">Section II</span>
                                 </div>
                                 <div class="practice-list">
-                                    <div class="practice-card">
+                                    <div class="practice-card" data-practice-id="grammar-1">
                                         <div>
                                             <h4>Grammar Focus 1</h4>
                                             <p>20 questions • 15 min • Conditionals</p>
                                         </div>
                                         <a class="btn btn-outline" href="practice/index.html?set=grammar-1" onclick="startPractice('grammar-1'); return false;">Start</a>
                                     </div>
-                                    <div class="practice-card">
+                                    <div class="practice-card" data-practice-id="grammar-2">
                                         <div>
                                             <h4>Grammar Focus 2</h4>
                                             <p>25 questions • 18 min • Inversion & emphasis</p>
                                         </div>
                                         <a class="btn btn-outline" href="practice/index.html?set=grammar-2" onclick="startPractice('grammar-2'); return false;">Start</a>
                                     </div>
-                                    <div class="practice-card">
+                                    <div class="practice-card" data-practice-id="grammar-3">
                                         <div>
                                             <h4>Grammar Focus 3</h4>
                                             <p>30 questions • 20 min • Prepositions</p>
@@ -1669,21 +1687,21 @@
                                     <span class="practice-tag">Section III</span>
                                 </div>
                                 <div class="practice-list">
-                                    <div class="practice-card">
+                                    <div class="practice-card" data-practice-id="error-1">
                                         <div>
                                             <h4>Error Hunt 1</h4>
                                             <p>15 questions • 15 min • Subject-verb agreement</p>
                                         </div>
                                         <a class="btn btn-outline" href="practice/index.html?set=error-1" onclick="startPractice('error-1'); return false;">Start</a>
                                     </div>
-                                    <div class="practice-card">
+                                    <div class="practice-card" data-practice-id="error-2">
                                         <div>
                                             <h4>Error Hunt 2</h4>
                                             <p>20 questions • 18 min • Tense consistency</p>
                                         </div>
                                         <a class="btn btn-outline" href="practice/index.html?set=error-2" onclick="startPractice('error-2'); return false;">Start</a>
                                     </div>
-                                    <div class="practice-card">
+                                    <div class="practice-card" data-practice-id="error-3">
                                         <div>
                                             <h4>Error Hunt 3</h4>
                                             <p>20 questions • 18 min • Articles & modifiers</p>
@@ -1699,21 +1717,21 @@
                                     <span class="practice-tag">Section IV</span>
                                 </div>
                                 <div class="practice-list">
-                                    <div class="practice-card">
+                                    <div class="practice-card" data-practice-id="cloze-1">
                                         <div>
                                             <h4>Cloze Builder 1</h4>
                                             <p>10 blanks • 18 min • Cohesion & flow</p>
                                         </div>
                                         <a class="btn btn-outline" href="practice/index.html?set=cloze-1" onclick="startPractice('cloze-1'); return false;">Start</a>
                                     </div>
-                                    <div class="practice-card">
+                                    <div class="practice-card" data-practice-id="cloze-2">
                                         <div>
                                             <h4>Cloze Builder 2</h4>
                                             <p>10 blanks • 18 min • Connectors & tense</p>
                                         </div>
                                         <a class="btn btn-outline" href="practice/index.html?set=cloze-2" onclick="startPractice('cloze-2'); return false;">Start</a>
                                     </div>
-                                    <div class="practice-card">
+                                    <div class="practice-card" data-practice-id="cloze-3">
                                         <div>
                                             <h4>Cloze Builder 3</h4>
                                             <p>10 blanks • 20 min • Narrative flow</p>
@@ -1729,21 +1747,21 @@
                                     <span class="practice-tag">Section V</span>
                                 </div>
                                 <div class="practice-list">
-                                    <div class="practice-card">
+                                    <div class="practice-card" data-practice-id="reading-1">
                                         <div>
                                             <h4>Reading Drill 1</h4>
                                             <p>1 passage • 5 questions • Inference focus</p>
                                         </div>
                                         <a class="btn btn-outline" href="practice/index.html?set=reading-1" onclick="startPractice('reading-1'); return false;">Start</a>
                                     </div>
-                                    <div class="practice-card">
+                                    <div class="practice-card" data-practice-id="reading-2">
                                         <div>
                                             <h4>Reading Drill 2</h4>
                                             <p>1 passage • 5 questions • Detail checks</p>
                                         </div>
                                         <a class="btn btn-outline" href="practice/index.html?set=reading-2" onclick="startPractice('reading-2'); return false;">Start</a>
                                     </div>
-                                    <div class="practice-card">
+                                    <div class="practice-card" data-practice-id="reading-3">
                                         <div>
                                             <h4>Reading Drill 3</h4>
                                             <p>1 passage • 5 questions • Main idea & tone</p>
@@ -2054,11 +2072,19 @@
 
         // Periodically sync in-progress quiz data from localStorage for live updates
         let liveProgressInterval = null;
+        const practiceSetKeys = [
+            'vocab-1','vocab-2','vocab-3',
+            'grammar-1','grammar-2','grammar-3',
+            'error-1','error-2','error-3',
+            'cloze-1','cloze-2','cloze-3',
+            'reading-1','reading-2','reading-3'
+        ];
         function startLiveProgressSync() {
             if (liveProgressInterval) clearInterval(liveProgressInterval);
             liveProgressInterval = setInterval(() => {
                 if (!currentUser || !dashboard.classList.contains('active')) return;
                 let changed = false;
+                // Sync quiz progress
                 for (let i = 1; i <= 12; i++) {
                     const qId = `quiz-${i}`;
                     try {
@@ -2073,8 +2099,27 @@
                                 }
                             }
                         } else if (quizProgressData[qId]) {
-                            // Quiz state was cleared (quiz submitted)
                             delete quizProgressData[qId];
+                            changed = true;
+                        }
+                    } catch (e) {}
+                }
+                // Sync practice progress
+                for (const key of practiceSetKeys) {
+                    const pId = `practice-${key}`;
+                    try {
+                        const stored = localStorage.getItem(`quizState_${currentUser.uid}_${pId}`);
+                        if (stored) {
+                            const state = JSON.parse(stored);
+                            if (state && Object.keys(state.answers || {}).length > 0) {
+                                const prev = quizProgressData[pId];
+                                if (!prev || JSON.stringify(prev) !== stored) {
+                                    quizProgressData[pId] = state;
+                                    changed = true;
+                                }
+                            }
+                        } else if (quizProgressData[pId]) {
+                            delete quizProgressData[pId];
                             changed = true;
                         }
                     } catch (e) {}
@@ -2264,12 +2309,20 @@
             }
             animateCountUp(document.getElementById('statAvgScore'), avgScore, '%');
 
-            // Total time = saved stats time + time spent on in-progress quizzes
+            // Total time = saved stats time + time spent on in-progress quizzes/practice
             let totalTimeSeconds = stats.totalTimeSpent || 0;
-            Object.values(quizProgressData).forEach(state => {
+            // Duration map: quiz IDs default to 3600s (60 min), practice sets have custom durations
+            const durationMap = {
+                'practice-vocab-1': 900, 'practice-vocab-2': 1080, 'practice-vocab-3': 1200,
+                'practice-grammar-1': 900, 'practice-grammar-2': 1080, 'practice-grammar-3': 1200,
+                'practice-error-1': 900, 'practice-error-2': 1080, 'practice-error-3': 1080,
+                'practice-cloze-1': 1080, 'practice-cloze-2': 1080, 'practice-cloze-3': 1200,
+                'practice-reading-1': 1080, 'practice-reading-2': 1080, 'practice-reading-3': 1080
+            };
+            Object.entries(quizProgressData).forEach(([id, state]) => {
                 if (state && typeof state.timeLeft === 'number') {
-                    // Each quiz has 3600s (60 min); time spent = 3600 - timeLeft
-                    totalTimeSeconds += Math.max(0, 3600 - state.timeLeft);
+                    const totalDuration = durationMap[id] || 3600;
+                    totalTimeSeconds += Math.max(0, totalDuration - state.timeLeft);
                 }
             });
             const totalMinutes = Math.round(totalTimeSeconds / 60);
@@ -2289,6 +2342,9 @@
 
             // Render best scores
             renderBestScores();
+
+            // Update practice card states
+            updatePracticeCards();
         }
 
         // Update Progress Ring
@@ -2722,6 +2778,41 @@
 
             // Navigate to quiz immediately
             window.location.href = path;
+        }
+
+        // Update practice card UI based on in-progress state
+        function updatePracticeCards() {
+            document.querySelectorAll('.practice-card[data-practice-id]').forEach(card => {
+                const setKey = card.dataset.practiceId;
+                const practiceId = `practice-${setKey}`;
+                const state = quizProgressData[practiceId];
+                const btn = card.querySelector('.btn');
+                // Remove previous status indicator if any
+                const oldStatus = card.querySelector('.practice-status');
+                if (oldStatus) oldStatus.remove();
+
+                if (state && Object.keys(state.answers || {}).length > 0) {
+                    const answered = Object.keys(state.answers).length;
+                    card.classList.add('in-progress');
+                    // Add status text
+                    const infoDiv = card.querySelector('div:first-child');
+                    const statusEl = document.createElement('div');
+                    statusEl.className = 'practice-status';
+                    statusEl.textContent = `⏳ In Progress (${answered} answered)`;
+                    infoDiv.appendChild(statusEl);
+                    // Update button
+                    if (btn) {
+                        btn.textContent = 'Continue';
+                        btn.className = 'btn btn-accent';
+                    }
+                } else {
+                    card.classList.remove('in-progress');
+                    if (btn) {
+                        btn.textContent = 'Start';
+                        btn.className = 'btn btn-outline';
+                    }
+                }
+            });
         }
 
         // Start Practice Set

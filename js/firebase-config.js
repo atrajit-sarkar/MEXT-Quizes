@@ -303,6 +303,26 @@ const FirebaseHelper = {
                 }
             } catch (e) {}
         }
+        // Check localStorage for all practice sets
+        const practiceKeys = [
+            'vocab-1','vocab-2','vocab-3',
+            'grammar-1','grammar-2','grammar-3',
+            'error-1','error-2','error-3',
+            'cloze-1','cloze-2','cloze-3',
+            'reading-1','reading-2','reading-3'
+        ];
+        for (const key of practiceKeys) {
+            const practiceId = `practice-${key}`;
+            try {
+                const stored = localStorage.getItem(`quizState_${userId}_${practiceId}`);
+                if (stored) {
+                    const state = JSON.parse(stored);
+                    if (state && Object.keys(state.answers || {}).length > 0) {
+                        progress[practiceId] = state;
+                    }
+                }
+            } catch (e) {}
+        }
         // Check Firestore quizProgress subcollection
         try {
             const snapshot = await db.collection('users').doc(userId)
