@@ -1,0 +1,2837 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MEXT English Quiz - Mock Exam 12</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #1a365d;
+            --primary-light: #2c5282;
+            --secondary: #c53030;
+            --accent: #2b6cb0;
+            --success: #276749;
+            --warning: #c05621;
+            --bg-light: #f7fafc;
+            --bg-card: #ffffff;
+            --text-dark: #1a202c;
+            --text-muted: #718096;
+            --border: #e2e8f0;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header Styles */
+        .quiz-header {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .quiz-title {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .quiz-title h1 {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 8px;
+        }
+
+        .quiz-title p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        .quiz-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .timer-box {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-weight: 600;
+        }
+
+        .timer-box.warning {
+            background: linear-gradient(135deg, var(--warning) 0%, #dd6b20 100%);
+        }
+
+        .timer-box.danger {
+            background: linear-gradient(135deg, var(--secondary) 0%, #e53e3e 100%);
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+
+        .timer-icon {
+            font-size: 1.5rem;
+        }
+
+        .timer-display {
+            font-size: 1.5rem;
+            font-family: 'Consolas', monospace;
+        }
+
+        .review-score {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #f0fff4;
+            color: var(--success);
+            padding: 10px 18px;
+            border-radius: 12px;
+            font-weight: 700;
+            border: 1px solid #c6f6d5;
+        }
+
+        .review-score .label {
+            font-weight: 600;
+            color: var(--text-muted);
+        }
+
+        .progress-info {
+            text-align: right;
+        }
+
+        .progress-text {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+        }
+
+        .progress-bar {
+            width: 200px;
+            height: 10px;
+            background: var(--border);
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent) 0%, var(--success) 100%);
+            border-radius: 5px;
+            transition: width 0.3s ease;
+        }
+
+        /* Section Navigation */
+        .section-nav {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .section-btn {
+            padding: 10px 16px;
+            border: 2px solid var(--border);
+            background: var(--bg-card);
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            font-size: 0.85rem;
+        }
+
+        .section-btn:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .section-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .section-btn .badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.75rem;
+            margin-left: 6px;
+        }
+
+        .section-btn.active .badge {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Quiz Content */
+        .quiz-content {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 32px;
+            box-shadow: var(--shadow-lg);
+            margin-bottom: 20px;
+        }
+
+        .section-header {
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 16px;
+            margin-bottom: 24px;
+        }
+
+        .section-header h2 {
+            color: var(--primary);
+            font-size: 1.4rem;
+            margin-bottom: 8px;
+        }
+
+        .section-header p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        /* Question Styles */
+        .question-block {
+            margin-bottom: 32px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .question-block:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+
+        .question-number {
+            display: inline-block;
+            background: var(--primary);
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 32px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-right: 12px;
+        }
+
+        .question-text {
+            font-size: 1.05rem;
+            margin-bottom: 16px;
+            color: var(--text-dark);
+        }
+
+        .question-text .blank {
+            display: inline-block;
+            min-width: 100px;
+            border-bottom: 2px solid var(--primary);
+            margin: 0 4px;
+        }
+
+        .question-text .underline {
+            text-decoration: underline;
+            text-decoration-style: wavy;
+            text-decoration-color: var(--secondary);
+            cursor: help;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+        }
+
+        .option-label {
+            display: flex;
+            align-items: center;
+            padding: 14px 18px;
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: var(--bg-light);
+        }
+
+        .option-label:hover {
+            border-color: var(--accent);
+            background: white;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        .option-label input {
+            display: none;
+        }
+
+        .option-label input:checked+.option-letter {
+            background: var(--accent);
+            color: white;
+        }
+
+        .option-label input:checked~.option-text {
+            color: var(--accent);
+            font-weight: 500;
+        }
+
+        .option-label:has(input:checked) {
+            border-color: var(--accent);
+            background: rgba(43, 108, 176, 0.05);
+        }
+
+        .option-letter {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: var(--border);
+            color: var(--text-dark);
+            font-weight: 600;
+            font-size: 0.85rem;
+            margin-right: 12px;
+            transition: all 0.2s ease;
+        }
+
+        .option-text {
+            flex: 1;
+            font-size: 0.95rem;
+        }
+
+        /* Passage Styles */
+        .passage-box {
+            background: linear-gradient(to bottom, #f8fafc, #edf2f7);
+            border-left: 4px solid var(--primary);
+            padding: 24px;
+            margin-bottom: 24px;
+            border-radius: 0 12px 12px 0;
+            font-size: 0.95rem;
+            line-height: 1.8;
+        }
+
+        .passage-box .blank-number {
+            display: inline-block;
+            background: var(--primary);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin: 0 2px;
+        }
+
+        .passage-title {
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 12px;
+            font-size: 1.1rem;
+        }
+
+        /* Error Identification */
+        .error-sentence {
+            font-size: 1.05rem;
+            line-height: 2;
+            margin-bottom: 16px;
+        }
+
+        .error-part {
+            background: #fef3c7;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 500;
+        }
+
+        /* Navigation Buttons */
+        .quiz-navigation {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .nav-btn {
+            padding: 14px 28px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-btn.prev {
+            background: var(--bg-light);
+            color: var(--text-dark);
+            border: 2px solid var(--border);
+        }
+
+        .nav-btn.prev:hover {
+            background: var(--border);
+        }
+
+        .nav-btn.next {
+            background: linear-gradient(135deg, var(--accent) 0%, var(--primary) 100%);
+            color: white;
+        }
+
+        .nav-btn.next:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .nav-btn.submit {
+            background: linear-gradient(135deg, var(--success) 0%, #2f855a 100%);
+            color: white;
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Start Screen */
+        .start-screen {
+            text-align: center;
+            padding: 60px 40px;
+        }
+
+        .start-screen h1 {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 16px;
+        }
+
+        .start-screen .subtitle {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            margin-bottom: 40px;
+        }
+
+        .exam-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .info-card {
+            background: var(--bg-light);
+            padding: 24px;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .info-card .icon {
+            font-size: 2rem;
+            margin-bottom: 12px;
+        }
+
+        .info-card .value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .info-card .label {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .start-btn {
+            padding: 18px 48px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .start-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 40px rgba(26, 54, 93, 0.4);
+        }
+
+        /* Results Screen */
+        .results-screen {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .results-screen h1 {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 24px;
+        }
+
+        .score-circle {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 32px;
+            color: white;
+        }
+
+        .score-circle .score {
+            font-size: 3rem;
+            font-weight: 700;
+        }
+
+        .score-circle .total {
+            font-size: 1rem;
+            opacity: 0.8;
+        }
+
+        .score-breakdown {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .breakdown-item {
+            background: var(--bg-light);
+            padding: 16px;
+            border-radius: 10px;
+        }
+
+        .breakdown-item .section-name {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+        }
+
+        .breakdown-item .section-score {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .result-actions {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .result-btn {
+            padding: 14px 28px;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .result-btn.review {
+            background: var(--bg-light);
+            border: 2px solid var(--border);
+            color: var(--text-dark);
+        }
+
+        .result-btn.retry {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            border: none;
+            color: white;
+        }
+
+        /* Review Mode */
+        .review-mode .option-label.correct {
+            border-color: var(--success);
+            background: rgba(39, 103, 73, 0.1);
+        }
+
+        .review-mode .option-label.correct .option-letter {
+            background: var(--success);
+            color: white;
+        }
+
+        .review-mode .option-label.incorrect {
+            border-color: var(--secondary);
+            background: rgba(197, 48, 48, 0.1);
+        }
+
+        .review-mode .option-label.incorrect .option-letter {
+            background: var(--secondary);
+            color: white;
+        }
+
+        .explanation-box {
+            background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+            border-left: 4px solid var(--success);
+            padding: 20px;
+            margin-top: 16px;
+            border-radius: 0 12px 12px 0;
+            display: none;
+        }
+
+        .review-mode .explanation-box,
+        .question-block.answer-revealed .explanation-box {
+            display: block;
+        }
+
+        .explanation-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid rgba(39, 103, 73, 0.2);
+        }
+
+        .correct-answer-badge {
+            background: var(--success);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .explanation-title {
+            color: var(--success);
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .explanation-content {
+            color: var(--text-dark);
+            line-height: 1.7;
+        }
+
+        /* Detailed Explanation Styling */
+        .explanation-section {
+            margin-bottom: 16px;
+        }
+
+        .explanation-section .section-label {
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+        }
+
+        .explanation-section p {
+            margin-bottom: 8px;
+            color: var(--text-dark);
+        }
+
+        .example-box {
+            background: rgba(43, 108, 176, 0.1);
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin: 12px 0;
+            border-left: 3px solid var(--accent);
+        }
+
+        .example-box strong {
+            color: var(--primary);
+        }
+
+        .tip-box {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin-top: 12px;
+            border-left: 3px solid var(--warning);
+            font-size: 0.9rem;
+        }
+
+        .wrong-options {
+            background: rgba(197, 48, 48, 0.05);
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin: 12px 0;
+            border-left: 3px solid var(--secondary);
+        }
+
+        .wrong-options .section-label {
+            color: var(--secondary);
+        }
+
+        .wrong-options p {
+            margin-bottom: 6px;
+            font-size: 0.9rem;
+        }
+
+        /* Trial Mode Styles */
+        .start-buttons {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .trial-btn {
+            padding: 18px 48px;
+            background: linear-gradient(135deg, var(--success) 0%, #2f855a 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .trial-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 40px rgba(39, 103, 73, 0.4);
+        }
+
+        .trial-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, var(--success) 0%, #2f855a 100%);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .check-answer-btn {
+            display: block;
+            margin: 16px auto 0;
+            padding: 12px 32px;
+            background: linear-gradient(135deg, var(--accent) 0%, var(--primary) 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .check-answer-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .check-answer-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .check-answer-btn.checked {
+            background: var(--success);
+        }
+
+        .question-block.answer-revealed .option-label.correct {
+            border-color: var(--success);
+            background: rgba(39, 103, 73, 0.1);
+        }
+
+        .question-block.answer-revealed .option-label.correct .option-letter {
+            background: var(--success);
+            color: white;
+        }
+
+        .question-block.answer-revealed .option-label.incorrect {
+            border-color: var(--secondary);
+            background: rgba(197, 48, 48, 0.1);
+        }
+
+        .question-block.answer-revealed .option-label.incorrect .option-letter {
+            background: var(--secondary);
+            color: white;
+        }
+
+        .q-nav-btn.checked {
+            background: var(--success);
+            color: white;
+            border-color: var(--success);
+        }
+
+        .q-nav-btn.checked-wrong {
+            background: var(--secondary);
+            color: white;
+            border-color: var(--secondary);
+        }
+
+        @media (max-width: 768px) {
+            .start-buttons {
+                flex-direction: column;
+            }
+            
+            .trial-btn {
+                margin-left: 0;
+            }
+        }
+
+        /* Hidden */
+        .hidden {
+            display: none !important;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 12px;
+            }
+
+            .quiz-header {
+                padding: 16px;
+            }
+
+            .quiz-title h1 {
+                font-size: 1.5rem;
+            }
+
+            .quiz-meta {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .progress-info {
+                text-align: center;
+            }
+
+            .progress-bar {
+                width: 100%;
+            }
+
+            .quiz-content {
+                padding: 20px;
+            }
+
+            .options-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .section-nav {
+                justify-content: center;
+            }
+
+            .section-btn {
+                font-size: 0.75rem;
+                padding: 8px 12px;
+            }
+        }
+
+        /* Question Navigator */
+        .question-navigator {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            padding: 16px;
+            background: var(--bg-light);
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .q-nav-btn {
+            width: 32px;
+            height: 32px;
+            border: 2px solid var(--border);
+            background: white;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .q-nav-btn:hover {
+            border-color: var(--accent);
+        }
+
+        .q-nav-btn.answered {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
+
+        .q-nav-btn.current {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(26, 54, 93, 0.3);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <!-- Start Screen -->
+        <div id="startScreen" class="quiz-content start-screen">
+            <h1>🎌 MEXT English Exam</h1>
+            <p class="subtitle">Mock Examination 12 - Undergraduate & Research Student Level</p>
+
+            <div class="exam-info">
+                <div class="info-card">
+                    <div class="icon">⏱️</div>
+                    <div class="value">60</div>
+                    <div class="label">Minutes</div>
+                </div>
+                <div class="info-card">
+                    <div class="icon">📝</div>
+                    <div class="value">50</div>
+                    <div class="label">Questions</div>
+                </div>
+                <div class="info-card">
+                    <div class="icon">📚</div>
+                    <div class="value">5</div>
+                    <div class="label">Sections</div>
+                </div>
+                <div class="info-card">
+                    <div class="icon">✅</div>
+                    <div class="value">MCQ</div>
+                    <div class="label">Format</div>
+                </div>
+            </div>
+
+            <div style="text-align: left; max-width: 500px; margin: 0 auto 40px; background: var(--bg-light); padding: 20px; border-radius: 12px;">
+                <h3 style="margin-bottom: 12px; color: var(--primary);">📋 Sections Overview:</h3>
+                <ul style="list-style: none; line-height: 2;">
+                    <li>I. Vocabulary in Context (10 Questions)</li>
+                    <li>II. Grammar & Phrasing (10 Questions)</li>
+                    <li>III. Error Identification (10 Questions)</li>
+                    <li>IV. Cloze Test (10 Questions)</li>
+                    <li>V. Reading Comprehension (10 Questions)</li>
+                </ul>
+            </div>
+
+            <div class="start-buttons">
+                <button class="start-btn" onclick="startQuiz(false)">Start Examination →</button>
+                <button class="trial-btn" onclick="startQuiz(true)">🎯 Trial Mode (No Timer)</button>
+            </div>
+        </div>
+
+        <!-- Quiz Screen -->
+        <div id="quizScreen" class="hidden">
+            <div class="quiz-header">
+                <div class="quiz-title">
+                    <h1>🎌 MEXT English Mock Exam 12</h1>
+                    <p>Answer all questions. Each question has only one correct answer.</p>
+                </div>
+                <div class="quiz-meta">
+                    <div class="timer-box" id="timerBox">
+                        <span class="timer-icon">⏱️</span>
+                        <span class="timer-display" id="timerDisplay">60:00</span>
+                    </div>
+                    <div class="trial-badge hidden" id="trialBadge">
+                        <span>🎯</span>
+                        <span>Trial Mode</span>
+                    </div>
+                    <div class="review-score hidden" id="reviewScorePill">
+                        <span class="label">Total Score</span>
+                        <span id="reviewScoreValue">--/50</span>
+                    </div>
+                    <div class="progress-info">
+                        <div class="progress-text">
+                            <span id="answeredCount">0</span> of 50 answered
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section-nav" id="sectionNav">
+                <button class="section-btn active" data-section="1">I. Vocabulary <span class="badge">10</span></button>
+                <button class="section-btn" data-section="2">II. Grammar <span class="badge">10</span></button>
+                <button class="section-btn" data-section="3">III. Error ID <span class="badge">10</span></button>
+                <button class="section-btn" data-section="4">IV. Cloze <span class="badge">10</span></button>
+                <button class="section-btn" data-section="5">V. Reading <span class="badge">10</span></button>
+            </div>
+
+            <div class="question-navigator" id="questionNav"></div>
+
+            <div class="quiz-content" id="quizContent">
+                <!-- Questions will be rendered here -->
+            </div>
+
+            <div class="quiz-navigation">
+                <button class="nav-btn prev" id="prevBtn" onclick="previousSection()">← Previous Section</button>
+                <button class="nav-btn next" id="nextBtn" onclick="nextSection()">Next Section →</button>
+                <button class="nav-btn submit hidden" id="submitBtn" onclick="submitQuiz()">Submit Exam ✓</button>
+            </div>
+        </div>
+
+        <!-- Results Screen -->
+        <div id="resultsScreen" class="quiz-content results-screen hidden">
+            <h1>📊 Examination Results</h1>
+
+            <div class="score-circle">
+                <div class="score" id="finalScore">0</div>
+                <div class="total">out of 50</div>
+            </div>
+
+            <p style="font-size: 1.2rem; margin-bottom: 24px;" id="scoreMessage"></p>
+
+            <div class="score-breakdown" id="scoreBreakdown">
+                <!-- Section scores will be rendered here -->
+            </div>
+
+            <div class="result-actions">
+                <button class="result-btn retry" onclick="retryQuiz()">🔄 Try Again</button>
+                <button class="result-btn review" onclick="goToDashboard()" style="background: linear-gradient(135deg, #1a365d 0%, #2c5282 100%); color: white; border: none;">🏠 Back to Dashboard</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-analytics-compat.js"></script>
+
+    <!-- Shared Firebase Config -->
+    <script src="../js/firebase-config.js"></script>
+
+    <script>
+        // Get user from session storage
+        const mextUser = FirebaseHelper.getSessionUser();
+        const currentQuizId = FirebaseHelper.getCurrentQuizId();
+
+        // Quiz Data
+        const quizData = {
+            sections: [
+                {
+                    id: 1,
+                    title: "Section I: Vocabulary in Context",
+                    description: "Choose the word that best completes each sentence.",
+                    questions: [
+                        {
+                            id: 1,
+                            text: "The committee reached a _______ compromise that satisfied neither side completely but avoided a damaging strike.",
+                            options: ["tentative", "extreme", "hostile", "arbitrary"],
+                            correct: 0,
+                            explanation: `
+                                <div class="explanation-section">
+                                    <div class="section-label">📖 Why "tentative" is correct:</div>
+                                    <div><strong>Tentative</strong> means not final or subject to change, which fits a compromise that avoids conflict without full agreement.</div>
+                                </div>
+                                <div class="explanation-section">
+                                    <div class="section-label">📝 Example:</div>
+                                    <div class="example-box">"They reached a <code>tentative</code> agreement pending approval."</div>
+                                </div>
+                                <div class="wrong-options">
+                                    <div class="label">Why other options are wrong:</div>
+                                    <p><strong>Extreme</strong> - Too strong for a compromise</p>
+                                    <p><strong>Hostile</strong> - Means unfriendly, not an agreement</p>
+                                    <p><strong>Arbitrary</strong> - Based on chance or whim, not negotiation</p>
+                                </div>
+                                <div class="tip-box">💡 <strong>Tip:</strong> If something is provisional or subject to approval, "tentative" fits.</div>
+                            `
+                        },
+                        {
+                            id: 2,
+                            text: "Her remarks were deliberately _______ so the negotiation could continue without forcing anyone to lose face.",
+                            options: ["vague", "vivid", "verbal", "volatile"],
+                            correct: 0,
+                            explanation: `
+                                <div class="explanation-section">
+                                    <div class="section-label">📖 Why "vague" is correct:</div>
+                                    <div><strong>Vague</strong> means unclear or non-specific, which helps avoid direct confrontation in negotiations.</div>
+                                </div>
+                                <div class="explanation-section">
+                                    <div class="section-label">📝 Example:</div>
+                                    <div class="example-box">"He gave a <code>vague</code> answer to avoid committing."</div>
+                                </div>
+                                <div class="wrong-options">
+                                    <div class="label">Why other options are wrong:</div>
+                                    <p><strong>Vivid</strong> - Clear and detailed, the opposite</p>
+                                    <p><strong>Verbal</strong> - Related to words, not clarity</p>
+                                    <p><strong>Volatile</strong> - Unstable or explosive, not neutral</p>
+                                </div>
+                                <div class="tip-box">💡 <strong>Tip:</strong> If the goal is to avoid commitment, choose words like vague or noncommittal.</div>
+                            `
+                        },
+                        {
+                            id: 3,
+                            text: "The data were too _______ to support a firm conclusion about the safety of the new drug.",
+                            options: ["limited", "lavish", "literal", "lively"],
+                            correct: 0,
+                            explanation: `
+                                <div class="explanation-section">
+                                    <div class="section-label">📖 Why "limited" is correct:</div>
+                                    <div><strong>Limited</strong> means insufficient in amount, which matches data that cannot support a firm conclusion.</div>
+                                </div>
+                                <div class="explanation-section">
+                                    <div class="section-label">📝 Example:</div>
+                                    <div class="example-box">"The study was based on a <code>limited</code> sample."</div>
+                                </div>
+                                <div class="wrong-options">
+                                    <div class="label">Why other options are wrong:</div>
+                                    <p><strong>Lavish</strong> - Excessive or rich, not about data size</p>
+                                    <p><strong>Literal</strong> - Exact in meaning, unrelated</p>
+                                    <p><strong>Lively</strong> - Energetic, not about evidence</p>
+                                </div>
+                                <div class="tip-box">💡 <strong>Tip:</strong> Weak evidence is often described as limited or insufficient.</div>
+                            `
+                        },
+                        {
+                            id: 4,
+                            text: "The journalist refused to reveal her sources, citing the highly _______ nature of the ongoing investigation.",
+                            options: ["sensitive", "casual", "ordinary", "routine"],
+                            correct: 0,
+                            explanation: `
+                                <div class="explanation-section">
+                                    <div class="section-label">📖 Why "sensitive" is correct:</div>
+                                    <div><strong>Sensitive</strong> means requiring careful handling, which fits an investigation that could be harmed by exposure.</div>
+                                </div>
+                                <div class="explanation-section">
+                                    <div class="section-label">📝 Example:</div>
+                                    <div class="example-box">"They withheld details due to <code>sensitive</code> security concerns."</div>
+                                </div>
+                                <div class="wrong-options">
+                                    <div class="label">Why other options are wrong:</div>
+                                    <p><strong>Casual</strong> - Informal, not serious</p>
+                                    <p><strong>Ordinary</strong> - Commonplace, not confidential</p>
+                                    <p><strong>Routine</strong> - Regular, not delicate</p>
+                                </div>
+                                <div class="tip-box">💡 <strong>Tip:</strong> Investigations involving risk or privacy are often described as sensitive.</div>
+                            `
+                        },
+                        {
+                            id: 5,
+                            text: "After months of debate, the plan was finally _______ by the city council in a narrow vote.",
+                            options: ["approved", "accused", "avoided", "assumed"],
+                            correct: 0,
+                            explanation: `
+                                <div class="explanation-section">
+                                    <div class="section-label">📖 Why "approved" is correct:</div>
+                                    <div><strong>Approved</strong> means officially accepted, which fits a plan passing by vote.</div>
+                                </div>
+                                <div class="explanation-section">
+                                    <div class="section-label">📝 Example:</div>
+                                    <div class="example-box">"The budget was <code>approved</code> after a long debate."</div>
+                                </div>
+                                <div class="wrong-options">
+                                    <div class="label">Why other options are wrong:</div>
+                                    <p><strong>Accused</strong> - Blamed, not passed</p>
+                                    <p><strong>Avoided</strong> - Deliberately did not do</p>
+                                    <p><strong>Assumed</strong> - Took for granted</p>
+                                </div>
+                                <div class="tip-box">💡 <strong>Tip:</strong> Votes typically lead to approval or rejection.</div>
+                            `
+                        },
+                        {
+                            id: 6,
+                            text: "The research team adopted a _______ approach, carefully combining extensive field observations with controlled laboratory experiments.",
+                            options: ["hybrid", "hollow", "hazardous", "hasty"],
+                            correct: 0,
+                            explanation: `
+                                <div class="explanation-section">
+                                    <div class="section-label">📖 Why "hybrid" is correct:</div>
+                                    <div><strong>Hybrid</strong> means a combination of different methods, matching field and lab work together.</div>
+                                </div>
+                                <div class="explanation-section">
+                                    <div class="section-label">📝 Example:</div>
+                                    <div class="example-box">"They used a <code>hybrid</code> model of online and in-person teaching."</div>
+                                </div>
+                                <div class="wrong-options">
+                                    <div class="label">Why other options are wrong:</div>
+                                    <p><strong>Hollow</strong> - Empty, not a method</p>
+                                    <p><strong>Hazardous</strong> - Dangerous, not about mixing methods</p>
+                                    <p><strong>Hasty</strong> - Too quick, not relevant</p>
+                                </div>
+                                <div class="tip-box">💡 <strong>Tip:</strong> Combining two methods often signals "hybrid" or "integrated."</div>
+                            `
+                        },
+                        {
+                            id: 7,
+                            text: "The professor's lecture was so _______ that even advanced students struggled to follow the complex argument.",
+                            options: ["dense", "delicate", "distant", "delightful"],
+                            correct: 0,
+                            explanation: `
+                                <div class="explanation-section">
+                                    <div class="section-label">📖 Why "dense" is correct:</div>
+                                    <div><strong>Dense</strong> means packed with complex information, which makes a lecture hard to follow.</div>
+                                </div>
+                                <div class="explanation-section">
+                                    <div class="section-label">📝 Example:</div>
+                                    <div class="example-box">"The article was <code>dense</code> with technical details."</div>
+                                </div>
+                                <div class="wrong-options">
+                                    <div class="label">Why other options are wrong:</div>
+                                    <p><strong>Delicate</strong> - Fragile, not complex</p>
+                                    <p><strong>Distant</strong> - Far away, not about difficulty</p>
+                                    <p><strong>Delightful</strong> - Pleasing, the opposite tone</p>
+                                </div>
+                                <div class="tip-box">💡 <strong>Tip:</strong> If readers struggle, look for words like dense or complex.</div>
+                            `
+                        },
+                        {
+                            id: 8,
+                            text: "Local residents were deeply _______ about the factory expansion, fearing increased noise and daily street traffic.",
+                            options: ["anxious", "affluent", "aimless", "ancient"],
+                            correct: 0,
+                            explanation: `
+                                <div class="explanation-section">
+                                    <div class="section-label">📖 Why "anxious" is correct:</div>
+                                    <div><strong>Anxious</strong> means worried, which fits residents fearing negative effects.</div>
+                                </div>
+                                <div class="explanation-section">
+                                    <div class="section-label">📝 Example:</div>
+                                    <div class="example-box">"Residents were <code>anxious</code> about the sudden change."</div>
+                                </div>
+                                <div class="wrong-options">
+                                    <div class="label">Why other options are wrong:</div>
+                                    <p><strong>Affluent</strong> - Wealthy, not a feeling</p>
+                                    <p><strong>Aimless</strong> - Without purpose, not relevant</p>
+                                    <p><strong>Ancient</strong> - Very old, not about worry</p>
+                                </div>
+                                <div class="tip-box">💡 <strong>Tip:</strong> Fear of negative outcomes often pairs with anxious or concerned.</div>
+                            `
+                        },
+                        {
+                            id: 9,
+                            text: "Her proposal was criticized as _______ because it relied on unrealistic assumptions about consumer future behavior.",
+                            options: ["impractical", "impartial", "implicit", "immature"],
+                            correct: 0,
+                            explanation: `
+                                <div class="explanation-section">
+                                    <div class="section-label">📖 Why "impractical" is correct:</div>
+                                    <div><strong>Impractical</strong> means not workable in real conditions, which fits unrealistic assumptions.</div>
+                                </div>
+                                <div class="explanation-section">
+                                    <div class="section-label">📝 Example:</div>
+                                    <div class="example-box">"The plan sounded good but proved <code>impractical</code>."</div>
+                                </div>
+                                <div class="wrong-options">
+                                    <div class="label">Why other options are wrong:</div>
+                                    <p><strong>Impartial</strong> - Neutral, unrelated</p>
+                                    <p><strong>Implicit</strong> - Implied, not about feasibility</p>
+                                    <p><strong>Immature</strong> - Childish, not about planning</p>
+                                </div>
+                                <div class="tip-box">💡 <strong>Tip:</strong> If something cannot work in reality, it is impractical.</div>
+                            `
+                        },
+                        {
+                            id: 10,
+                            text: "The museum's new exhibit attracted a surprisingly _______ audience, from curious children to retired local engineers.",
+                            options: ["diverse", "distant", "drowsy", "dull"],
+                            correct: 0,
+                            explanation: `
+                                <div class="explanation-section">
+                                    <div class="section-label">📖 Why "diverse" is correct:</div>
+                                    <div><strong>Diverse</strong> means varied, matching an audience of different ages and backgrounds.</div>
+                                </div>
+                                <div class="explanation-section">
+                                    <div class="section-label">📝 Example:</div>
+                                    <div class="example-box">"The event drew a <code>diverse</code> crowd."</div>
+                                </div>
+                                <div class="wrong-options">
+                                    <div class="label">Why other options are wrong:</div>
+                                    <p><strong>Distant</strong> - Far away, not about variety</p>
+                                    <p><strong>Drowsy</strong> - Sleepy, not about audience mix</p>
+                                    <p><strong>Dull</strong> - Boring, not about variety</p>
+                                </div>
+                                <div class="tip-box">💡 <strong>Tip:</strong> Many different kinds of people = diverse.</div>
+                            `
+                        }
+                    ]
+                },
+                {
+                    id: 2,
+                    title: "Section II: Grammar & Phrasing",
+                    description: "Choose the correct grammatical form or structure.",
+                    questions: [
+                        {
+                            id: 11,
+                            text: "Not until the final inspection _______ the bridge safely reopened to regular traffic the following morning.",
+                            options: ["did", "had", "was", "would"],
+                            correct: 0,
+                            explanation: `
+                                <div class="explanation-section">
+                                    <div class="section-label">📖 Why "did" is correct:</div>
+                                    <div>With "Not until" at the start, we use inversion: auxiliary + subject.</div>
+                                </div>
+                                <div class="example-box">"Not until Tuesday <code>did</code> they announce the results."</div>
+                                <div class="wrong-options">
+                                    <div class="label">Why other options are wrong:</div>
+                                    <p><strong>Had / was / would</strong> - Incorrect auxiliary for this pattern</p>
+                                </div>
+                                <div class="tip-box">💡 <strong>Tip:</strong> Limiting expressions often trigger inversion.</div>
+                            `
+                        },
+                        {
+                            id: 12,
+                            text: "Had the pilot _______ the warning earlier, the serious emergency landing might have been avoided entirely.",
+                            options: ["heeded", "heeds", "heeding", "heed"],
+                            correct: 0,
+                            explanation: `
+                                <div class="explanation-section">
+                                    <div class="section-label">📖 Why "heeded" is correct:</div>
+                                    <div>This is an inverted third conditional: <strong>Had + past participle</strong>.</div>
+                                </div>
+                                <div class="example-box">"Had she <code>known</code>, she would have acted sooner."</div>
+                                <div class="wrong-options">
+                                    <div class="label">Why other options are wrong:</div>
+                                    <p><strong>Heeds / heeding / heed</strong> - Not the past participle</p>
+                                </div>
+                                <div class="tip-box">💡 <strong>Tip:</strong> Inverted conditionals use past participles after "had."</div>
+                            `
+                        },
+                        {
+                            id: 13,
+                            text: "It is crucial that each applicant _______ a copy of the official transcript before the deadline.",
+                            options: ["submit", "submits", "submitted", "submitting"],
+                            correct: 0,
+                            explanation: `
+                                <div class="explanation-section">
+                                    <div class="section-label">📖 Why "submit" is correct:</div>
+                                    <div>Mandative subjunctive uses the base verb after "crucial that".</div>
+                                </div>
+                                <div class="example-box">"It is essential that he <code>be</code> on time."</div>
+                                <div class="wrong-options">
+                                    <div class="label">Why other options are wrong:</div>
+                                    <p><strong>Submits / submitted / submitting</strong> - Not the base form</p>
+                                </div>
+                                <div class="tip-box">💡 <strong>Tip:</strong> Important/essential + that + base verb.</div>
+                            `
+                        },
+                        {
+                            id: 14,
+                            text: "She would rather you _______ the issue directly instead of sending another long email today again.",
+                            options: ["addressed", "address", "will address", "addressing"],
+                            correct: 0,
+                            explanation: `
+                                <div class="explanation-section">
+                                    <div class="section-label">📖 Why "addressed" is correct:</div>
+                                    <div>After "would rather" with a different subject, use the past form.</div>
+                                </div>
+                                <div class="example-box">"I'd rather you <code>came</code> early."</div>
+                                <div class="wrong-options">
+                                    <div class="label">Why other options are wrong:</div>
+                                    <p><strong>Address / will address / addressing</strong> - Wrong form here</p>
+                                </div>
+                                <div class="tip-box">💡 <strong>Tip:</strong> Would rather + different subject → past simple.</div>
+                            `
+                        },
+                        {
+                            id: 15,
+                            text: "The new software is incompatible _______ the older operating system still used in many government offices.",
+                            options: ["with", "to", "from", "for"],
+                            correct: 0,
+                            explanation: `
+                                <div class="explanation-section">
+                                    <div class="section-label">📖 Why "with" is correct:</div>
+                                    <div>The correct collocation is <strong>incompatible with</strong>.</div>
+                                </div>
+                                <div class="example-box">"This file is incompatible <code>with</code> the old program."</div>
+                                <div class="wrong-options">
+                                    <div class="label">Why other options are wrong:</div>
+                                    <p><strong>To / from / for</strong> - Not used with "incompatible"</p>
+                                </div>
+                                <div class="tip-box">💡 <strong>Tip:</strong> Learn fixed preposition pairs like compatible with / incompatible with.</div>
+                            `
+                        },
+                        {
+                            id: 16,
+                            text: "Hardly had the lecture begun when the projector _______ and the hall suddenly went completely dark.",
+                            options: ["failed", "fails", "has failed", "failing"],
+                            correct: 0,
+                            explanation: `
+                                <div class="explanation-section">
+                                    <div class="section-label">📖 Why "failed" is correct:</div>
+                                    <div>With "Hardly...when," use past perfect + simple past.</div>
+                                </div>
+                                <div class="example-box">"Hardly had they arrived when the storm <code>started</code>."</div>
+                                <div class="wrong-options">
+                                    <div class="label">Why other options are wrong:</div>
+                                    <p><strong>Fails / has failed / failing</strong> - Wrong tense or form</p>
+                                </div>
+                                <div class="tip-box">💡 <strong>Tip:</strong> Hardly/No sooner structures take simple past in the second clause.</div>
+                            `
+                        },
+                        {
+                            id: 17,
+                            text: "The project is dependent _______ accurate forecasts from regional offices to meet the monthly overall target.",
+                            options: ["on", "to", "with", "for"],
+                            correct: 0,
+                            explanation: `
+                                <div class="explanation-section">
+                                    <div class="section-label">📖 Why "on" is correct:</div>
+                                    <div>The correct collocation is <strong>dependent on</strong>.</div>
+                                </div>
+                                <div class="example-box">"The clinic is <code>dependent on</code> donations."</div>
+                                <div class="wrong-options">
+                                    <div class="label">Why other options are wrong:</div>
+                                    <p><strong>To / with / for</strong> - Not standard with "dependent"</p>
+                                </div>
+                                <div class="tip-box">💡 <strong>Tip:</strong> Remember fixed pairs: dependent on, similar to, interested in.</div>
+                            `
+                        },
+                        {
+                            id: 18,
+                            text: "By this time next year, the committee _______ the policy for a full entire decade already.",
+                            options: ["will have reviewed", "will review", "will be reviewing", "reviewed"],
+                            correct: 0,
+                            explanation: `
+                                <div class="explanation-section">
+                                    <div class="section-label">📖 Why "will have reviewed" is correct:</div>
+                                    <div>This is future perfect, showing completion by a future time.</div>
+                                </div>
+                                <div class="example-box">"By 2030, they <code>will have finished</code> the project."</div>
+                                <div class="wrong-options">
+                                    <div class="label">Why other options are wrong:</div>
+                                    <p><strong>Will review / will be reviewing</strong> - Do not show completion</p>
+                                    <p><strong>Reviewed</strong> - Past tense</p>
+                                </div>
+                                <div class="tip-box">💡 <strong>Tip:</strong> "By" + future time → future perfect.</div>
+                            `
+                        },
+                        {
+                            id: 19,
+                            text: "It was the first time she _______ an international conference on her own before, so she was nervous.",
+                            options: ["had attended", "has attended", "attended", "attends"],
+                            correct: 0,
+                            explanation: `
+                                <div class="explanation-section">
+                                    <div class="section-label">📖 Why "had attended" is correct:</div>
+                                    <div>After "It was the first time," use past perfect to show earlier experience.</div>
+                                </div>
+                                <div class="example-box">"It was the first time he <code>had traveled</code> abroad."</div>
+                                <div class="wrong-options">
+                                    <div class="label">Why other options are wrong:</div>
+                                    <p><strong>Has attended / attended / attends</strong> - Wrong tense</p>
+                                </div>
+                                <div class="tip-box">💡 <strong>Tip:</strong> Past reference point + first time → past perfect.</div>
+                            `
+                        },
+                        {
+                            id: 20,
+                            text: "If the shipment _______ by Friday, we will cancel the order and refund the clients promptly.",
+                            options: ["is not delivered", "will not be delivered", "was not delivered", "not delivering"],
+                            correct: 0,
+                            explanation: `
+                                <div class="explanation-section">
+                                    <div class="section-label">📖 Why "is not delivered" is correct:</div>
+                                    <div>First conditional: present simple in the if-clause.</div>
+                                </div>
+                                <div class="example-box">"If the items <code>are not delivered</code>, we will cancel."</div>
+                                <div class="wrong-options">
+                                    <div class="label">Why other options are wrong:</div>
+                                    <p><strong>Will not be delivered</strong> - Future tense in if-clause</p>
+                                    <p><strong>Was not delivered</strong> - Past tense</p>
+                                    <p><strong>Not delivering</strong> - Incorrect form</p>
+                                </div>
+                                <div class="tip-box">💡 <strong>Tip:</strong> If-clause uses present simple, not future.</div>
+                            `
+                        }
+                    ]
+                },
+                {
+                    id: 3,
+                    title: "Section III: Error Identification",
+                    description: "Identify the underlined part (A, B, C, or D) that contains a grammatical error.",
+                    questions: [
+                        {
+                            id: 21,
+                            text: "The rise of remote work has changed urban planning in ways that <span class='error-part'>(A) affects</span> housing demand, <span class='error-part'>(B) alters</span> commuting patterns, <span class='error-part'>(C) increase</span> pressure on local services, and <span class='error-part'>(D) requires</span> new infrastructure, particularly in smaller cities that were not designed for rapid growth.",
+                            options: ["A", "B", "C", "D"],
+                            correct: 2,
+                            explanation: `<div class="explanation-section">
+                                <div class="section-label">📖 Why (C) "increase" is the error:</div>
+                                <p>The subject is <strong>"The rise"</strong> (singular). All verbs in the series should agree with this singular subject: affects, alters, increases, requires. Therefore, "increase" should be <strong>"increases."</strong></p>
+                            </div>
+                            <div class="wrong-options">
+                                <div class="section-label">✓ Why other parts are correct:</div>
+                                <p><strong>(A) affects</strong> – singular verb agrees with "rise"</p>
+                                <p><strong>(B) alters</strong> – correct parallel verb</p>
+                                <p><strong>(D) requires</strong> – correct singular verb</p>
+                            </div>
+                            <div class="tip-box">💡 <strong>Tip:</strong> In parallel verb lists, keep the same tense and agreement throughout.</div>`
+                        },
+                        {
+                            id: 22,
+                            text: "Neither the engineers nor the project manager <span class='error-part'>(A) were</span> willing to sign off on the design, <span class='error-part'>(B) because</span> the safety tests, <span class='error-part'>(C) which were delayed for weeks</span>, <span class='error-part'>(D) had not been completed</span>.",
+                            options: ["A", "B", "C", "D"],
+                            correct: 0,
+                            explanation: `<div class="explanation-section">
+                                <div class="section-label">📖 Why (A) "were" is the error:</div>
+                                <p>With <strong>neither...nor</strong>, the verb agrees with the nearest subject. The nearest subject is <strong>"project manager"</strong> (singular), so the verb should be <strong>"was."</strong></p>
+                            </div>
+                            <div class="wrong-options">
+                                <div class="section-label">✓ Why other parts are correct:</div>
+                                <p><strong>(B) because</strong> – correct connector</p>
+                                <p><strong>(C) which were delayed for weeks</strong> – correct relative clause</p>
+                                <p><strong>(D) had not been completed</strong> – correct past perfect</p>
+                            </div>
+                            <div class="tip-box">💡 <strong>Tip:</strong> In neither...nor, the verb matches the closest noun.</div>`
+                        },
+                        {
+                            id: 23,
+                            text: "The committee, along with several outside advisers, <span class='error-part'>(A) are reviewing</span> the proposal, <span class='error-part'>(B) and</span> they expect to finish by Friday, <span class='error-part'>(C) after which</span> the report will be sent to the board, <span class='error-part'>(D) which meets</span> next week.",
+                            options: ["A", "B", "C", "D"],
+                            correct: 0,
+                            explanation: `<div class="explanation-section">
+                                <div class="section-label">📖 Why (A) "are reviewing" is the error:</div>
+                                <p>The true subject is <strong>"committee"</strong> (singular). The phrase "along with" does not change the subject number. It should be <strong>"is reviewing."</strong></p>
+                            </div>
+                            <div class="wrong-options">
+                                <div class="section-label">✓ Why other parts are correct:</div>
+                                <p><strong>(B) and</strong> – correct conjunction</p>
+                                <p><strong>(C) after which</strong> – correct relative connector</p>
+                                <p><strong>(D) which meets</strong> – correct singular verb for "board"</p>
+                            </div>
+                            <div class="tip-box">💡 <strong>Tip:</strong> Phrases like "along with" do not make the subject plural.</div>`
+                        },
+                        {
+                            id: 24,
+                            text: "Each of the applicants, regardless of experience, <span class='error-part'>(A) were asked</span> to submit <span class='error-part'>(B) a writing sample</span>, <span class='error-part'>(C) a recommendation letter</span>, and <span class='error-part'>(D) proof of residency</span>.",
+                            options: ["A", "B", "C", "D"],
+                            correct: 0,
+                            explanation: `<div class="explanation-section">
+                                <div class="section-label">📖 Why (A) "were asked" is the error:</div>
+                                <p>The subject is <strong>"Each"</strong>, which is singular. The verb should be <strong>"was asked."</strong></p>
+                            </div>
+                            <div class="wrong-options">
+                                <div class="section-label">✓ Why other parts are correct:</div>
+                                <p><strong>(B) a writing sample</strong> – correct noun phrase</p>
+                                <p><strong>(C) a recommendation letter</strong> – parallel structure</p>
+                                <p><strong>(D) proof of residency</strong> – correct noun phrase</p>
+                            </div>
+                            <div class="tip-box">💡 <strong>Tip:</strong> "Each" and "every" are singular and take singular verbs.</div>`
+                        },
+                        {
+                            id: 25,
+                            text: "The seminar provided information about renewable energy, <span class='error-part'>(A) including</span> solar panels, <span class='error-part'>(B) wind turbines</span>, and <span class='error-part'>(C) how to store electricity</span> in batteries that <span class='error-part'>(D) was designed</span> for large facilities.",
+                            options: ["A", "B", "C", "D"],
+                            correct: 3,
+                            explanation: `<div class="explanation-section">
+                                <div class="section-label">📖 Why (D) "was designed" is the error:</div>
+                                <p>The noun <strong>"batteries"</strong> is plural, so the verb should be <strong>"were designed."</strong></p>
+                            </div>
+                            <div class="wrong-options">
+                                <div class="section-label">✓ Why other parts are correct:</div>
+                                <p><strong>(A) including</strong> – correct participle</p>
+                                <p><strong>(B) wind turbines</strong> – correct parallel noun</p>
+                                <p><strong>(C) how to store electricity</strong> – correct clause</p>
+                            </div>
+                            <div class="tip-box">💡 <strong>Tip:</strong> Check subject-verb agreement inside relative clauses.</div>`
+                        },
+                        {
+                            id: 26,
+                            text: "The museum's new exhibit, <span class='error-part'>(A) which features</span> artifacts from the Silk Road, <span class='error-part'>(B) are expected</span> to attract tourists, <span class='error-part'>(C) and will remain</span> open through March, <span class='error-part'>(D) according to the director</span>.",
+                            options: ["A", "B", "C", "D"],
+                            correct: 1,
+                            explanation: `<div class="explanation-section">
+                                <div class="section-label">📖 Why (B) "are expected" is the error:</div>
+                                <p>The subject is <strong>"exhibit"</strong> (singular), so the verb should be <strong>"is expected."</strong></p>
+                            </div>
+                            <div class="wrong-options">
+                                <div class="section-label">✓ Why other parts are correct:</div>
+                                <p><strong>(A) which features</strong> – correct relative clause</p>
+                                <p><strong>(C) and will remain</strong> – correct parallel verb phrase</p>
+                                <p><strong>(D) according to the director</strong> – correct phrase</p>
+                            </div>
+                            <div class="tip-box">💡 <strong>Tip:</strong> Ignore interrupting clauses to find the true subject.</div>`
+                        },
+                        {
+                            id: 27,
+                            text: "Because the data <span class='error-part'>(A) was</span> incomplete and the survey <span class='error-part'>(B) reached</span> only a small sample, <span class='error-part'>(C) the conclusions</span> should be treated as preliminary <span class='error-part'>(D) rather than definitive</span>.",
+                            options: ["A", "B", "C", "D"],
+                            correct: 0,
+                            explanation: `<div class="explanation-section">
+                                <div class="section-label">📖 Why (A) "was" is the error:</div>
+                                <p>In formal academic English, <strong>"data"</strong> is plural. It should take <strong>"were."</strong></p>
+                            </div>
+                            <div class="wrong-options">
+                                <div class="section-label">✓ Why other parts are correct:</div>
+                                <p><strong>(B) reached</strong> – correct past tense</p>
+                                <p><strong>(C) the conclusions</strong> – correct noun phrase</p>
+                                <p><strong>(D) rather than definitive</strong> – correct comparison</p>
+                            </div>
+                            <div class="tip-box">💡 <strong>Tip:</strong> For tests like MEXT, treat "data" as plural.</div>`
+                        },
+                        {
+                            id: 28,
+                            text: "The report stated that the company <span class='error-part'>(A) had not only reduced</span> emissions <span class='error-part'>(B) but also improving</span> workplace safety, <span class='error-part'>(C) which analysts said</span> <span class='error-part'>(D) could boost</span> its reputation.",
+                            options: ["A", "B", "C", "D"],
+                            correct: 1,
+                            explanation: `<div class="explanation-section">
+                                <div class="section-label">📖 Why (B) "improving" is the error:</div>
+                                <p>Parallel structure requires <strong>had reduced</strong> ... and <strong>had improved</strong>. "Improving" should be <strong>"improved."</strong></p>
+                            </div>
+                            <div class="wrong-options">
+                                <div class="section-label">✓ Why other parts are correct:</div>
+                                <p><strong>(A) had not only reduced</strong> – correct tense</p>
+                                <p><strong>(C) which analysts said</strong> – correct clause</p>
+                                <p><strong>(D) could boost</strong> – correct verb phrase</p>
+                            </div>
+                            <div class="tip-box">💡 <strong>Tip:</strong> Keep verb forms parallel after "not only...but also."</div>`
+                        },
+                        {
+                            id: 29,
+                            text: "The number of students who <span class='error-part'>(A) participates</span> in the exchange program <span class='error-part'>(B) has increased</span>, <span class='error-part'>(C) largely because</span> scholarships are now available <span class='error-part'>(D) for the first time</span>.",
+                            options: ["A", "B", "C", "D"],
+                            correct: 0,
+                            explanation: `<div class="explanation-section">
+                                <div class="section-label">📖 Why (A) "participates" is the error:</div>
+                                <p>The relative clause refers to <strong>"students"</strong> (plural), so the verb should be <strong>"participate."</strong></p>
+                            </div>
+                            <div class="wrong-options">
+                                <div class="section-label">✓ Why other parts are correct:</div>
+                                <p><strong>(B) has increased</strong> – correct for "number" as subject</p>
+                                <p><strong>(C) largely because</strong> – correct connector</p>
+                                <p><strong>(D) for the first time</strong> – correct phrase</p>
+                            </div>
+                            <div class="tip-box">💡 <strong>Tip:</strong> Check what a relative clause modifies to choose the correct verb form.</div>`
+                        },
+                        {
+                            id: 30,
+                            text: "If the proposals <span class='error-part'>(A) are revised</span> by Monday, the agency <span class='error-part'>(B) will reviewed</span> them quickly, <span class='error-part'>(C) but it will not approve</span> any plan <span class='error-part'>(D) that lacks a clear budget</span>.",
+                            options: ["A", "B", "C", "D"],
+                            correct: 1,
+                            explanation: `<div class="explanation-section">
+                                <div class="section-label">📖 Why (B) "will reviewed" is the error:</div>
+                                <p>After <strong>will</strong>, use the base verb. It should be <strong>"will review."</strong></p>
+                            </div>
+                            <div class="wrong-options">
+                                <div class="section-label">✓ Why other parts are correct:</div>
+                                <p><strong>(A) are revised</strong> – correct passive in if-clause</p>
+                                <p><strong>(C) but it will not approve</strong> – correct future verb</p>
+                                <p><strong>(D) that lacks a clear budget</strong> – correct relative clause</p>
+                            </div>
+                            <div class="tip-box">💡 <strong>Tip:</strong> Modal verbs are followed by the base verb, not past tense.</div>`
+                        }
+                    ]
+                },
+                {
+                    id: 4,
+                    title: "Section IV: Cloze Test",
+                    description: "Read the passage and choose the best word or phrase for each blank.",
+                    passage: `<p class="passage-title">Citizen Science and Public Research</p>
+                    <p>Citizen science refers to research projects in which volunteers help scientists gather or analyze data. In the early twentieth century, bird watchers kept notebooks and sent observations by mail. These efforts were <span class="blank-number">31</span> small in scale, but they demonstrated that amateurs could collect useful information. Over time, professional researchers began to recognize the value of public participation, especially when events occurred across wide geographic areas.</p>
+                    <p>Today, inexpensive sensors and smartphone apps allow thousands of participants to <span class="blank-number">32</span> measurements of air quality, noise levels, or plant growth. Online platforms also provide training and standardized forms, which has <span class="blank-number">33</span> participation far beyond what a single lab could manage. In some projects, volunteers classify images, while in others they submit local observations that scientists would never be able to gather alone.</p>
+                    <p>Large datasets are valuable because they reveal patterns that would otherwise remain hidden. However, scientists must ensure that the submissions are <span class="blank-number">34</span> enough to be compared across regions. Many projects therefore include tutorials and quizzes that help volunteers <span class="blank-number">35</span> their observations before uploading them. Some programs also use automated checks to flag unusual entries for review.</p>
+                    <p>Data quality is not the only concern. Some studies attract mostly urban participants, which can <span class="blank-number">36</span> the results, while others struggle to keep volunteers active for long periods. To address these issues, coordinators provide feedback and community events; <span class="blank-number">37</span>, they emphasize that even small contributions matter. Building trust and recognizing effort are essential for sustaining participation.</p>
+                    <p>As professional researchers become more comfortable working with the public, citizen science is starting to <span class="blank-number">38</span> with formal education and policy. Schools use projects to teach statistics, and city agencies use the findings to plan services. The next challenge is to design systems that protect privacy while still allowing people to <span class="blank-number">39</span> to shared knowledge. When data are shared openly and responsibly, decision makers can <span class="blank-number">40</span> more confidently.</p>`,
+                    questions: [
+                        {
+                            id: 31,
+                            text: "Choose the best word for blank 31:",
+                            options: ["initially", "entirely", "remotely", "secretly"],
+                            correct: 0,
+                            explanation: `
+                                <div class="explanation-section">
+                                    <div class="section-label">📖 Why "initially" is correct:</div>
+                                    <div><strong>Initially</strong> means at first, matching early, small-scale efforts.</div>
+                                </div>
+                                <div class="wrong-options">
+                                    <div class="label">Why other options are wrong:</div>
+                                    <p><strong>Entirely</strong> - Means completely, not about time</p>
+                                    <p><strong>Remotely</strong> - Means from far away, not about beginnings</p>
+                                    <p><strong>Secretly</strong> - Means hidden, not the intended meaning</p>
+                                </div>
+                            `
+                        },
+                        {
+                            id: 32,
+                            text: "Choose the best word for blank 32:",
+                            options: ["record", "remove", "repeat", "reject"],
+                            correct: 0,
+                            explanation: `
+                                <div class="explanation-section">
+                                    <div class="section-label">📖 Why "record" is correct:</div>
+                                    <div><strong>Record</strong> means to measure and note data, which fits collecting readings.</div>
+                                </div>
+                                <div class="wrong-options">
+                                    <div class="label">Why other options are wrong:</div>
+                                    <p><strong>Remove</strong> - Means take away</p>
+                                    <p><strong>Repeat</strong> - Means do again</p>
+                                    <p><strong>Reject</strong> - Means refuse</p>
+                                </div>
+                            `
+                        },
+                        {
+                            id: 33,
+                            text: "Choose the best word for blank 33:",
+                            options: ["expanded", "exposed", "exchanged", "excused"],
+                            correct: 0,
+                            explanation: `
+                                <div class="explanation-section">
+                                    <div class="section-label">📖 Why "expanded" is correct:</div>
+                                    <div><strong>Expanded</strong> means increased in size or scope, which matches wider participation.</div>
+                                </div>
+                                <div class="wrong-options">
+                                    <div class="label">Why other options are wrong:</div>
+                                    <p><strong>Exposed</strong> - Means revealed</p>
+                                    <p><strong>Exchanged</strong> - Means traded</p>
+                                    <p><strong>Excused</strong> - Means forgiven</p>
+                                </div>
+                            `
+                        },
+                        {
+                            id: 34,
+                            text: "Choose the best word for blank 34:",
+                            options: ["consistent", "curious", "casual", "complex"],
+                            correct: 0,
+                            explanation: `
+                                <div class="explanation-section">
+                                    <div class="section-label">📖 Why "consistent" is correct:</div>
+                                    <div><strong>Consistent</strong> means uniform, which allows data to be compared across regions.</div>
+                                </div>
+                                <div class="wrong-options">
+                                    <div class="label">Why other options are wrong:</div>
+                                    <p><strong>Curious</strong> - Means interested</p>
+                                    <p><strong>Casual</strong> - Means informal</p>
+                                    <p><strong>Complex</strong> - Means complicated, not about uniformity</p>
+                                </div>
+                            `
+                        },
+                        {
+                            id: 35,
+                            text: "Choose the best word for blank 35:",
+                            options: ["verify", "vary", "visit", "value"],
+                            correct: 0,
+                            explanation: `
+                                <div class="explanation-section">
+                                    <div class="section-label">📖 Why "verify" is correct:</div>
+                                    <div><strong>Verify</strong> means check for accuracy, which fits reviewing observations.</div>
+                                </div>
+                                <div class="wrong-options">
+                                    <div class="label">Why other options are wrong:</div>
+                                    <p><strong>Vary</strong> - Means change</p>
+                                    <p><strong>Visit</strong> - Means go to</p>
+                                    <p><strong>Value</strong> - Means appreciate</p>
+                                </div>
+                            `
+                        },
+                        {
+                            id: 36,
+                            text: "Choose the best word for blank 36:",
+                            options: ["bias", "build", "balance", "borrow"],
+                            correct: 0,
+                            explanation: `
+                                <div class="explanation-section">
+                                    <div class="section-label">📖 Why "bias" is correct:</div>
+                                    <div><strong>Bias</strong> means systematic distortion, which can happen if participants are not representative.</div>
+                                </div>
+                                <div class="wrong-options">
+                                    <div class="label">Why other options are wrong:</div>
+                                    <p><strong>Build</strong> - Means construct</p>
+                                    <p><strong>Balance</strong> - Means make even</p>
+                                    <p><strong>Borrow</strong> - Means take temporarily</p>
+                                </div>
+                            `
+                        },
+                        {
+                            id: 37,
+                            text: "Choose the best word for blank 37:",
+                            options: ["moreover", "instead", "however", "otherwise"],
+                            correct: 0,
+                            explanation: `
+                                <div class="explanation-section">
+                                    <div class="section-label">📖 Why "moreover" is correct:</div>
+                                    <div><strong>Moreover</strong> adds another supportive point, fitting the emphasis on contribution.</div>
+                                </div>
+                                <div class="wrong-options">
+                                    <div class="label">Why other options are wrong:</div>
+                                    <p><strong>Instead</strong> - Indicates contrast, not addition</p>
+                                    <p><strong>However</strong> - Signals contrast</p>
+                                    <p><strong>Otherwise</strong> - Means if not</p>
+                                </div>
+                            `
+                        },
+                        {
+                            id: 38,
+                            text: "Choose the best word for blank 38:",
+                            options: ["integrate", "interrupt", "illustrate", "isolate"],
+                            correct: 0,
+                            explanation: `
+                                <div class="explanation-section">
+                                    <div class="section-label">📖 Why "integrate" is correct:</div>
+                                    <div><strong>Integrate</strong> means combine, fitting the idea of linking citizen science with education and policy.</div>
+                                </div>
+                                <div class="wrong-options">
+                                    <div class="label">Why other options are wrong:</div>
+                                    <p><strong>Interrupt</strong> - Means stop temporarily</p>
+                                    <p><strong>Illustrate</strong> - Means show or explain</p>
+                                    <p><strong>Isolate</strong> - Means separate</p>
+                                </div>
+                            `
+                        },
+                        {
+                            id: 39,
+                            text: "Choose the best word for blank 39:",
+                            options: ["contribute", "confess", "compete", "consume"],
+                            correct: 0,
+                            explanation: `
+                                <div class="explanation-section">
+                                    <div class="section-label">📖 Why "contribute" is correct:</div>
+                                    <div><strong>Contribute</strong> means add to a shared pool of knowledge.</div>
+                                </div>
+                                <div class="wrong-options">
+                                    <div class="label">Why other options are wrong:</div>
+                                    <p><strong>Confess</strong> - Means admit</p>
+                                    <p><strong>Compete</strong> - Means rival</p>
+                                    <p><strong>Consume</strong> - Means use up</p>
+                                </div>
+                            `
+                        },
+                        {
+                            id: 40,
+                            text: "Choose the best word for blank 40:",
+                            options: ["act", "argue", "avoid", "assume"],
+                            correct: 0,
+                            explanation: `
+                                <div class="explanation-section">
+                                    <div class="section-label">📖 Why "act" is correct:</div>
+                                    <div><strong>Act</strong> fits decision makers using evidence to make choices.</div>
+                                </div>
+                                <div class="wrong-options">
+                                    <div class="label">Why other options are wrong:</div>
+                                    <p><strong>Argue</strong> - Means debate</p>
+                                    <p><strong>Avoid</strong> - Means stay away</p>
+                                    <p><strong>Assume</strong> - Means presume without proof</p>
+                                </div>
+                            `
+                        }
+                    ]
+                },
+                {
+                    id: 5,
+                    title: "Section V: Reading Comprehension",
+                    description: "Read the passages carefully and answer the questions that follow.",
+                    passages: [
+                        {
+                            title: "Passage A: Water Reuse in Growing Cities",
+                            content: `<p>Many cities now face a difficult water equation. Populations are rising, climate patterns are less predictable, and traditional sources such as rivers or groundwater are under strain. At the same time, urban economies depend on reliable water for households, industry, and public services. In response, planners have begun to treat wastewater not as a burden to discard, but as a resource that can be recovered and used again. In arid regions, reuse also reduces competition between cities and agriculture, easing seasonal conflicts over allocation.</p>
+                            <p>Water reuse is not a single technology but a spectrum of practices. Some cities focus on non-potable reuse, where highly treated water is used for irrigation, street cleaning, or industrial cooling. Others are experimenting with potable reuse, in which water is treated to extremely high standards before it enters the drinking supply. The infrastructure often includes separate distribution systems marked with purple pipes to distinguish reclaimed water from drinking water. That color-coding is a practical safety measure and also a public signal that the water has a different intended use. Advanced treatment typically combines filtration, ultraviolet light, and activated carbon to remove contaminants.</p>
+                            <p>Economic considerations shape how reuse is implemented. Building advanced treatment plants and new pipes is expensive, and smaller cities may not be able to fund large centralized facilities. For that reason, some have adopted decentralized systems located near where water is needed, such as recycling water within large housing developments or industrial parks. These smaller systems can reduce transmission costs and allow neighborhoods to scale capacity gradually. However, they require careful maintenance and clear lines of responsibility to ensure quality does not vary across a city. In practice, the choice between centralized and decentralized systems often reflects political as much as technical priorities.</p>
+                            <p>Energy use and environmental trade-offs are also part of the picture. High-grade treatment can be energy intensive, and the concentrated waste streams that result must be managed safely. Some cities pair reuse with stormwater capture or green infrastructure so that demand for treated water drops during rainy periods. Others invest in renewable energy to offset operating costs. These decisions influence both the carbon footprint of reuse and the price residents ultimately pay.</p>
+                            <p>Public perception is another decisive factor. Even when scientists can demonstrate safety, residents may be uneasy about the idea of reuse, especially when it involves drinking water. Many agencies therefore invest in transparency, publishing data, offering plant tours, and explaining the multiple treatment steps. Regulations also play a central role: clear standards for monitoring and reporting help build trust and provide a basis for enforcement. In places where guidelines are vague, proposals can stall despite technical feasibility.</p>
+                            <p>Looking ahead, water reuse is increasingly connected to broader urban resilience strategies. Sensors and real-time monitoring can detect contamination faster, while energy-efficient membranes make treatment less costly. Yet equity questions remain. If reuse systems are built only in affluent areas, the benefits will be uneven. The central challenge is to design governance, pricing, and infrastructure so that reuse becomes a dependable part of the citywide supply rather than a niche solution for a few neighborhoods.</p>`
+                        },
+                        {
+                            title: "Passage B: Language Change in Digital Spaces",
+                            content: `<p>Digital communication has transformed the way language spreads. In the past, changes in vocabulary or grammar often moved slowly through regions, shaped by local communities and print media. Today, a phrase can travel globally in a single day through social platforms, gaming chats, and video captions. This speed does not mean that all changes are random, but it does make the pathways of influence more visible and more complex.</p>
+                            <p>Online environments encourage creative compression. Character limits, rapid exchanges, and the need for expressive tone have produced abbreviations, emoji sequences, and new punctuation patterns. These forms can function as pragmatic cues, signaling irony, politeness, or emotional emphasis. At the same time, many users are skilled at code-switching, shifting between a casual online register and the more formal styles expected in school or work. The existence of multiple registers is not new, but digital spaces make the switching more frequent.</p>
+                            <p>Not all linguistic innovations survive. For a new expression to persist, it usually needs repeated use within a community, visibility to outsiders, and some shared understanding of meaning. Platform features such as trending lists, algorithmic recommendations, and public metrics can amplify certain terms, while others remain local. In this sense, technology does not create change by itself; it reshapes which changes become widely noticed.</p>
+                            <p>Digital platforms also support multilingual practices. Users blend languages in the same post, borrow terms from global media, and rely on translation tools to communicate across borders. This mixing can enrich expression, but it also complicates assumptions about what counts as standard usage. Moderation policies, auto-correct features, and content filters can further influence which forms are visible and which are discouraged, sometimes privileging dominant languages over minority ones.</p>
+                            <p>Researchers also build large digital corpora to track shifts in spelling, grammar, and usage over time. Because posts are archived, analysts can see how a term rises and falls and how different communities adapt it. Yet the same permanence makes errors more visible and encourages self-editing, which complicates data collection. These trade-offs mean that online language data are rich but not always straightforward to interpret.</p>
+                            <p>Online communication raises concerns about clarity and standards. Some educators worry that informal habits will erode writing skills, while linguists point out that variation has always existed and that users generally understand when formal language is required. Studies of student writing suggest that the influence is mixed: some learners transfer informal patterns into formal contexts, but many are able to separate the two. The more significant issue may be unequal access to language resources, such as editing tools or supportive feedback.</p>
+                            <p>Ultimately, language online is both innovative and constrained. Communities create new meanings, but norms still emerge as people adapt to audience expectations. Understanding these dynamics requires paying attention not only to words on the screen but also to the social relationships that give those words their power. Digital platforms accelerate change, yet they also expose how much language depends on shared context and mutual recognition across societies and daily life.</p>`
+                        }
+                    ],
+                    questions: [
+                        {
+                            id: 41,
+                            text: "According to Passage A, why are cities increasingly interested in water reuse?",
+                            options: [
+                                "Because wastewater has become too expensive to treat",
+                                "Because population growth and unreliable supplies strain traditional sources",
+                                "Because reuse eliminates the need for any new infrastructure",
+                                "Because international trade requires uniform water standards"
+                            ],
+                            correct: 1,
+                            explanation: `<div class="explanation-section">
+                                <div class="section-label">📖 Why the correct answer is right:</div>
+                                <p>The passage says populations are rising and climate patterns are less predictable, putting pressure on traditional sources. That motivates reuse.</p>
+                            </div>
+                            <div class="wrong-options">
+                                <div class="section-label">❌ Why other options are wrong:</div>
+                                <p><strong>A</strong> – The passage does not say treatment is too expensive</p>
+                                <p><strong>C</strong> – Reuse requires new infrastructure, not less</p>
+                                <p><strong>D</strong> – Trade standards are not discussed</p>
+                            </div>
+                            <div class="tip-box">💡 <strong>Tip:</strong> Look for the problem described at the start of the passage.</div>`
+                        },
+                        {
+                            id: 42,
+                            text: "In Passage A, what do purple pipes indicate?",
+                            options: [
+                                "A temporary emergency water line",
+                                "Pipes carrying reclaimed water for non-potable use",
+                                "Pipes that transport drinking water from rivers",
+                                "Pipes used only for industrial waste disposal"
+                            ],
+                            correct: 1,
+                            explanation: `<div class="explanation-section">
+                                <div class="section-label">📖 Why the correct answer is right:</div>
+                                <p>The passage explains that purple pipes mark reclaimed water systems and signal a different intended use from drinking water.</p>
+                            </div>
+                            <div class="wrong-options">
+                                <div class="section-label">❌ Why other options are wrong:</div>
+                                <p><strong>A</strong> – Emergency lines are not mentioned</p>
+                                <p><strong>C</strong> – Drinking water is not carried in purple pipes</p>
+                                <p><strong>D</strong> – Industrial waste disposal is not the purpose</p>
+                            </div>
+                            <div class="tip-box">💡 <strong>Tip:</strong> Color-coding indicates a specific type of water and its use.</div>`
+                        },
+                        {
+                            id: 43,
+                            text: "Why might decentralized reuse systems be attractive to some cities?",
+                            options: [
+                                "They remove the need for any maintenance",
+                                "They reduce transmission costs and allow gradual scaling",
+                                "They guarantee uniform quality without oversight",
+                                "They make potable reuse unnecessary in all cases"
+                            ],
+                            correct: 1,
+                            explanation: `<div class="explanation-section">
+                                <div class="section-label">📖 Why the correct answer is right:</div>
+                                <p>The passage notes that smaller systems can cut transmission costs and allow neighborhoods to scale capacity gradually.</p>
+                            </div>
+                            <div class="wrong-options">
+                                <div class="section-label">❌ Why other options are wrong:</div>
+                                <p><strong>A</strong> – The passage says maintenance is still needed</p>
+                                <p><strong>C</strong> – It warns about quality variation</p>
+                                <p><strong>D</strong> – Potable reuse is still discussed as an option</p>
+                            </div>
+                            <div class="tip-box">💡 <strong>Tip:</strong> Look for reasons tied to cost and scaling.</div>`
+                        },
+                        {
+                            id: 44,
+                            text: "Which challenge is NOT mentioned in Passage A?",
+                            options: [
+                                "Public discomfort with drinking reclaimed water",
+                                "High costs of treatment and infrastructure",
+                                "Uneven benefits across neighborhoods",
+                                "International trade restrictions on water reuse"
+                            ],
+                            correct: 3,
+                            explanation: `<div class="explanation-section">
+                                <div class="section-label">📖 Why the correct answer is right:</div>
+                                <p>The passage mentions public perception, costs, and equity issues, but says nothing about international trade restrictions.</p>
+                            </div>
+                            <div class="wrong-options">
+                                <div class="section-label">✓ These are mentioned:</div>
+                                <p><strong>A</strong> – Public perception and discomfort are discussed</p>
+                                <p><strong>B</strong> – Infrastructure costs are highlighted</p>
+                                <p><strong>C</strong> – Equity concerns are noted</p>
+                            </div>
+                            <div class="tip-box">💡 <strong>Tip:</strong> For NOT mentioned questions, verify each option against the passage.</div>`
+                        },
+                        {
+                            id: 45,
+                            text: "The main purpose of Passage A is to:",
+                            options: [
+                                "Argue that water reuse should replace all conservation efforts",
+                                "Explain how water reuse works and why cities adopt it",
+                                "Criticize public opposition to infrastructure projects",
+                                "Describe a single city's reuse program in detail"
+                            ],
+                            correct: 1,
+                            explanation: `<div class="explanation-section">
+                                <div class="section-label">📖 Why the correct answer is right:</div>
+                                <p>The passage explains the reasons for reuse, the methods, and the challenges, providing a broad overview.</p>
+                            </div>
+                            <div class="wrong-options">
+                                <div class="section-label">❌ Why other options are wrong:</div>
+                                <p><strong>A</strong> – It does not say reuse should replace conservation</p>
+                                <p><strong>C</strong> – It notes concerns but does not criticize the public</p>
+                                <p><strong>D</strong> – It is not about one city only</p>
+                            </div>
+                            <div class="tip-box">💡 <strong>Tip:</strong> Main purpose questions require the overall focus, not a detail.</div>`
+                        },
+                        {
+                            id: 46,
+                            text: "According to Passage B, which statement is true?",
+                            options: [
+                                "Online language change is completely random and lacks patterns",
+                                "Digital platforms can amplify certain expressions through visibility",
+                                "Formal writing standards have disappeared in online communication",
+                                "All online communities adopt the same new vocabulary"
+                            ],
+                            correct: 1,
+                            explanation: `<div class="explanation-section">
+                                <div class="section-label">📖 Why the correct answer is right:</div>
+                                <p>The passage states that platform features like trending lists and recommendations can amplify certain terms.</p>
+                            </div>
+                            <div class="wrong-options">
+                                <div class="section-label">❌ Why other options are wrong:</div>
+                                <p><strong>A</strong> – The passage says changes are not purely random</p>
+                                <p><strong>C</strong> – It notes that formal styles still exist</p>
+                                <p><strong>D</strong> – Communities differ in language use</p>
+                            </div>
+                            <div class="tip-box">💡 <strong>Tip:</strong> True statements often restate a direct claim from the passage.</div>`
+                        },
+                        {
+                            id: 47,
+                            text: "What does the author suggest about registers in digital communication?",
+                            options: [
+                                "Registers have disappeared because everyone writes informally",
+                                "Users often shift between informal and formal styles depending on context",
+                                "Registers are created only by teachers and editors",
+                                "Registers are fixed and never change"
+                            ],
+                            correct: 1,
+                            explanation: `<div class="explanation-section">
+                                <div class="section-label">📖 Why the correct answer is right:</div>
+                                <p>The passage notes that many users code-switch, moving between casual online language and formal styles for school or work.</p>
+                            </div>
+                            <div class="wrong-options">
+                                <div class="section-label">❌ Why other options are wrong:</div>
+                                <p><strong>A</strong> – The passage says formal styles still exist</p>
+                                <p><strong>C</strong> – Registers emerge from communities, not only institutions</p>
+                                <p><strong>D</strong> – The passage describes change and variation</p>
+                            </div>
+                            <div class="tip-box">💡 <strong>Tip:</strong> Look for statements about switching styles or audiences.</div>`
+                        },
+                        {
+                            id: 48,
+                            text: "Which factor is mentioned as influencing whether a new expression spreads widely?",
+                            options: [
+                                "Government language policies",
+                                "Repeated use and visibility through platform features",
+                                "The length of the original word in a dictionary",
+                                "Traditional television advertising"
+                            ],
+                            correct: 1,
+                            explanation: `<div class="explanation-section">
+                                <div class="section-label">📖 Why the correct answer is right:</div>
+                                <p>The passage lists repeated community use and platform visibility such as trending lists as reasons expressions spread.</p>
+                            </div>
+                            <div class="wrong-options">
+                                <div class="section-label">❌ Why other options are wrong:</div>
+                                <p><strong>A</strong> – Policies are not discussed</p>
+                                <p><strong>C</strong> – Dictionary length is irrelevant</p>
+                                <p><strong>D</strong> – Television advertising is not mentioned</p>
+                            </div>
+                            <div class="tip-box">💡 <strong>Tip:</strong> Spread depends on repetition and visibility, not formality.</div>`
+                        },
+                        {
+                            id: 49,
+                            text: "In Passage B, the term \"register\" most nearly means:",
+                            options: [
+                                "A list of words arranged alphabetically",
+                                "A level of language appropriate to a situation",
+                                "A strict set of grammar rules that never change",
+                                "A computer program for spell checking"
+                            ],
+                            correct: 1,
+                            explanation: `<div class="explanation-section">
+                                <div class="section-label">📖 Why the correct answer is right:</div>
+                                <p>The passage uses "register" to describe shifts between casual and formal styles depending on context.</p>
+                            </div>
+                            <div class="wrong-options">
+                                <div class="section-label">❌ Why other options are wrong:</div>
+                                <p><strong>A</strong> – That is a dictionary, not a register</p>
+                                <p><strong>C</strong> – Registers vary; they are not fixed rules</p>
+                                <p><strong>D</strong> – A tool, not a language level</p>
+                            </div>
+                            <div class="tip-box">💡 <strong>Tip:</strong> Register refers to formality and situation-appropriate style.</div>`
+                        },
+                        {
+                            id: 50,
+                            text: "The main idea of Passage B is that:",
+                            options: [
+                                "Online communication has eliminated the need for grammar",
+                                "Digital platforms accelerate language change while revealing social influences",
+                                "Language on the internet is uniform across all communities",
+                                "Only young people create new expressions online"
+                            ],
+                            correct: 1,
+                            explanation: `<div class="explanation-section">
+                                <div class="section-label">📖 Why the correct answer is right:</div>
+                                <p>The passage explains how online platforms speed change and make social dynamics visible.</p>
+                            </div>
+                            <div class="wrong-options">
+                                <div class="section-label">❌ Why other options are wrong:</div>
+                                <p><strong>A</strong> – The passage says formal writing still matters</p>
+                                <p><strong>C</strong> – It emphasizes variation across communities</p>
+                                <p><strong>D</strong> – It does not limit innovation to age groups</p>
+                            </div>
+                            <div class="tip-box">💡 <strong>Tip:</strong> Main idea questions require the broad summary, not a detail.</div>`
+                        }
+                    ]
+                }
+            ]
+        };
+
+        // State
+        let currentSection = 1;
+        let answers = {};
+        let timeLeft = 60 * 60; // 60 minutes in seconds
+        let timerInterval;
+        let isReviewMode = false;
+        let isTrialMode = false;
+        let checkedAnswers = {};
+
+        // DOM Elements
+        const startScreen = document.getElementById('startScreen');
+        const quizScreen = document.getElementById('quizScreen');
+        const resultsScreen = document.getElementById('resultsScreen');
+        const quizContent = document.getElementById('quizContent');
+        const timerDisplay = document.getElementById('timerDisplay');
+        const timerBox = document.getElementById('timerBox');
+        const answeredCount = document.getElementById('answeredCount');
+        const progressFill = document.getElementById('progressFill');
+        const reviewScorePill = document.getElementById('reviewScorePill');
+        const reviewScoreValue = document.getElementById('reviewScoreValue');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const submitBtn = document.getElementById('submitBtn');
+        const questionNav = document.getElementById('questionNav');
+        const trialBadge = document.getElementById('trialBadge');
+
+        // Auto-save interval
+        let autoSaveInterval;
+        let quizStarted = false;
+
+        function saveQuizState() {
+            if (!mextUser || !mextUser.uid) return;
+            if (isReviewMode) return;
+            if (!quizStarted) return;
+            FirebaseHelper.saveQuizState(mextUser.uid, currentQuizId, {
+                answers: answers,
+                checkedAnswers: checkedAnswers,
+                currentSection: currentSection,
+                timeLeft: timeLeft,
+                isTrialMode: isTrialMode
+            });
+        }
+
+        function saveQuizStateSync() {
+            if (!mextUser || !mextUser.uid) return;
+            if (isReviewMode) return;
+            if (!quizStarted) return;
+            FirebaseHelper.saveQuizStateSync(mextUser.uid, currentQuizId, {
+                answers: answers,
+                checkedAnswers: checkedAnswers,
+                currentSection: currentSection,
+                timeLeft: timeLeft,
+                isTrialMode: isTrialMode
+            });
+        }
+
+        function resumeQuizFromState(state) {
+            answers = {};
+            for (const [key, value] of Object.entries(state.answers || {})) {
+                answers[parseInt(key)] = value;
+            }
+            checkedAnswers = {};
+            for (const [key, value] of Object.entries(state.checkedAnswers || {})) {
+                checkedAnswers[parseInt(key)] = value;
+            }
+            timeLeft = state.timeLeft !== undefined ? state.timeLeft : 60 * 60;
+            isTrialMode = state.isTrialMode || false;
+            currentSection = state.currentSection || 1;
+
+            startScreen.classList.add('hidden');
+            quizScreen.classList.remove('hidden');
+
+            if (isTrialMode) {
+                timerBox.classList.add('hidden');
+                trialBadge.classList.remove('hidden');
+            } else {
+                timerBox.classList.remove('hidden');
+                updateTimerDisplay();
+                startTimer();
+            }
+
+            updateProgress();
+            renderSection(currentSection);
+            renderQuestionNav();
+            setupSectionNav();
+            startAutoSave();
+            quizStarted = true;
+        }
+
+        function startAutoSave() {
+            stopAutoSave();
+            autoSaveInterval = setInterval(saveQuizState, 30000);
+        }
+
+        function stopAutoSave() {
+            if (autoSaveInterval) {
+                clearInterval(autoSaveInterval);
+                autoSaveInterval = null;
+            }
+        }
+
+        window.addEventListener('beforeunload', function () {
+            if (quizStarted && !isReviewMode && Object.keys(answers).length > 0) {
+                saveQuizStateSync();
+            }
+        });
+
+        window.addEventListener('pagehide', function () {
+            if (quizStarted && !isReviewMode && Object.keys(answers).length > 0) {
+                saveQuizStateSync();
+            }
+        });
+
+        document.addEventListener('visibilitychange', function () {
+            if (document.visibilityState === 'hidden' && quizStarted && !isReviewMode && Object.keys(answers).length > 0) {
+                saveQuizStateSync();
+            }
+        });
+
+        async function checkSavedState() {
+            if (!mextUser || !mextUser.uid) return;
+            const autoResume = sessionStorage.getItem('autoResume') === 'true';
+            sessionStorage.removeItem('autoResume');
+            try {
+                const savedState = await FirebaseHelper.loadQuizState(mextUser.uid, currentQuizId);
+                if (savedState && Object.keys(savedState.answers || {}).length > 0) {
+                    const mode = savedState.isTrialMode ? 'Trial Mode' : 'Normal Mode';
+                    const answered = Object.keys(savedState.answers).length;
+                    let timeInfo = '';
+                    if (!savedState.isTrialMode && savedState.timeLeft !== undefined) {
+                        const mins = Math.floor(savedState.timeLeft / 60);
+                        const secs = savedState.timeLeft % 60;
+                        timeInfo = ` | Time remaining: ${mins}m ${secs}s`;
+                    }
+                    if (autoResume || confirm(`You have a saved ${mode} session (${answered}/50 answered${timeInfo}).\n\nResume where you left off?`)) {
+                        resumeQuizFromState(savedState);
+                        return;
+                    } else {
+                        await FirebaseHelper.clearQuizState(mextUser.uid, currentQuizId);
+                    }
+                }
+            } catch (error) {
+                console.error('Error checking saved state:', error);
+            }
+        }
+
+        // Initialize
+        function startQuiz(trialMode = false) {
+            isTrialMode = trialMode;
+            startScreen.classList.add('hidden');
+            quizScreen.classList.remove('hidden');
+            
+            if (isTrialMode) {
+                timerBox.classList.add('hidden');
+                trialBadge.classList.remove('hidden');
+            } else {
+                startTimer();
+            }
+            
+            renderSection(1);
+            renderQuestionNav();
+            setupSectionNav();
+            startAutoSave();
+            quizStarted = true;
+            saveQuizState();
+        }
+
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                updateTimerDisplay();
+
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    submitQuiz();
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            timerDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+
+            // Change color based on time remaining
+            if (timeLeft <= 300) { // 5 minutes
+                timerBox.classList.add('danger');
+                timerBox.classList.remove('warning');
+            } else if (timeLeft <= 600) { // 10 minutes
+                timerBox.classList.add('warning');
+            }
+        }
+
+        function setupSectionNav() {
+            document.querySelectorAll('.section-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const section = parseInt(btn.dataset.section);
+                    renderSection(section);
+                });
+            });
+        }
+
+        function renderSection(sectionId) {
+            currentSection = sectionId;
+            const section = quizData.sections.find(s => s.id === sectionId);
+
+            // Update navigation buttons
+            document.querySelectorAll('.section-btn').forEach(btn => {
+                btn.classList.toggle('active', parseInt(btn.dataset.section) === sectionId);
+            });
+
+            // Update prev/next buttons
+            prevBtn.disabled = sectionId === 1;
+            if (sectionId === 5) {
+                nextBtn.classList.add('hidden');
+                submitBtn.classList.remove('hidden');
+            } else {
+                nextBtn.classList.remove('hidden');
+                submitBtn.classList.add('hidden');
+            }
+
+            // Render content
+            let html = `
+                <div class="section-header">
+                    <h2>${section.title}</h2>
+                    <p>${section.description}</p>
+                </div>
+            `;
+
+            // Add passage for cloze test
+            if (section.passage) {
+                html += `<div class="passage-box">${section.passage}</div>`;
+            }
+
+            // Add passages for reading comprehension
+            if (section.passages) {
+                section.passages.forEach((passage, index) => {
+                    html += `
+                        <div class="passage-box">
+                            <div class="passage-title">${passage.title}</div>
+                            ${passage.content}
+                        </div>
+                    `;
+
+                    // Add questions after each passage
+                    const startIdx = index * 5;
+                    const endIdx = startIdx + 5;
+                    const passageQuestions = section.questions.slice(startIdx, endIdx);
+
+                    passageQuestions.forEach(q => {
+                        html += renderQuestion(q, section.id);
+                    });
+                });
+            } else {
+                // Regular questions
+                section.questions.forEach(q => {
+                    html += renderQuestion(q, section.id);
+                });
+            }
+
+            quizContent.innerHTML = html;
+            if (isReviewMode) {
+                quizContent.classList.add('review-mode');
+            }
+
+            // Add event listeners
+            quizContent.querySelectorAll('input[type="radio"]').forEach(input => {
+                input.addEventListener('change', handleAnswer);
+            });
+
+            renderQuestionNav();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function renderQuestion(question, sectionId) {
+            const selectedAnswer = answers[question.id];
+            const isChecked = checkedAnswers[question.id];
+
+            let questionText = question.text;
+            if (sectionId !== 3) { // Not error identification
+                questionText = question.text.replace('_______', '<span class="blank">_______</span>');
+            }
+
+            let html = `
+                <div class="question-block ${isChecked ? 'answer-revealed' : ''}" data-question-id="${question.id}">
+                    <div class="question-text">
+                        <span class="question-number">${question.id}</span>
+                        ${questionText}
+                    </div>
+                    <div class="options-grid">
+            `;
+
+            const letters = ['A', 'B', 'C', 'D'];
+            question.options.forEach((option, index) => {
+                const isSelected = selectedAnswer === index;
+                const isCorrect = index === question.correct;
+
+                let extraClass = '';
+                if (isReviewMode || isChecked) {
+                    if (isCorrect) extraClass = 'correct';
+                    else if (isSelected && !isCorrect) extraClass = 'incorrect';
+                }
+
+                html += `
+                    <label class="option-label ${extraClass}">
+                        <input type="radio" name="q${question.id}" value="${index}" 
+                            ${isSelected ? 'checked' : ''} ${isReviewMode ? 'disabled' : ''}>
+                        <span class="option-letter">${letters[index]}</span>
+                        <span class="option-text">${option}</span>
+                    </label>
+                `;
+            });
+
+            html += `</div>`;
+
+            // Add check answer button for trial mode
+            if (isTrialMode && !isReviewMode) {
+                html += `
+                    <button class="check-answer-btn ${isChecked ? 'checked' : ''}" 
+                            onclick="checkAnswer(${question.id})" 
+                            ${!selectedAnswer && selectedAnswer !== 0 ? 'disabled' : ''}>
+                        ${isChecked ? '✓ Answer Checked' : 'Check Answer'}
+                    </button>
+                `;
+            }
+
+            // Add explanation for review mode
+            html += `
+                <div class="explanation-box">
+                    <div class="explanation-header">
+                        <span class="correct-answer-badge">✓ Correct: ${letters[question.correct]}</span>
+                        <span class="explanation-title">Explanation</span>
+                    </div>
+                    <div class="explanation-content">${question.explanation}</div>
+                </div>
+            `;
+
+            html += `</div>`;
+            return html;
+        }
+
+        function checkAnswer(questionId) {
+            if (answers[questionId] === undefined) return;
+            
+            checkedAnswers[questionId] = true;
+            saveQuizState();
+            
+            // Find the question to check if correct
+            let isCorrect = false;
+            quizData.sections.forEach(section => {
+                const question = section.questions.find(q => q.id === questionId);
+                if (question) {
+                    isCorrect = answers[questionId] === question.correct;
+                }
+            });
+            
+            // Update the question block
+            const questionBlock = document.querySelector(`[data-question-id="${questionId}"]`);
+            if (questionBlock) {
+                questionBlock.classList.add('answer-revealed');
+                
+                // Update the button
+                const btn = questionBlock.querySelector('.check-answer-btn');
+                if (btn) {
+                    btn.classList.add('checked');
+                    btn.textContent = '✓ Answer Checked';
+                }
+                
+                // Mark options
+                const options = questionBlock.querySelectorAll('.option-label');
+                options.forEach((opt, index) => {
+                    const question = quizData.sections
+                        .flatMap(s => s.questions)
+                        .find(q => q.id === questionId);
+                    
+                    if (index === question.correct) {
+                        opt.classList.add('correct');
+                    } else if (index === answers[questionId] && index !== question.correct) {
+                        opt.classList.add('incorrect');
+                    }
+                });
+            }
+            
+            renderQuestionNav();
+        }
+
+        function handleAnswer(e) {
+            const questionId = parseInt(e.target.name.replace('q', ''));
+            const value = parseInt(e.target.value);
+            answers[questionId] = value;
+            updateProgress();
+            renderQuestionNav();
+            saveQuizState();
+            
+            // Enable check button in trial mode
+            if (isTrialMode && !checkedAnswers[questionId]) {
+                const questionBlock = document.querySelector(`[data-question-id="${questionId}"]`);
+                if (questionBlock) {
+                    const btn = questionBlock.querySelector('.check-answer-btn');
+                    if (btn) btn.disabled = false;
+                }
+            }
+        }
+
+        function updateProgress() {
+            const count = Object.keys(answers).length;
+            answeredCount.textContent = count;
+            progressFill.style.width = `${(count / 50) * 100}%`;
+        }
+
+        function renderQuestionNav() {
+            const section = quizData.sections.find(s => s.id === currentSection);
+            let html = '';
+
+            section.questions.forEach(q => {
+                const isAnswered = answers[q.id] !== undefined;
+                const isChecked = checkedAnswers[q.id];
+                
+                let btnClass = 'q-nav-btn';
+                if (isChecked) {
+                    const isCorrect = answers[q.id] === q.correct;
+                    btnClass += isCorrect ? ' checked' : ' checked-wrong';
+                } else if (isAnswered) {
+                    btnClass += ' answered';
+                }
+                
+                html += `
+                    <button class="${btnClass}" 
+                            onclick="scrollToQuestion(${q.id})">
+                        ${q.id}
+                    </button>
+                `;
+            });
+
+            questionNav.innerHTML = html;
+        }
+
+        function scrollToQuestion(id) {
+            const questions = document.querySelectorAll('.question-block');
+            const section = quizData.sections.find(s => s.id === currentSection);
+            const index = section.questions.findIndex(q => q.id === id);
+
+            if (questions[index]) {
+                questions[index].scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
+
+        function previousSection() {
+            if (currentSection > 1) {
+                renderSection(currentSection - 1);
+                saveQuizState();
+            }
+        }
+
+        function nextSection() {
+            if (currentSection < 5) {
+                renderSection(currentSection + 1);
+                saveQuizState();
+            }
+        }
+
+        function submitQuiz() {
+            clearInterval(timerInterval);
+            stopAutoSave();
+            quizStarted = false;
+
+            if (mextUser && mextUser.uid) {
+                FirebaseHelper.clearQuizState(mextUser.uid, currentQuizId);
+            }
+
+            // Calculate time spent
+            const timeSpent = (60 * 60) - timeLeft;
+
+            // Calculate scores
+            let totalCorrect = 0;
+            const sectionScores = [];
+            const sectionData = {
+                vocabulary: { correct: 0, total: 10 },
+                grammar: { correct: 0, total: 10 },
+                errorId: { correct: 0, total: 10 },
+                cloze: { correct: 0, total: 10 },
+                reading: { correct: 0, total: 10 }
+            };
+            const sectionKeys = ['vocabulary', 'grammar', 'errorId', 'cloze', 'reading'];
+
+            quizData.sections.forEach((section, index) => {
+                let sectionCorrect = 0;
+                section.questions.forEach(q => {
+                    if (answers[q.id] === q.correct) {
+                        sectionCorrect++;
+                        totalCorrect++;
+                    }
+                });
+                sectionScores.push({
+                    name: section.title.split(':')[0],
+                    score: sectionCorrect,
+                    total: section.questions.length
+                });
+                sectionData[sectionKeys[index]].correct = sectionCorrect;
+            });
+
+            // Save to Firebase if user is logged in
+            if (mextUser && mextUser.uid) {
+                saveResultsToFirebase(totalCorrect, sectionData, timeSpent);
+            }
+
+            // Show results
+            quizScreen.classList.add('hidden');
+            resultsScreen.classList.remove('hidden');
+
+            document.getElementById('finalScore').textContent = totalCorrect;
+
+            // Score message
+            const percentage = (totalCorrect / 50) * 100;
+            let message = '';
+            if (percentage >= 80) message = '🎉 Excellent! Outstanding performance!';
+            else if (percentage >= 60) message = '👍 Good job! Keep practicing!';
+            else if (percentage >= 40) message = '📚 Fair attempt. More study needed.';
+            else message = '💪 Keep working hard! You can improve!';
+
+            document.getElementById('scoreMessage').textContent = message;
+
+            // Section breakdown
+            let breakdownHtml = '';
+            sectionScores.forEach(s => {
+                breakdownHtml += `
+                    <div class="breakdown-item">
+                        <div class="section-name">${s.name}</div>
+                        <div class="section-score">${s.score}/${s.total}</div>
+                    </div>
+                `;
+            });
+            document.getElementById('scoreBreakdown').innerHTML = breakdownHtml;
+
+            // Log analytics event
+            analytics.logEvent('quiz_complete', {
+                quiz_id: currentQuizId,
+                score: totalCorrect,
+                percentage: percentage,
+                time_spent: timeSpent
+            });
+        }
+
+        // Save results to Firebase
+        async function saveResultsToFirebase(score, sectionData, timeSpent) {
+            try {
+                const userRef = db.collection('users').doc(mextUser.uid);
+                const userDoc = await userRef.get();
+                const userData = userDoc.exists ? userDoc.data() : {};
+
+                // Get current best score for this quiz
+                const currentBest = userData.quizAttempts?.[currentQuizId]?.bestScore || 0;
+                const newBest = Math.max(currentBest, score);
+
+                // Prepare section score updates
+                const sectionUpdates = {};
+                for (const [key, data] of Object.entries(sectionData)) {
+                    const currentTotal = userData.stats?.sectionScores?.[key]?.total || 0;
+                    const currentCorrect = userData.stats?.sectionScores?.[key]?.correct || 0;
+                    sectionUpdates[`stats.sectionScores.${key}.total`] = currentTotal + data.total;
+                    sectionUpdates[`stats.sectionScores.${key}.correct`] = currentCorrect + data.correct;
+                }
+
+                // Update user document with latest attempt
+                await userRef.update({
+                    [`quizAttempts.${currentQuizId}.completed`]: true,
+                    [`quizAttempts.${currentQuizId}.score`]: score,
+                    [`quizAttempts.${currentQuizId}.bestScore`]: newBest,
+                    [`quizAttempts.${currentQuizId}.lastAttempt`]: firebase.firestore.FieldValue.serverTimestamp(),
+                    [`quizAttempts.${currentQuizId}.attempts`]: firebase.firestore.FieldValue.increment(1),
+                    [`quizAttempts.${currentQuizId}.savedAnswers`]: answers,
+                    'stats.totalAttempts': firebase.firestore.FieldValue.increment(1),
+                    'stats.totalCompleted': firebase.firestore.FieldValue.increment(1),
+                    'stats.totalTimeSpent': firebase.firestore.FieldValue.increment(timeSpent),
+                    ...sectionUpdates
+                });
+
+                // Save to history subcollection for historical tracking
+                const historyRef = db.collection('users').doc(mextUser.uid)
+                    .collection('quizHistory').doc(currentQuizId)
+                    .collection('attempts');
+
+                await historyRef.add({
+                    score: score,
+                    timeSpent: timeSpent,
+                    sectionData: sectionData,
+                    savedAnswers: answers,
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                });
+
+                console.log('Results and history saved to Firebase successfully!');
+            } catch (error) {
+                console.error('Error saving results to Firebase:', error);
+            }
+        }
+
+        function reviewAnswers() {
+            isReviewMode = true;
+            resultsScreen.classList.add('hidden');
+            quizScreen.classList.remove('hidden');
+
+            // Hide timer during review
+            timerBox.style.display = 'none';
+            setReviewScore(document.getElementById('finalScore').textContent);
+
+            // Update navigation
+            submitBtn.classList.add('hidden');
+            nextBtn.classList.remove('hidden');
+
+            quizContent.classList.add('review-mode');
+            renderSection(1);
+        }
+
+        function retryQuiz() {
+            stopAutoSave();
+            quizStarted = false;
+
+            // Clear saved progress and increment attempt count in Firebase
+            if (mextUser && mextUser.uid) {
+                FirebaseHelper.clearQuizState(mextUser.uid, currentQuizId);
+                db.collection('users').doc(mextUser.uid).update({
+                    'stats.totalAttempts': firebase.firestore.FieldValue.increment(1),
+                    [`quizAttempts.${currentQuizId}.lastAttempt`]: firebase.firestore.FieldValue.serverTimestamp()
+                }).catch(err => console.error('Error updating attempt count:', err));
+            }
+
+            // Reset state
+            answers = {};
+            checkedAnswers = {};
+            timeLeft = 60 * 60;
+            currentSection = 1;
+            isReviewMode = false;
+            isTrialMode = false;
+
+            // Reset UI
+            timerBox.style.display = 'flex';
+            timerBox.classList.remove('warning', 'danger', 'hidden');
+            trialBadge.classList.add('hidden');
+            clearReviewScore();
+            updateTimerDisplay();
+            updateProgress();
+
+            // Show quiz
+            resultsScreen.classList.add('hidden');
+            quizScreen.classList.remove('hidden');
+            quizContent.classList.remove('review-mode');
+
+            startTimer();
+            renderSection(1);
+        }
+
+        function goToDashboard() {
+            window.location.href = '../index.html';
+        }
+
+        // Check if coming from dashboard for review mode
+        async function checkReviewMode() {
+            const reviewMode = sessionStorage.getItem('reviewMode');
+            const reviewQuizId = sessionStorage.getItem('reviewQuizId');
+            const reviewAttemptId = sessionStorage.getItem('reviewAttemptId');
+
+            if (reviewMode === 'true' && reviewQuizId && mextUser) {
+                // Clear the flags
+                sessionStorage.removeItem('reviewMode');
+                sessionStorage.removeItem('reviewQuizId');
+                sessionStorage.removeItem('reviewAttemptId');
+
+                // Load saved answers from Firebase
+                try {
+                    let savedAnswers = null;
+                    let reviewScore = null;
+
+                    if (reviewAttemptId) {
+                        // Load specific attempt from history subcollection
+                        const attemptDoc = await db.collection('users').doc(mextUser.uid)
+                            .collection('quizHistory').doc(reviewQuizId)
+                            .collection('attempts').doc(reviewAttemptId).get();
+
+                        if (attemptDoc.exists) {
+                            const attemptData = attemptDoc.data();
+                            savedAnswers = attemptData.savedAnswers;
+                            reviewScore = attemptData.score;
+                            console.log('Loaded historical attempt:', reviewAttemptId);
+                        }
+                    } else {
+                        // Load latest attempt from main document
+                        const userDoc = await db.collection('users').doc(mextUser.uid).get();
+                        if (userDoc.exists) {
+                            const userData = userDoc.data();
+                            const attempt = userData.quizAttempts?.[reviewQuizId];
+                            savedAnswers = attempt?.savedAnswers;
+                            reviewScore = attempt?.score ?? attempt?.bestScore;
+                        }
+                    }
+
+                    if (savedAnswers) {
+                        // Convert string keys back to numbers if needed
+                        answers = {};
+                        for (const [key, value] of Object.entries(savedAnswers)) {
+                            answers[parseInt(key)] = value;
+                        }
+
+                        // Hide start screen, show quiz in review mode
+                        startScreen.classList.add('hidden');
+                        quizScreen.classList.remove('hidden');
+
+                        isReviewMode = true;
+                        timerBox.style.display = 'none';
+                        setReviewScore(reviewScore);
+                        submitBtn.classList.add('hidden');
+                        quizContent.classList.add('review-mode');
+
+                        updateProgress();
+                        renderSection(1);
+
+                        console.log('Loaded saved answers for review');
+                    } else {
+                        console.log('No saved answers found for review');
+                        alert('No saved answers found for this attempt.');
+                        window.location.href = '../index.html';
+                    }
+                } catch (error) {
+                    console.error('Error loading saved answers:', error);
+                    alert('Error loading saved answers: ' + error.message);
+                }
+            }
+        }
+
+        function setReviewScore(score) {
+            if (score === null || score === undefined) {
+                reviewScoreValue.textContent = '--/50';
+            } else {
+                reviewScoreValue.textContent = `${score}/50`;
+            }
+            reviewScorePill.classList.remove('hidden');
+        }
+
+        function clearReviewScore() {
+            reviewScorePill.classList.add('hidden');
+            reviewScoreValue.textContent = '--/50';
+        }
+
+        // Check if user is logged in, if not redirect to login
+        if (!mextUser) {
+            console.log('No user session found. For full features, please login from the main page.');
+        } else {
+            checkReviewMode().then(() => {
+                if (!isReviewMode) {
+                    checkSavedState();
+                }
+            });
+        }
+    </script>
+</body>
+
+</html>

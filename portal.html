@@ -1403,7 +1403,7 @@
             <div class="auth-alert" id="authNext">
                 <span class="badge">Tip</span>
                 <div>
-                    <strong id="authNextTitle">10 mock exams available</strong>
+                    <strong id="authNextTitle">11 mock exams available</strong>
                     <span id="authNextMeta">Sign in to track your scores and pick up where you left off.</span>
                 </div>
             </div>
@@ -1723,6 +1723,15 @@
                 duration: 60,
                 path: 'quiz-10/index.html',
                 available: true
+            },
+            {
+                id: 'quiz-11',
+                title: 'Mock Examination 11',
+                description: 'Full-length practice exam',
+                questions: 50,
+                duration: 60,
+                path: 'quiz-11/index.html',
+                available: true
             }
         ];
         const nextQuiz = nextPath ? quizzes.find((quiz) => quiz.path === nextPath) : null;
@@ -1804,7 +1813,7 @@
             liveProgressInterval = setInterval(() => {
                 if (!currentUser || !dashboard.classList.contains('active')) return;
                 let changed = false;
-                for (let i = 1; i <= 10; i++) {
+                for (let i = 1; i <= 11; i++) {
                     const qId = `quiz-${i}`;
                     try {
                         const stored = localStorage.getItem(`quizState_${currentUser.uid}_${qId}`);
@@ -1917,7 +1926,7 @@
                         userData = doc.data();
                         // Re-check quiz progress from localStorage (sync)
                         const localProgress = {};
-                        for (let i = 1; i <= 10; i++) {
+                        for (let i = 1; i <= 11; i++) {
                             const qId = `quiz-${i}`;
                             try {
                                 const stored = localStorage.getItem(`quizState_${currentUser.uid}_${qId}`);

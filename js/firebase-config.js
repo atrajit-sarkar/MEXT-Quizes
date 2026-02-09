@@ -291,7 +291,7 @@ const FirebaseHelper = {
     checkAllQuizProgress: async function (userId) {
         const progress = {};
         // Check localStorage for all quizzes
-        for (let i = 1; i <= 10; i++) {
+        for (let i = 1; i <= 11; i++) {
             const quizId = `quiz-${i}`;
             try {
                 const stored = localStorage.getItem(`quizState_${userId}_${quizId}`);
