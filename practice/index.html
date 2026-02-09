@@ -1002,6 +1002,15 @@
         </div>
     </div>
 
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-analytics-compat.js"></script>
+
+    <!-- Shared Firebase Config -->
+    <script src="../js/firebase-config.js"></script>
+
     <script src="practice-sets.js"></script>
 
     <script>
@@ -1037,6 +1046,12 @@
 
         const params = new URLSearchParams(window.location.search);
         const setKey = params.get('set') || 'vocab-1';
+        const practiceQuizId = `practice-${setKey}`;
+        const mextUser = typeof FirebaseHelper !== 'undefined' ? FirebaseHelper.getSessionUser() : null;
+
+        if (typeof FirebaseHelper !== 'undefined') {
+            FirebaseHelper.setCurrentQuizId(practiceQuizId);
+        }
 
         let quizData = null;
         let currentSection = 1;
@@ -1049,6 +1064,124 @@
         let totalQuestions = 0;
         let totalSections = 0;
         let practiceMeta = null;
+        let autoSaveInterval;
+        let quizStarted = false;
+
+        function saveQuizState() {
+            if (!mextUser || !mextUser.uid) return;
+            if (isReviewMode) return;
+            if (!quizStarted) return;
+            FirebaseHelper.saveQuizState(mextUser.uid, practiceQuizId, {
+                answers: answers,
+                checkedAnswers: checkedAnswers,
+                currentSection: currentSection,
+                timeLeft: timeLeft,
+                isTrialMode: isTrialMode
+            });
+        }
+
+        function saveQuizStateSync() {
+            if (!mextUser || !mextUser.uid) return;
+            if (isReviewMode) return;
+            if (!quizStarted) return;
+            FirebaseHelper.saveQuizStateSync(mextUser.uid, practiceQuizId, {
+                answers: answers,
+                checkedAnswers: checkedAnswers,
+                currentSection: currentSection,
+                timeLeft: timeLeft,
+                isTrialMode: isTrialMode
+            });
+        }
+
+        function startAutoSave() {
+            stopAutoSave();
+            autoSaveInterval = setInterval(saveQuizState, 30000);
+        }
+
+        function stopAutoSave() {
+            if (autoSaveInterval) {
+                clearInterval(autoSaveInterval);
+                autoSaveInterval = null;
+            }
+        }
+
+        function resumeQuizFromState(state) {
+            answers = {};
+            for (const [key, value] of Object.entries(state.answers || {})) {
+                answers[parseInt(key)] = value;
+            }
+            checkedAnswers = {};
+            for (const [key, value] of Object.entries(state.checkedAnswers || {})) {
+                checkedAnswers[parseInt(key)] = value;
+            }
+            timeLeft = state.timeLeft !== undefined ? state.timeLeft : timeLeft;
+            isTrialMode = state.isTrialMode || false;
+            currentSection = state.currentSection || 1;
+
+            startScreen.classList.add('hidden');
+            quizScreen.classList.remove('hidden');
+
+            if (isTrialMode) {
+                timerBox.classList.add('hidden');
+                trialBadge.classList.remove('hidden');
+            } else {
+                timerBox.classList.remove('hidden');
+                updateTimerDisplay();
+                startTimer();
+            }
+
+            updateProgress();
+            renderSection(currentSection);
+            renderQuestionNav();
+            setupSectionNav();
+            startAutoSave();
+            quizStarted = true;
+        }
+
+        async function checkSavedState() {
+            if (!mextUser || !mextUser.uid) return;
+            const autoResume = sessionStorage.getItem('autoResume') === 'true';
+            sessionStorage.removeItem('autoResume');
+            try {
+                const savedState = await FirebaseHelper.loadQuizState(mextUser.uid, practiceQuizId);
+                if (savedState && Object.keys(savedState.answers || {}).length > 0) {
+                    const mode = savedState.isTrialMode ? 'Trial Mode' : 'Normal Mode';
+                    const answered = Object.keys(savedState.answers).length;
+                    let timeInfo = '';
+                    if (!savedState.isTrialMode && savedState.timeLeft !== undefined) {
+                        const mins = Math.floor(savedState.timeLeft / 60);
+                        const secs = savedState.timeLeft % 60;
+                        timeInfo = ` | Time remaining: ${mins}m ${secs}s`;
+                    }
+                    if (autoResume || confirm(`You have a saved ${mode} session (${answered}/${totalQuestions} answered${timeInfo}).\\n\\nResume where you left off?`)) {
+                        resumeQuizFromState(savedState);
+                        return;
+                    } else {
+                        await FirebaseHelper.clearQuizState(mextUser.uid, practiceQuizId);
+                    }
+                }
+            } catch (error) {
+                console.error('Error checking saved state:', error);
+            }
+        }
+
+        window.addEventListener('beforeunload', function () {
+            if (quizStarted && !isReviewMode && Object.keys(answers).length > 0) {
+                saveQuizStateSync();
+            }
+        });
+
+        window.addEventListener('pagehide', function () {
+            if (quizStarted && !isReviewMode && Object.keys(answers).length > 0) {
+                saveQuizStateSync();
+            }
+        });
+
+        document.addEventListener('visibilitychange', function () {
+            if (document.visibilityState === 'hidden' && quizStarted && !isReviewMode && Object.keys(answers).length > 0) {
+                saveQuizStateSync();
+            }
+        });
 
         function normalizeCloze(passage, questions) {
             let counter = 1;
@@ -1198,6 +1331,7 @@
             updateStartScreen();
             startBtn.disabled = false;
             trialBtn.disabled = false;
+            await checkSavedState();
         }
 
         function startQuiz(trialMode = false) {
@@ -1219,6 +1353,9 @@
             renderQuestionNav();
             setupSectionNav();
             updateProgress();
+            startAutoSave();
+            quizStarted = true;
+            saveQuizState();
         }
 
         function startTimer() {
@@ -1404,6 +1541,7 @@
             if (answers[questionId] === undefined) return;
 
             checkedAnswers[questionId] = true;
+            saveQuizState();
 
             const questionBlock = document.querySelector(`[data-question-id="${questionId}"]`);
             if (questionBlock) {
@@ -1438,6 +1576,7 @@
             answers[questionId] = value;
             updateProgress();
             renderQuestionNav();
+            saveQuizState();
 
             if (isTrialMode && !checkedAnswers[questionId]) {
                 const questionBlock = document.querySelector(`[data-question-id="${questionId}"]`);
@@ -1504,6 +1643,11 @@
 
         function submitQuiz() {
             clearInterval(timerInterval);
+            stopAutoSave();
+            quizStarted = false;
+            if (mextUser && mextUser.uid) {
+                FirebaseHelper.clearQuizState(mextUser.uid, practiceQuizId);
+            }
 
             let totalCorrect = 0;
             const sectionScores = [];
@@ -1549,6 +1693,11 @@
         }
 
         function retryQuiz() {
+            stopAutoSave();
+            quizStarted = false;
+            if (mextUser && mextUser.uid) {
+                FirebaseHelper.clearQuizState(mextUser.uid, practiceQuizId);
+            }
             window.location.reload();
         }
 
