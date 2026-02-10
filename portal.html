@@ -2960,12 +2960,13 @@
                 const practiceId = `practice-${setKey}`;
                 const state = quizProgressData[practiceId];
                 const attempt = userData.practiceAttempts?.[practiceId];
-                const btn = card.querySelector('.btn');
-                // Remove previous status indicator and history button if any
+                // Remove previous status indicator and history button BEFORE querying for btn
                 const oldStatus = card.querySelector('.practice-status');
                 if (oldStatus) oldStatus.remove();
                 const oldHistory = card.querySelector('.practice-history-btn');
                 if (oldHistory) oldHistory.remove();
+                // Now safely get the main action button (not the history button)
+                const btn = card.querySelector('.btn:not(.practice-history-btn)');
 
                 const hasHistory = attempt && (attempt.attempts > 0 || attempt.completed);
 

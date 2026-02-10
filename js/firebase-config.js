@@ -386,7 +386,10 @@ const FirebaseHelper = {
                 }
             });
         } catch (error) {
-            console.error('Error checking quiz progress:', error);
+            // Permissions error is expected for some users — fall back to localStorage data
+            if (error.code !== 'permission-denied') {
+                console.error('Error checking quiz progress:', error);
+            }
         }
         return progress;
     }
