@@ -2833,6 +2833,7 @@
 
             quizContent.classList.add('review-mode');
             renderSection(1);
+            setupSectionNav();
         }
 
         function retryQuiz() {
@@ -2936,6 +2937,7 @@
 
                         updateProgress();
                         renderSection(1);
+                        setupSectionNav();
 
                         console.log('Loaded saved answers for review');
                     } else {
