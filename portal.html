@@ -671,6 +671,38 @@
             box-shadow: 0 16px 32px rgba(0, 0, 0, 0.12);
         }
 
+        /* Completed quiz card - green glow */
+        .quiz-card.completed {
+            border: 1.5px solid rgba(56, 161, 105, 0.5);
+            background: linear-gradient(135deg, #f0fff4 0%, #ffffff 100%);
+            animation: quizGlowGreen 2.5s ease-in-out infinite;
+        }
+
+        .quiz-card.completed:hover {
+            box-shadow: 0 0 20px rgba(56, 161, 105, 0.35), 0 16px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        @keyframes quizGlowGreen {
+            0%, 100% { box-shadow: 0 0 8px rgba(56, 161, 105, 0.15), 0 0 20px rgba(56, 161, 105, 0.08), var(--shadow); }
+            50% { box-shadow: 0 0 16px rgba(56, 161, 105, 0.3), 0 0 35px rgba(56, 161, 105, 0.12), var(--shadow); }
+        }
+
+        /* In-progress quiz card - yellow/amber glow */
+        .quiz-card.in-progress {
+            border: 1.5px solid rgba(214, 158, 46, 0.5);
+            background: linear-gradient(135deg, #fffcf0 0%, #ffffff 100%);
+            animation: quizGlowYellow 2s ease-in-out infinite;
+        }
+
+        .quiz-card.in-progress:hover {
+            box-shadow: 0 0 20px rgba(214, 158, 46, 0.35), 0 16px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        @keyframes quizGlowYellow {
+            0%, 100% { box-shadow: 0 0 8px rgba(214, 158, 46, 0.15), 0 0 20px rgba(214, 158, 46, 0.08), var(--shadow); }
+            50% { box-shadow: 0 0 16px rgba(214, 158, 46, 0.35), 0 0 35px rgba(214, 158, 46, 0.12), var(--shadow); }
+        }
+
         .quiz-number {
             width: 52px;
             height: 52px;
@@ -809,13 +841,25 @@
         }
 
         .practice-card.in-progress {
-            border-color: var(--warning);
-            background: #fffaf0;
+            border-color: rgba(214, 158, 46, 0.5);
+            background: linear-gradient(135deg, #fffcf0 0%, #f8fafc 100%);
+            animation: practiceGlowYellow 2s ease-in-out infinite;
+        }
+
+        @keyframes practiceGlowYellow {
+            0%, 100% { box-shadow: 0 0 6px rgba(214, 158, 46, 0.12), 0 0 14px rgba(214, 158, 46, 0.06); }
+            50% { box-shadow: 0 0 12px rgba(214, 158, 46, 0.3), 0 0 28px rgba(214, 158, 46, 0.1); }
         }
 
         .practice-card.completed {
-            border-color: var(--success);
-            background: #f0fff4;
+            border-color: rgba(56, 161, 105, 0.5);
+            background: linear-gradient(135deg, #f0fff4 0%, #f8fafc 100%);
+            animation: practiceGlowGreen 2.5s ease-in-out infinite;
+        }
+
+        @keyframes practiceGlowGreen {
+            0%, 100% { box-shadow: 0 0 6px rgba(56, 161, 105, 0.12), 0 0 14px rgba(56, 161, 105, 0.06); }
+            50% { box-shadow: 0 0 12px rgba(56, 161, 105, 0.3), 0 0 28px rgba(56, 161, 105, 0.1); }
         }
 
         .practice-card .practice-status {
@@ -2453,7 +2497,7 @@
                 const hasHistory = attempt && (attempt.attempts > 0 || attempt.completed);
 
                 html += `
-                    <div class="quiz-card" style="opacity: 0; animation: quizCardIn 0.5s cubic-bezier(0.22, 1, 0.36, 1) ${index * 0.08}s forwards;">
+                    <div class="quiz-card ${status}" style="opacity: 0; animation: quizCardIn 0.5s cubic-bezier(0.22, 1, 0.36, 1) ${index * 0.08}s forwards;">
                         <div class="quiz-number">${String(index + 1).padStart(2, '0')}</div>
                         <div class="quiz-info">
                             <h3>${quiz.title}</h3>
