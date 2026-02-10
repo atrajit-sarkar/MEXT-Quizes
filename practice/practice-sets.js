@@ -3,7 +3,7 @@ const practicePlans = {
         title: 'Vocabulary Sprint 1',
         subtitle: 'Section I practice · Nuance focus',
         description: 'Sharpen your ability to choose the best word for subtle context clues.',
-        duration: 12,
+        duration: 8,
         type: 'standard',
         section: {
             title: 'Section I: Vocabulary in Context',
@@ -18,7 +18,7 @@ const practicePlans = {
         title: 'Vocabulary Sprint 2',
         subtitle: 'Section I practice · Academic usage',
         description: 'Practice academic vocabulary and precise word choice under time pressure.',
-        duration: 12,
+        duration: 8,
         type: 'standard',
         section: {
             title: 'Section I: Vocabulary in Context',
@@ -33,7 +33,7 @@ const practicePlans = {
         title: 'Vocabulary Sprint 3',
         subtitle: 'Section I practice · Synonym traps',
         description: 'Train your eye for synonym traps and near-meaning distractors.',
-        duration: 12,
+        duration: 8,
         type: 'standard',
         section: {
             title: 'Section I: Vocabulary in Context',
@@ -48,7 +48,7 @@ const practicePlans = {
         title: 'Vocabulary Sprint 4',
         subtitle: 'Section I practice · Precision checks',
         description: 'Refine precision in word choice with common MEXT-level distractors.',
-        duration: 12,
+        duration: 8,
         type: 'standard',
         section: {
             title: 'Section I: Vocabulary in Context',
@@ -63,7 +63,7 @@ const practicePlans = {
         title: 'Vocabulary Sprint 5',
         subtitle: 'Section I practice · Academic tone',
         description: 'Practice vocabulary suited to academic and formal contexts.',
-        duration: 12,
+        duration: 8,
         type: 'standard',
         section: {
             title: 'Section I: Vocabulary in Context',
@@ -78,7 +78,7 @@ const practicePlans = {
         title: 'Grammar Focus 1',
         subtitle: 'Section II practice · Conditionals',
         description: 'Practice conditionals, tense control, and structure choices.',
-        duration: 12,
+        duration: 8,
         type: 'standard',
         section: {
             title: 'Section II: Grammar & Phrasing',
@@ -93,7 +93,7 @@ const practicePlans = {
         title: 'Grammar Focus 2',
         subtitle: 'Section II practice · Inversion & emphasis',
         description: 'Build speed with inversion, emphasis, and advanced sentence patterns.',
-        duration: 12,
+        duration: 8,
         type: 'standard',
         section: {
             title: 'Section II: Grammar & Phrasing',
@@ -108,7 +108,7 @@ const practicePlans = {
         title: 'Grammar Focus 3',
         subtitle: 'Section II practice · Prepositions',
         description: 'Refine your control of prepositions, collocations, and phrasing.',
-        duration: 12,
+        duration: 8,
         type: 'standard',
         section: {
             title: 'Section II: Grammar & Phrasing',
@@ -123,7 +123,7 @@ const practicePlans = {
         title: 'Grammar Focus 4',
         subtitle: 'Section II practice · Complex clauses',
         description: 'Practice structure-heavy sentences with advanced clause patterns.',
-        duration: 12,
+        duration: 8,
         type: 'standard',
         section: {
             title: 'Section II: Grammar & Phrasing',
@@ -138,7 +138,7 @@ const practicePlans = {
         title: 'Grammar Focus 5',
         subtitle: 'Section II practice · Verb patterns',
         description: 'Target verb patterns, gerunds, and infinitives in context.',
-        duration: 12,
+        duration: 8,
         type: 'standard',
         section: {
             title: 'Section II: Grammar & Phrasing',
@@ -153,7 +153,7 @@ const practicePlans = {
         title: 'Error Hunt 1',
         subtitle: 'Section III practice · Subject-verb agreement',
         description: 'Spot subtle agreement and structure errors in complex sentences.',
-        duration: 12,
+        duration: 10,
         type: 'standard',
         section: {
             title: 'Section III: Error Identification',
@@ -168,7 +168,7 @@ const practicePlans = {
         title: 'Error Hunt 2',
         subtitle: 'Section III practice · Tense consistency',
         description: 'Find errors in tense, agreement, and modifier placement.',
-        duration: 12,
+        duration: 10,
         type: 'standard',
         section: {
             title: 'Section III: Error Identification',
@@ -183,7 +183,7 @@ const practicePlans = {
         title: 'Error Hunt 3',
         subtitle: 'Section III practice · Articles & modifiers',
         description: 'Practice spotting article, modifier, and agreement errors quickly.',
-        duration: 12,
+        duration: 10,
         type: 'standard',
         section: {
             title: 'Section III: Error Identification',
@@ -198,7 +198,7 @@ const practicePlans = {
         title: 'Error Hunt 4',
         subtitle: 'Section III practice · Agreement & tense',
         description: 'Sharpen detection of agreement and tense mismatches.',
-        duration: 12,
+        duration: 10,
         type: 'standard',
         section: {
             title: 'Section III: Error Identification',
@@ -213,7 +213,7 @@ const practicePlans = {
         title: 'Error Hunt 5',
         subtitle: 'Section III practice · Parallel structure',
         description: 'Practice spotting parallel structure and modifier issues.',
-        duration: 12,
+        duration: 10,
         type: 'standard',
         section: {
             title: 'Section III: Error Identification',
@@ -288,7 +288,7 @@ const practicePlans = {
         title: 'Reading Drill 1',
         subtitle: 'Section V practice · Inference focus',
         description: 'Answer inference-driven questions with two full passages.',
-        duration: 12,
+        duration: 22,
         type: 'reading-full',
         section: {
             title: 'Section V: Reading Comprehension',
@@ -300,7 +300,7 @@ const practicePlans = {
         title: 'Reading Drill 2',
         subtitle: 'Section V practice · Detail checks',
         description: 'Practice detail recognition and close reading skills.',
-        duration: 12,
+        duration: 22,
         type: 'reading-full',
         section: {
             title: 'Section V: Reading Comprehension',
@@ -312,7 +312,7 @@ const practicePlans = {
         title: 'Reading Drill 3',
         subtitle: 'Section V practice · Main idea & tone',
         description: 'Focus on main idea, tone, and author intent questions.',
-        duration: 12,
+        duration: 22,
         type: 'reading-full',
         section: {
             title: 'Section V: Reading Comprehension',
@@ -324,7 +324,7 @@ const practicePlans = {
         title: 'Reading Drill 4',
         subtitle: 'Section V practice · Evidence tracing',
         description: 'Practice locating evidence and justifying answer choices.',
-        duration: 12,
+        duration: 22,
         type: 'reading-full',
         section: {
             title: 'Section V: Reading Comprehension',
@@ -336,7 +336,7 @@ const practicePlans = {
         title: 'Reading Drill 5',
         subtitle: 'Section V practice · Argument flow',
         description: 'Target argument structure, inference, and passage logic.',
-        duration: 12,
+        duration: 22,
         type: 'reading-full',
         section: {
             title: 'Section V: Reading Comprehension',

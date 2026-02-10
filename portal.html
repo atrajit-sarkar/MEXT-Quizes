@@ -2327,9 +2327,17 @@
 
             // Total time = saved stats time + time spent on in-progress quizzes/practice
             let totalTimeSeconds = stats.totalTimeSpent || 0;
-            // Duration map: quiz IDs default to 3600s (60 min), all practice sets are 720s (12 min)
+            // Duration map: quiz IDs default to 3600s (60 min), practice sets use real exam timings
             const durationMap = {};
-            practiceSetKeys.forEach(k => { durationMap[`practice-${k}`] = 720; });
+            practiceSetKeys.forEach(k => {
+                // Match duration to section type from practicePlans
+                let dur = 720; // default 12 min
+                if (k.startsWith('vocab-') || k.startsWith('grammar-')) dur = 480; // 8 min
+                else if (k.startsWith('error-')) dur = 600; // 10 min
+                else if (k.startsWith('cloze-')) dur = 720; // 12 min
+                else if (k.startsWith('reading-')) dur = 1320; // 22 min
+                durationMap[`practice-${k}`] = dur;
+            });
             Object.entries(quizProgressData).forEach(([id, state]) => {
                 if (state && typeof state.timeLeft === 'number') {
                     const totalDuration = durationMap[id] || 3600;
@@ -2953,9 +2961,13 @@
                 const state = quizProgressData[practiceId];
                 const attempt = userData.practiceAttempts?.[practiceId];
                 const btn = card.querySelector('.btn');
-                // Remove previous status indicator if any
+                // Remove previous status indicator and history button if any
                 const oldStatus = card.querySelector('.practice-status');
                 if (oldStatus) oldStatus.remove();
+                const oldHistory = card.querySelector('.practice-history-btn');
+                if (oldHistory) oldHistory.remove();
+
+                const hasHistory = attempt && (attempt.attempts > 0 || attempt.completed);
 
                 if (state && Object.keys(state.answers || {}).length > 0) {
                     // In-progress
@@ -2992,7 +3004,144 @@
                         btn.className = 'btn btn-outline';
                     }
                 }
+
+                // Add history button if attempt history exists
+                if (hasHistory) {
+                    const historyBtn = document.createElement('button');
+                    historyBtn.className = 'btn btn-outline practice-history-btn';
+                    historyBtn.style.cssText = 'padding: 6px 12px; font-size: 0.8rem; margin-left: 6px;';
+                    historyBtn.textContent = '📊';
+                    historyBtn.title = 'View History';
+                    historyBtn.onclick = (e) => {
+                        e.stopPropagation();
+                        const title = practiceNameMap[practiceId] || setKey;
+                        showPracticeHistory(practiceId, title, setKey);
+                    };
+                    // Insert history button next to the start/retry button
+                    if (btn && btn.parentNode) {
+                        btn.parentNode.insertBefore(historyBtn, btn);
+                    }
+                }
             });
+        }
+
+        // Show Practice History Modal
+        async function showPracticeHistory(practiceId, practiceTitle, setKey) {
+            const modal = document.getElementById('historyModal');
+            const titleEl = document.getElementById('historyTitle');
+            const bodyEl = document.getElementById('historyBody');
+
+            titleEl.textContent = `${practiceTitle} - History`;
+            bodyEl.innerHTML = '<div class="loading"><div class="spinner"></div></div>';
+            modal.classList.add('active');
+
+            try {
+                const historyRef = db.collection('users').doc(currentUser.uid)
+                    .collection('practiceHistory').doc(practiceId)
+                    .collection('attempts');
+
+                const historySnap = await historyRef.orderBy('timestamp', 'desc').limit(20).get();
+                const attempt = userData.practiceAttempts?.[practiceId];
+                const totalQs = attempt?.totalQuestions || 10;
+
+                if (historySnap.empty) {
+                    // No history subcollection yet, show current attempt info
+                    if (attempt && attempt.completed) {
+                        const date = attempt.lastAttempt?.toDate?.() || new Date();
+                        bodyEl.innerHTML = `
+                            <div class="history-item" onclick="reviewPracticeAttempt('${practiceId}', '${setKey}', null)">
+                                <div class="history-rank best">1</div>
+                                <div class="history-details">
+                                    <div class="history-score">
+                                        ${attempt.bestScore || attempt.score}/${totalQs}
+                                        <span class="percentage">(${Math.round(((attempt.bestScore || attempt.score) / totalQs) * 100)}%)</span>
+                                    </div>
+                                    <div class="history-date">📅 ${formatDate(date)}</div>
+                                </div>
+                                <div class="history-actions">
+                                    <button class="history-btn review">📖 Review</button>
+                                </div>
+                            </div>
+                            <p style="text-align: center; color: var(--text-muted); margin-top: 16px; font-size: 0.85rem;">
+                                Future attempts will be saved here automatically
+                            </p>
+                        `;
+                    } else {
+                        bodyEl.innerHTML = `
+                            <div class="no-history">
+                                <div class="icon">📭</div>
+                                <p>No attempt history yet</p>
+                                <p style="font-size: 0.85rem; margin-top: 8px;">Complete this practice set to see your history</p>
+                            </div>
+                        `;
+                    }
+                    return;
+                }
+
+                // Find best score
+                let bestScore = 0;
+                historySnap.docs.forEach(doc => {
+                    const score = doc.data().score || 0;
+                    if (score > bestScore) bestScore = score;
+                });
+
+                let html = '';
+                historySnap.docs.forEach((doc, index) => {
+                    const data = doc.data();
+                    const date = data.timestamp?.toDate?.() || new Date();
+                    const isBest = data.score === bestScore;
+                    const qTotal = data.totalQuestions || totalQs;
+                    const percentage = Math.round((data.score / qTotal) * 100);
+
+                    html += `
+                        <div class="history-item" onclick="reviewPracticeAttempt('${practiceId}', '${setKey}', '${doc.id}')">
+                            <div class="history-rank ${isBest ? 'best' : ''}">${index + 1}</div>
+                            <div class="history-details">
+                                <div class="history-score">
+                                    ${data.score}/${qTotal}
+                                    <span class="percentage">(${percentage}%)</span>
+                                    ${isBest ? '<span style="color: var(--gold); margin-left: 8px;">🏆 Best</span>' : ''}
+                                </div>
+                                <div class="history-date">📅 ${formatDate(date)} • ⏱️ ${formatTimeSpent(data.timeSpent)}</div>
+                            </div>
+                            <div class="history-actions">
+                                <button class="history-btn review">📖 Review</button>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                bodyEl.innerHTML = html;
+
+            } catch (error) {
+                console.error('Error loading practice history:', error);
+                bodyEl.innerHTML = `
+                    <div class="no-history">
+                        <div class="icon">⚠️</div>
+                        <p>Error loading history</p>
+                        <p style="font-size: 0.85rem; margin-top: 8px;">${error.message}</p>
+                    </div>
+                `;
+            }
+        }
+
+        // Review specific practice history attempt
+        function reviewPracticeAttempt(practiceId, setKey, attemptId) {
+            sessionStorage.setItem('practiceReviewMode', 'true');
+            sessionStorage.setItem('reviewPracticeId', practiceId);
+            if (attemptId) {
+                sessionStorage.setItem('reviewPracticeAttemptId', attemptId);
+            } else {
+                sessionStorage.removeItem('reviewPracticeAttemptId');
+            }
+
+            FirebaseHelper.saveSessionUser(currentUser);
+            FirebaseHelper.setCurrentQuizId(practiceId);
+
+            closeHistoryModal();
+            window.location.href = `practice/index.html?set=${setKey}`;
+
+            analytics.logEvent('practice_history_review', { practice_id: practiceId, attempt_id: attemptId || 'latest' });
         }
 
         // Start Practice Set

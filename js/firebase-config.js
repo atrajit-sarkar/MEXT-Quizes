@@ -94,8 +94,8 @@ const FirebaseHelper = {
         }
     },
 
-    // Save practice set results to Firestore
-    savePracticeResults: async function (userId, practiceId, score, totalQuestions, timeSpent) {
+    // Save practice set results to Firestore (with history versioning)
+    savePracticeResults: async function (userId, practiceId, score, totalQuestions, timeSpent, savedAnswers) {
         try {
             const userRef = db.collection('users').doc(userId);
             const userDoc = await userRef.get();
@@ -113,7 +113,8 @@ const FirebaseHelper = {
                         bestScore: newBest,
                         lastAttempt: firebase.firestore.FieldValue.serverTimestamp(),
                         attempts: firebase.firestore.FieldValue.increment(1),
-                        timeSpent: timeSpent
+                        timeSpent: timeSpent,
+                        savedAnswers: savedAnswers || {}
                     }
                 },
                 stats: {
@@ -121,7 +122,20 @@ const FirebaseHelper = {
                 }
             }, { merge: true });
 
-            console.log('Practice results saved to Firebase!');
+            // Save to history subcollection for historical tracking
+            const historyRef = db.collection('users').doc(userId)
+                .collection('practiceHistory').doc(practiceId)
+                .collection('attempts');
+
+            await historyRef.add({
+                score: score,
+                totalQuestions: totalQuestions,
+                timeSpent: timeSpent,
+                savedAnswers: savedAnswers || {},
+                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            });
+
+            console.log('Practice results and history saved to Firebase!');
             return true;
         } catch (error) {
             console.error('Error saving practice results:', error);
@@ -340,11 +354,11 @@ const FirebaseHelper = {
         }
         // Check localStorage for all practice sets
         const practiceKeys = [
-            'vocab-1','vocab-2','vocab-3',
-            'grammar-1','grammar-2','grammar-3',
-            'error-1','error-2','error-3',
-            'cloze-1','cloze-2','cloze-3',
-            'reading-1','reading-2','reading-3'
+            'vocab-1','vocab-2','vocab-3','vocab-4','vocab-5',
+            'grammar-1','grammar-2','grammar-3','grammar-4','grammar-5',
+            'error-1','error-2','error-3','error-4','error-5',
+            'cloze-1','cloze-2','cloze-3','cloze-4','cloze-5',
+            'reading-1','reading-2','reading-3','reading-4','reading-5'
         ];
         for (const key of practiceKeys) {
             const practiceId = `practice-${key}`;

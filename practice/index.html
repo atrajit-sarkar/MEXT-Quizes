@@ -932,6 +932,8 @@
                 <button class="start-btn" id="startBtn" onclick="startQuiz(false)" disabled>Start Practice →</button>
                 <button class="trial-btn" id="trialBtn" onclick="startQuiz(true)" disabled>🎯 Trial Mode (No Timer)</button>
             </div>
+
+            <div id="timingNote" style="text-align: center; margin-top: 20px; color: var(--text-muted); font-size: 0.85rem; max-width: 520px; margin-left: auto; margin-right: auto;"></div>
         </div>
 
         <!-- Quiz Screen -->
@@ -996,6 +998,7 @@
             </div>
 
             <div class="result-actions">
+                <button class="result-btn review" onclick="reviewAnswers()">📖 Review Answers</button>
                 <button class="result-btn retry" onclick="retryQuiz()">🔄 Try Again</button>
                 <button class="result-btn review" onclick="goToDashboard()" style="background: linear-gradient(135deg, #1a365d 0%, #2c5282 100%); color: white; border: none;">🏠 Back to Dashboard</button>
             </div>
@@ -1301,6 +1304,26 @@
             totalCount.textContent = totalQuestions;
             finalTotal.textContent = totalQuestions;
             reviewScoreValue.textContent = `--/${totalQuestions}`;
+
+            // Show timing context note
+            const timingNote = document.getElementById('timingNote');
+            const sectionTimingMap = {
+                'standard': { label: 'Vocabulary/Grammar', pace: '~48s/question' },
+                'cloze': { label: 'Cloze Test', pace: '~1m 12s/question' },
+                'reading-full': { label: 'Reading Comprehension', pace: '~2m 12s/question' }
+            };
+            const timingInfo = sectionTimingMap[practiceMeta.type];
+            if (timingInfo && practiceMeta.type === 'standard') {
+                // Distinguish vocab vs grammar vs error
+                const isError = setKey.startsWith('error');
+                if (isError) {
+                    timingNote.innerHTML = `⏱️ <strong>Real Exam Pace:</strong> Error ID gets ~10 min for 10 questions (~1 min each) in the 60-min MEXT exam.`;
+                } else {
+                    timingNote.innerHTML = `⏱️ <strong>Real Exam Pace:</strong> ${practiceMeta.duration} min for ${totalQuestions} questions matches the MEXT exam allocation for this section.`;
+                }
+            } else if (timingInfo) {
+                timingNote.innerHTML = `⏱️ <strong>Real Exam Pace:</strong> ${practiceMeta.duration} min for ${totalQuestions} questions matches the MEXT exam allocation for ${timingInfo.label}.`;
+            }
         }
 
         async function initPractice() {
@@ -1345,7 +1368,12 @@
             updateStartScreen();
             startBtn.disabled = false;
             trialBtn.disabled = false;
-            await checkSavedState();
+
+            // Check if we're in review mode first, then check for saved state
+            const inReview = await checkReviewMode();
+            if (!inReview) {
+                await checkSavedState();
+            }
         }
 
         function startQuiz(trialMode = false) {
@@ -1687,7 +1715,7 @@
 
             // Save to Firebase if user is logged in
             if (mextUser && mextUser.uid && typeof FirebaseHelper !== 'undefined') {
-                FirebaseHelper.savePracticeResults(mextUser.uid, practiceQuizId, totalCorrect, totalQuestions, timeSpent);
+                FirebaseHelper.savePracticeResults(mextUser.uid, practiceQuizId, totalCorrect, totalQuestions, timeSpent, answers);
             }
 
             quizScreen.classList.add('hidden');
@@ -1722,6 +1750,115 @@
                 FirebaseHelper.clearQuizState(mextUser.uid, practiceQuizId);
             }
             window.location.reload();
+        }
+
+        function reviewAnswers() {
+            isReviewMode = true;
+            resultsScreen.classList.add('hidden');
+            quizScreen.classList.remove('hidden');
+
+            // Hide timer during review
+            timerBox.style.display = 'none';
+            setReviewScore(document.getElementById('finalScore').textContent);
+
+            // Update navigation
+            submitBtn.classList.add('hidden');
+
+            quizContent.classList.add('review-mode');
+            renderSection(1);
+            renderQuestionNav();
+            setupSectionNav();
+        }
+
+        function setReviewScore(score) {
+            if (score === null || score === undefined) {
+                reviewScoreValue.textContent = `--/${totalQuestions}`;
+            } else {
+                reviewScoreValue.textContent = `${score}/${totalQuestions}`;
+            }
+            reviewScorePill.classList.remove('hidden');
+        }
+
+        function clearReviewScore() {
+            reviewScorePill.classList.add('hidden');
+            reviewScoreValue.textContent = `--/${totalQuestions}`;
+        }
+
+        // Check if coming from dashboard for review mode
+        async function checkReviewMode() {
+            const reviewMode = sessionStorage.getItem('practiceReviewMode');
+            const reviewPracticeId = sessionStorage.getItem('reviewPracticeId');
+            const reviewAttemptId = sessionStorage.getItem('reviewPracticeAttemptId');
+
+            if (reviewMode === 'true' && reviewPracticeId && mextUser) {
+                // Clear the flags
+                sessionStorage.removeItem('practiceReviewMode');
+                sessionStorage.removeItem('reviewPracticeId');
+                sessionStorage.removeItem('reviewPracticeAttemptId');
+
+                try {
+                    let savedAnswers = null;
+                    let reviewScore = null;
+
+                    if (reviewAttemptId) {
+                        // Load specific attempt from history subcollection
+                        const attemptDoc = await db.collection('users').doc(mextUser.uid)
+                            .collection('practiceHistory').doc(reviewPracticeId)
+                            .collection('attempts').doc(reviewAttemptId).get();
+
+                        if (attemptDoc.exists) {
+                            const attemptData = attemptDoc.data();
+                            savedAnswers = attemptData.savedAnswers;
+                            reviewScore = attemptData.score;
+                            console.log('Loaded historical practice attempt:', reviewAttemptId);
+                        }
+                    } else {
+                        // Load latest attempt from main document
+                        const userDoc = await db.collection('users').doc(mextUser.uid).get();
+                        if (userDoc.exists) {
+                            const uData = userDoc.data();
+                            const attempt = uData.practiceAttempts?.[reviewPracticeId];
+                            savedAnswers = attempt?.savedAnswers;
+                            reviewScore = attempt?.score ?? attempt?.bestScore;
+                        }
+                    }
+
+                    if (savedAnswers) {
+                        // Convert string keys back to numbers if needed
+                        answers = {};
+                        for (const [key, value] of Object.entries(savedAnswers)) {
+                            answers[parseInt(key)] = value;
+                        }
+
+                        // Hide start screen, show quiz in review mode
+                        startScreen.classList.add('hidden');
+                        quizScreen.classList.remove('hidden');
+
+                        isReviewMode = true;
+                        timerBox.style.display = 'none';
+                        setReviewScore(reviewScore);
+                        submitBtn.classList.add('hidden');
+                        quizContent.classList.add('review-mode');
+
+                        updateProgress();
+                        renderSection(1);
+                        renderQuestionNav();
+                        setupSectionNav();
+
+                        console.log('Loaded practice answers for review');
+                    } else {
+                        console.log('No saved practice answers found for review');
+                        alert('No saved answers found for this attempt.');
+                        window.location.href = '../portal.html';
+                    }
+                } catch (error) {
+                    console.error('Error loading saved practice answers:', error);
+                    alert('Error loading saved answers: ' + error.message);
+                }
+
+                return true; // indicate we're in review mode
+            }
+            return false;
         }
 
         function goToDashboard() {
