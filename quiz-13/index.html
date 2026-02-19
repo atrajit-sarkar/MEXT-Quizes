@@ -1,0 +1,2336 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MEXT English Quiz - Mock Exam 13</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #1a365d;
+            --primary-light: #2c5282;
+            --secondary: #c53030;
+            --accent: #2b6cb0;
+            --success: #276749;
+            --warning: #c05621;
+            --bg-light: #f7fafc;
+            --bg-card: #ffffff;
+            --text-dark: #1a202c;
+            --text-muted: #718096;
+            --border: #e2e8f0;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header Styles */
+        .quiz-header {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .quiz-title {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .quiz-title h1 {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 8px;
+        }
+
+        .quiz-title p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        .quiz-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .timer-box {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-weight: 600;
+        }
+
+        .timer-box.warning {
+            background: linear-gradient(135deg, var(--warning) 0%, #dd6b20 100%);
+        }
+
+        .timer-box.danger {
+            background: linear-gradient(135deg, var(--secondary) 0%, #e53e3e 100%);
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+
+        .timer-icon {
+            font-size: 1.5rem;
+        }
+
+        .timer-display {
+            font-size: 1.5rem;
+            font-family: 'Consolas', monospace;
+        }
+
+        .review-score {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #f0fff4;
+            color: var(--success);
+            padding: 10px 18px;
+            border-radius: 12px;
+            font-weight: 700;
+            border: 1px solid #c6f6d5;
+        }
+
+        .review-score .label {
+            font-weight: 600;
+            color: var(--text-muted);
+        }
+
+        .progress-info {
+            text-align: right;
+        }
+
+        .progress-text {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+        }
+
+        .progress-bar {
+            width: 200px;
+            height: 10px;
+            background: var(--border);
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent) 0%, var(--success) 100%);
+            border-radius: 5px;
+            transition: width 0.3s ease;
+        }
+
+        /* Section Navigation */
+        .section-nav {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .section-btn {
+            padding: 10px 16px;
+            border: 2px solid var(--border);
+            background: var(--bg-card);
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            font-size: 0.85rem;
+        }
+
+        .section-btn:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .section-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .section-btn .badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.75rem;
+            margin-left: 6px;
+        }
+
+        .section-btn.active .badge {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Quiz Content */
+        .quiz-content {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 32px;
+            box-shadow: var(--shadow-lg);
+            margin-bottom: 20px;
+        }
+
+        .section-header {
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 16px;
+            margin-bottom: 24px;
+        }
+
+        .section-header h2 {
+            color: var(--primary);
+            font-size: 1.4rem;
+            margin-bottom: 8px;
+        }
+
+        .section-header p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        /* Question Styles */
+        .question-block {
+            margin-bottom: 32px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .question-block:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+
+        .question-number {
+            display: inline-block;
+            background: var(--primary);
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 32px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-right: 12px;
+        }
+
+        .question-text {
+            font-size: 1.05rem;
+            margin-bottom: 16px;
+            color: var(--text-dark);
+        }
+
+        .question-text .blank {
+            display: inline-block;
+            min-width: 100px;
+            border-bottom: 2px solid var(--primary);
+            margin: 0 4px;
+        }
+
+        .question-text .underline {
+            text-decoration: underline;
+            text-decoration-style: wavy;
+            text-decoration-color: var(--secondary);
+            cursor: help;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+        }
+
+        .option-label {
+            display: flex;
+            align-items: center;
+            padding: 14px 18px;
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: var(--bg-light);
+        }
+
+        .option-label:hover {
+            border-color: var(--accent);
+            background: white;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        .option-label input {
+            display: none;
+        }
+
+        .option-label input:checked+.option-letter {
+            background: var(--accent);
+            color: white;
+        }
+
+        .option-label input:checked~.option-text {
+            color: var(--accent);
+            font-weight: 500;
+        }
+
+        .option-label:has(input:checked) {
+            border-color: var(--accent);
+            background: rgba(43, 108, 176, 0.05);
+        }
+
+        .option-letter {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: var(--border);
+            color: var(--text-dark);
+            font-weight: 600;
+            font-size: 0.85rem;
+            margin-right: 12px;
+            transition: all 0.2s ease;
+        }
+
+        .option-text {
+            flex: 1;
+            font-size: 0.95rem;
+        }
+
+        /* Passage Styles */
+        .passage-box {
+            background: linear-gradient(to bottom, #f8fafc, #edf2f7);
+            border-left: 4px solid var(--primary);
+            padding: 24px;
+            margin-bottom: 24px;
+            border-radius: 0 12px 12px 0;
+            font-size: 0.95rem;
+            line-height: 1.8;
+        }
+
+        .passage-box .blank-number {
+            display: inline-block;
+            background: var(--primary);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin: 0 2px;
+        }
+
+        .passage-title {
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 12px;
+            font-size: 1.1rem;
+        }
+
+        /* Error Identification */
+        .error-sentence {
+            font-size: 1.05rem;
+            line-height: 2;
+            margin-bottom: 16px;
+        }
+
+        .error-part {
+            background: #fef3c7;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 500;
+        }
+
+        /* Navigation Buttons */
+        .quiz-navigation {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .nav-btn {
+            padding: 14px 28px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-btn.prev {
+            background: var(--bg-light);
+            color: var(--text-dark);
+            border: 2px solid var(--border);
+        }
+
+        .nav-btn.prev:hover {
+            background: var(--border);
+        }
+
+        .nav-btn.next {
+            background: linear-gradient(135deg, var(--accent) 0%, var(--primary) 100%);
+            color: white;
+        }
+
+        .nav-btn.next:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .nav-btn.submit {
+            background: linear-gradient(135deg, var(--success) 0%, #2f855a 100%);
+            color: white;
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Start Screen */
+        .start-screen {
+            text-align: center;
+            padding: 60px 40px;
+        }
+
+        .start-screen h1 {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 16px;
+        }
+
+        .start-screen .subtitle {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            margin-bottom: 40px;
+        }
+
+        .exam-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .info-card {
+            background: var(--bg-light);
+            padding: 24px;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .info-card .icon {
+            font-size: 2rem;
+            margin-bottom: 12px;
+        }
+
+        .info-card .value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .info-card .label {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .start-btn {
+            padding: 18px 48px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .start-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 40px rgba(26, 54, 93, 0.4);
+        }
+
+        /* Results Screen */
+        .results-screen {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .results-screen h1 {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 24px;
+        }
+
+        .score-circle {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 32px;
+            color: white;
+        }
+
+        .score-circle .score {
+            font-size: 3rem;
+            font-weight: 700;
+        }
+
+        .score-circle .total {
+            font-size: 1rem;
+            opacity: 0.8;
+        }
+
+        .score-breakdown {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .breakdown-item {
+            background: var(--bg-light);
+            padding: 16px;
+            border-radius: 10px;
+        }
+
+        .breakdown-item .section-name {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+        }
+
+        .breakdown-item .section-score {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .result-actions {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .result-btn {
+            padding: 14px 28px;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .result-btn.review {
+            background: var(--bg-light);
+            border: 2px solid var(--border);
+            color: var(--text-dark);
+        }
+
+        .result-btn.retry {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            border: none;
+            color: white;
+        }
+
+        /* Review Mode */
+        .review-mode .option-label.correct {
+            border-color: var(--success);
+            background: rgba(39, 103, 73, 0.1);
+        }
+
+        .review-mode .option-label.correct .option-letter {
+            background: var(--success);
+            color: white;
+        }
+
+        .review-mode .option-label.incorrect {
+            border-color: var(--secondary);
+            background: rgba(197, 48, 48, 0.1);
+        }
+
+        .review-mode .option-label.incorrect .option-letter {
+            background: var(--secondary);
+            color: white;
+        }
+
+        .explanation-box {
+            background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+            border-left: 4px solid var(--success);
+            padding: 20px;
+            margin-top: 16px;
+            border-radius: 0 12px 12px 0;
+            display: none;
+        }
+
+        .review-mode .explanation-box,
+        .question-block.answer-revealed .explanation-box {
+            display: block;
+        }
+
+        .explanation-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid rgba(39, 103, 73, 0.2);
+        }
+
+        .correct-answer-badge {
+            background: var(--success);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .explanation-title {
+            color: var(--success);
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .explanation-content {
+            color: var(--text-dark);
+            line-height: 1.7;
+        }
+
+        /* Detailed Explanation Styling */
+        .explanation-section {
+            margin-bottom: 16px;
+        }
+
+        .explanation-section .section-label {
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+        }
+
+        .explanation-section p {
+            margin-bottom: 8px;
+            color: var(--text-dark);
+        }
+
+        .example-box {
+            background: rgba(43, 108, 176, 0.1);
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin: 12px 0;
+            border-left: 3px solid var(--accent);
+        }
+
+        .example-box strong {
+            color: var(--primary);
+        }
+
+        .tip-box {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin-top: 12px;
+            border-left: 3px solid var(--warning);
+            font-size: 0.9rem;
+        }
+
+        .wrong-options {
+            background: rgba(197, 48, 48, 0.05);
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin: 12px 0;
+            border-left: 3px solid var(--secondary);
+        }
+
+        .wrong-options .section-label {
+            color: var(--secondary);
+        }
+
+        .wrong-options p {
+            margin-bottom: 6px;
+            font-size: 0.9rem;
+        }
+
+        /* Trial Mode Styles */
+        .start-buttons {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .trial-btn {
+            padding: 18px 48px;
+            background: linear-gradient(135deg, var(--success) 0%, #2f855a 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .trial-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 40px rgba(39, 103, 73, 0.4);
+        }
+
+        .trial-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, var(--success) 0%, #2f855a 100%);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .check-answer-btn {
+            display: block;
+            margin: 16px auto 0;
+            padding: 12px 32px;
+            background: linear-gradient(135deg, var(--accent) 0%, var(--primary) 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .check-answer-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .check-answer-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .check-answer-btn.checked {
+            background: var(--success);
+        }
+
+        .question-block.answer-revealed .option-label.correct {
+            border-color: var(--success);
+            background: rgba(39, 103, 73, 0.1);
+        }
+
+        .question-block.answer-revealed .option-label.correct .option-letter {
+            background: var(--success);
+            color: white;
+        }
+
+        .question-block.answer-revealed .option-label.incorrect {
+            border-color: var(--secondary);
+            background: rgba(197, 48, 48, 0.1);
+        }
+
+        .question-block.answer-revealed .option-label.incorrect .option-letter {
+            background: var(--secondary);
+            color: white;
+        }
+
+        .q-nav-btn.checked {
+            background: var(--success);
+            color: white;
+            border-color: var(--success);
+        }
+
+        .q-nav-btn.checked-wrong {
+            background: var(--secondary);
+            color: white;
+            border-color: var(--secondary);
+        }
+
+        @media (max-width: 768px) {
+            .start-buttons {
+                flex-direction: column;
+            }
+            
+            .trial-btn {
+                margin-left: 0;
+            }
+        }
+
+        /* Hidden */
+        .hidden {
+            display: none !important;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 12px;
+            }
+
+            .quiz-header {
+                padding: 16px;
+            }
+
+            .quiz-title h1 {
+                font-size: 1.5rem;
+            }
+
+            .quiz-meta {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .progress-info {
+                text-align: center;
+            }
+
+            .progress-bar {
+                width: 100%;
+            }
+
+            .quiz-content {
+                padding: 20px;
+            }
+
+            .options-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .section-nav {
+                justify-content: center;
+            }
+
+            .section-btn {
+                font-size: 0.75rem;
+                padding: 8px 12px;
+            }
+        }
+
+        /* Question Navigator */
+        .question-navigator {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            padding: 16px;
+            background: var(--bg-light);
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .q-nav-btn {
+            width: 32px;
+            height: 32px;
+            border: 2px solid var(--border);
+            background: white;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .q-nav-btn:hover {
+            border-color: var(--accent);
+        }
+
+        .q-nav-btn.answered {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
+
+        .q-nav-btn.current {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(26, 54, 93, 0.3);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <!-- Start Screen -->
+        <div id="startScreen" class="quiz-content start-screen">
+            <h1>🎌 MEXT English Exam</h1>
+            <p class="subtitle">Mock Examination 13 - Undergraduate & Research Student Level</p>
+
+            <div class="exam-info">
+                <div class="info-card">
+                    <div class="icon">⏱️</div>
+                    <div class="value">60</div>
+                    <div class="label">Minutes</div>
+                </div>
+                <div class="info-card">
+                    <div class="icon">📝</div>
+                    <div class="value">50</div>
+                    <div class="label">Questions</div>
+                </div>
+                <div class="info-card">
+                    <div class="icon">📚</div>
+                    <div class="value">5</div>
+                    <div class="label">Sections</div>
+                </div>
+                <div class="info-card">
+                    <div class="icon">✅</div>
+                    <div class="value">MCQ</div>
+                    <div class="label">Format</div>
+                </div>
+            </div>
+
+            <div style="text-align: left; max-width: 500px; margin: 0 auto 40px; background: var(--bg-light); padding: 20px; border-radius: 12px;">
+                <h3 style="margin-bottom: 12px; color: var(--primary);">📋 Sections Overview:</h3>
+                <ul style="list-style: none; line-height: 2;">
+                    <li>I. Vocabulary in Context (10 Questions)</li>
+                    <li>II. Grammar & Phrasing (10 Questions)</li>
+                    <li>III. Error Identification (10 Questions)</li>
+                    <li>IV. Cloze Test (10 Questions)</li>
+                    <li>V. Reading Comprehension (10 Questions)</li>
+                </ul>
+            </div>
+
+            <div class="start-buttons">
+                <button class="start-btn" onclick="startQuiz(false)">Start Examination →</button>
+                <button class="trial-btn" onclick="startQuiz(true)">🎯 Trial Mode (No Timer)</button>
+            </div>
+        </div>
+
+        <!-- Quiz Screen -->
+        <div id="quizScreen" class="hidden">
+            <div class="quiz-header">
+                <div class="quiz-title">
+                    <h1>🎌 MEXT English Mock Exam 13</h1>
+                    <p>Answer all questions. Each question has only one correct answer.</p>
+                </div>
+                <div class="quiz-meta">
+                    <div class="timer-box" id="timerBox">
+                        <span class="timer-icon">⏱️</span>
+                        <span class="timer-display" id="timerDisplay">60:00</span>
+                    </div>
+                    <div class="trial-badge hidden" id="trialBadge">
+                        <span>🎯</span>
+                        <span>Trial Mode</span>
+                    </div>
+                    <div class="review-score hidden" id="reviewScorePill">
+                        <span class="label">Total Score</span>
+                        <span id="reviewScoreValue">--/50</span>
+                    </div>
+                    <div class="progress-info">
+                        <div class="progress-text">
+                            <span id="answeredCount">0</span> of 50 answered
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section-nav" id="sectionNav">
+                <button class="section-btn active" data-section="1">I. Vocabulary <span class="badge">10</span></button>
+                <button class="section-btn" data-section="2">II. Grammar <span class="badge">10</span></button>
+                <button class="section-btn" data-section="3">III. Error ID <span class="badge">10</span></button>
+                <button class="section-btn" data-section="4">IV. Cloze <span class="badge">10</span></button>
+                <button class="section-btn" data-section="5">V. Reading <span class="badge">10</span></button>
+            </div>
+
+            <div class="question-navigator" id="questionNav"></div>
+
+            <div class="quiz-content" id="quizContent">
+                <!-- Questions will be rendered here -->
+            </div>
+
+            <div class="quiz-navigation">
+                <button class="nav-btn prev" id="prevBtn" onclick="previousSection()">← Previous Section</button>
+                <button class="nav-btn next" id="nextBtn" onclick="nextSection()">Next Section →</button>
+                <button class="nav-btn submit hidden" id="submitBtn" onclick="submitQuiz()">Submit Exam ✓</button>
+            </div>
+        </div>
+
+        <!-- Results Screen -->
+        <div id="resultsScreen" class="quiz-content results-screen hidden">
+            <h1>📊 Examination Results</h1>
+
+            <div class="score-circle">
+                <div class="score" id="finalScore">0</div>
+                <div class="total">out of 50</div>
+            </div>
+
+            <p style="font-size: 1.2rem; margin-bottom: 24px;" id="scoreMessage"></p>
+
+            <div class="score-breakdown" id="scoreBreakdown">
+                <!-- Section scores will be rendered here -->
+            </div>
+
+            <div class="result-actions">
+                <button class="result-btn retry" onclick="retryQuiz()">🔄 Try Again</button>
+                <button class="result-btn review" onclick="goToDashboard()" style="background: linear-gradient(135deg, #1a365d 0%, #2c5282 100%); color: white; border: none;">🏠 Back to Dashboard</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-analytics-compat.js"></script>
+
+    <!-- Shared Firebase Config -->
+    <script src="../js/firebase-config.js"></script>
+
+    <script>
+        // Get user from session storage
+        const mextUser = FirebaseHelper.getSessionUser();
+        const currentQuizId = FirebaseHelper.getCurrentQuizId();
+
+        // Quiz Data
+        const quizData = {
+            sections: [
+                {
+                    id: 1,
+                    title: "Section I: Vocabulary in Context",
+                    description: "Choose the word that best completes each sentence.",
+                    questions: [
+                        {
+                            id: 1,
+                            text: "The auditor asked for more _______ records before approving the reimbursement claim.",
+                            options: ["meticulous", "mediocre", "malleable", "marginal"],
+                            correct: 0,
+                            explanation: `<p><strong>Meticulous</strong> means very careful and precise, which matches record-keeping for audits.</p>`
+                        },
+                        {
+                            id: 2,
+                            text: "The mayor's comments were intentionally _______, allowing both sides to interpret them as support.",
+                            options: ["ambiguous", "audible", "abrupt", "adjacent"],
+                            correct: 0,
+                            explanation: `<p><strong>Ambiguous</strong> means unclear or open to multiple interpretations.</p>`
+                        },
+                        {
+                            id: 3,
+                            text: "To protect patient privacy, the hospital removed all _______ details from the dataset.",
+                            options: ["identifying", "improvised", "immersive", "inherited"],
+                            correct: 0,
+                            explanation: `<p><strong>Identifying</strong> details are pieces of information that can reveal a person's identity.</p>`
+                        },
+                        {
+                            id: 4,
+                            text: "The committee rejected the proposal because its cost estimates were too _______ to trust.",
+                            options: ["speculative", "spectral", "spacious", "specialized"],
+                            correct: 0,
+                            explanation: `<p><strong>Speculative</strong> means uncertain or based on guesswork, which weakens cost estimates.</p>`
+                        },
+                        {
+                            id: 5,
+                            text: "After months of drought, even a brief shower brought _______ relief to farmers.",
+                            options: ["immediate", "imaginary", "immobile", "indifferent"],
+                            correct: 0,
+                            explanation: `<p><strong>Immediate</strong> relief means relief that comes at once.</p>`
+                        },
+                        {
+                            id: 6,
+                            text: "Her tone remained _______ despite repeated attempts to provoke an argument.",
+                            options: ["composed", "compliant", "compressed", "compelled"],
+                            correct: 0,
+                            explanation: `<p><strong>Composed</strong> means calm and controlled, fitting the context of provocation.</p>`
+                        },
+                        {
+                            id: 7,
+                            text: "The startup secured a _______ grant that covered research but not commercial production.",
+                            options: ["targeted", "tedious", "terminal", "temperate"],
+                            correct: 0,
+                            explanation: `<p><strong>Targeted</strong> means directed for a specific purpose.</p>`
+                        },
+                        {
+                            id: 8,
+                            text: "Because the witness gave two _______ accounts, the jury questioned his credibility.",
+                            options: ["conflicting", "concluding", "conforming", "consoling"],
+                            correct: 0,
+                            explanation: `<p><strong>Conflicting</strong> accounts contradict each other, which damages credibility.</p>`
+                        },
+                        {
+                            id: 9,
+                            text: "The professor warned that a _______ reading of the data could hide regional differences.",
+                            options: ["superficial", "supernatural", "superior", "supportive"],
+                            correct: 0,
+                            explanation: `<p><strong>Superficial</strong> means shallow or lacking depth.</p>`
+                        },
+                        {
+                            id: 10,
+                            text: "To avoid bias, reviewers examined the applications in a completely _______ order.",
+                            options: ["random", "rational", "rigid", "remote"],
+                            correct: 0,
+                            explanation: `<p><strong>Random</strong> order helps reduce systematic bias in evaluation.</p>`
+                        }
+                    ]
+                },
+                {
+                    id: 2,
+                    title: "Section II: Grammar & Phrasing",
+                    description: "Choose the option that best completes each sentence.",
+                    questions: [
+                        {
+                            id: 11,
+                            text: "Had the laboratory not calibrated the sensors, the results _______ unreliable.",
+                            options: ["might have been", "will be", "would be", "have been"],
+                            correct: 0,
+                            explanation: `<p>This is a past unreal conditional, so the result clause takes <strong>might/would have + past participle</strong>.</p>`
+                        },
+                        {
+                            id: 12,
+                            text: "The editor recommended that each citation _______ checked against the latest database.",
+                            options: ["be", "is", "was", "being"],
+                            correct: 0,
+                            explanation: `<p>After verbs like <strong>recommend</strong>, formal English uses the subjunctive base form: <strong>be</strong>.</p>`
+                        },
+                        {
+                            id: 13,
+                            text: "Not until the final rehearsal _______ how complex the stage transitions were.",
+                            options: ["did we realize", "we realized", "we did realize", "realized we"],
+                            correct: 0,
+                            explanation: `<p>With fronted negative expressions like <strong>Not until</strong>, inversion is required: <strong>did we realize</strong>.</p>`
+                        },
+                        {
+                            id: 14,
+                            text: "She objected to _______ the meeting without consulting the regional teams.",
+                            options: ["postponing", "postpone", "have postponed", "postponed"],
+                            correct: 0,
+                            explanation: `<p>After a preposition such as <strong>to</strong>, use a gerund: <strong>postponing</strong>.</p>`
+                        },
+                        {
+                            id: 15,
+                            text: "The interns are capable _______ complex tasks when they receive clear instructions.",
+                            options: ["of handling", "to handle", "for handling", "handling of"],
+                            correct: 0,
+                            explanation: `<p>The fixed pattern is <strong>capable of + gerund</strong>.</p>`
+                        },
+                        {
+                            id: 16,
+                            text: "Scarcely _______ the presentation when the projector stopped working.",
+                            options: ["had he begun", "he had begun", "did he begin", "he began"],
+                            correct: 0,
+                            explanation: `<p><strong>Scarcely ... when ...</strong> takes inversion and usually the past perfect: <strong>had he begun</strong>.</p>`
+                        },
+                        {
+                            id: 17,
+                            text: "If the agency _______ earlier, residents could have evacuated before the flood.",
+                            options: ["had warned", "warned", "would warn", "has warned"],
+                            correct: 0,
+                            explanation: `<p>Past unreal conditionals use <strong>had + past participle</strong> in the if-clause.</p>`
+                        },
+                        {
+                            id: 18,
+                            text: "I would rather you _______ the draft again before sending it to the client.",
+                            options: ["reviewed", "review", "will review", "reviews"],
+                            correct: 0,
+                            explanation: `<p>After <strong>would rather + subject</strong>, English commonly uses a past form: <strong>reviewed</strong>.</p>`
+                        },
+                        {
+                            id: 19,
+                            text: "The policy will remain in effect _______ further notice from the ministry.",
+                            options: ["until", "unless", "despite", "beside"],
+                            correct: 0,
+                            explanation: `<p>The set expression is <strong>until further notice</strong>.</p>`
+                        },
+                        {
+                            id: 20,
+                            text: "No employee is permitted to enter the archive _______ wearing protective gloves.",
+                            options: ["without", "except", "besides", "outside"],
+                            correct: 0,
+                            explanation: `<p><strong>Without</strong> correctly expresses a required condition.</p>`
+                        }
+                    ]
+                },
+                {
+                    id: 3,
+                    title: "Section III: Error Identification",
+                    description: "Identify the underlined part (A, B, C, or D) that contains a grammatical error.",
+                    questions: [
+                        {
+                            id: 21,
+                            text: "The committee's final recommendation, <span class='error-part'>(A) which was submitted after three months of hearings</span>, <span class='error-part'>(B) include</span> stricter safety inspections, <span class='error-part'>(C) revised emergency drills</span>, and <span class='error-part'>(D) a new reporting hotline for workers in remote sites</span>.",
+                            options: ["A", "B", "C", "D"],
+                            correct: 1,
+                            explanation: `<p><strong>(B)</strong> is incorrect. The singular subject <strong>recommendation</strong> requires <strong>includes</strong>.</p>`
+                        },
+                        {
+                            id: 22,
+                            text: "Neither the new trainees nor the senior technician <span class='error-part'>(A) were prepared</span> to operate the backup system, <span class='error-part'>(B) even though the manual</span> had been distributed weeks earlier <span class='error-part'>(C) and discussed during</span> the orientation seminar <span class='error-part'>(D) last Monday afternoon</span>.",
+                            options: ["A", "B", "C", "D"],
+                            correct: 0,
+                            explanation: `<p><strong>(A)</strong> is incorrect. With <strong>neither ... nor ...</strong>, the verb agrees with the nearer subject: <strong>the senior technician was prepared</strong>.</p>`
+                        },
+                        {
+                            id: 23,
+                            text: "The researcher explained that the samples <span class='error-part'>(A) were stored</span> at low temperatures <span class='error-part'>(B) so that they would not degrade</span>, but one container <span class='error-part'>(C) accidentally leave</span> outside overnight <span class='error-part'>(D) before the second test began</span>.",
+                            options: ["A", "B", "C", "D"],
+                            correct: 2,
+                            explanation: `<p><strong>(C)</strong> is incorrect. It should be <strong>was accidentally left</strong>.</p>`
+                        },
+                        {
+                            id: 24,
+                            text: "Many residents who <span class='error-part'>(A) lives near the river</span> support the restoration plan, <span class='error-part'>(B) because it reduces flooding</span> and <span class='error-part'>(C) creates more public space</span> for families <span class='error-part'>(D) during the summer months</span>.",
+                            options: ["A", "B", "C", "D"],
+                            correct: 0,
+                            explanation: `<p><strong>(A)</strong> is incorrect. The plural subject <strong>residents</strong> requires <strong>live</strong>.</p>`
+                        },
+                        {
+                            id: 25,
+                            text: "By the time the guests arrived, the host <span class='error-part'>(A) had already prepared</span> the main course, <span class='error-part'>(B) set the table</span>, and <span class='error-part'>(C) lit candles</span> near each plate <span class='error-part'>(D) to improved the atmosphere</span>.",
+                            options: ["A", "B", "C", "D"],
+                            correct: 3,
+                            explanation: `<p><strong>(D)</strong> is incorrect. After <strong>to</strong>, use the base form: <strong>to improve</strong>.</p>`
+                        },
+                        {
+                            id: 26,
+                            text: "The professor asked the class <span class='error-part'>(A) whether they had understood</span> the formula, <span class='error-part'>(B) but only a few students</span> raised their hands <span class='error-part'>(C) and volunteered</span> to explain it <span class='error-part'>(D) by themself</span>.",
+                            options: ["A", "B", "C", "D"],
+                            correct: 3,
+                            explanation: `<p><strong>(D)</strong> is incorrect. The pronoun should agree with the plural noun <strong>students</strong>: <strong>by themselves</strong>.</p>`
+                        },
+                        {
+                            id: 27,
+                            text: "Each of the proposals <span class='error-part'>(A) were reviewed</span> by independent experts, <span class='error-part'>(B) and the final scores</span> were posted online <span class='error-part'>(C) so that applicants could</span> compare the evaluation criteria <span class='error-part'>(D) in detail</span>.",
+                            options: ["A", "B", "C", "D"],
+                            correct: 0,
+                            explanation: `<p><strong>(A)</strong> is incorrect. The head of the subject is <strong>each</strong>, which is singular: <strong>was reviewed</strong>.</p>`
+                        },
+                        {
+                            id: 28,
+                            text: "The new policy applies <span class='error-part'>(A) to all staff members</span>, <span class='error-part'>(B) regardless of whether they work</span> full-time or part-time, <span class='error-part'>(C) and it takes effect</span> on <span class='error-part'>(D) first of next month</span>.",
+                            options: ["A", "B", "C", "D"],
+                            correct: 3,
+                            explanation: `<p><strong>(D)</strong> is incorrect. It needs the article: <strong>on the first of next month</strong>.</p>`
+                        },
+                        {
+                            id: 29,
+                            text: "Because the witness testimony <span class='error-part'>(A) were inconsistent</span> with the camera footage, <span class='error-part'>(B) the judge postponed</span> the decision <span class='error-part'>(C) until additional evidence</span> could be presented <span class='error-part'>(D) in court</span>.",
+                            options: ["A", "B", "C", "D"],
+                            correct: 0,
+                            explanation: `<p><strong>(A)</strong> is incorrect. <strong>Testimony</strong> is singular/uncountable here, so it should be <strong>was inconsistent</strong>.</p>`
+                        },
+                        {
+                            id: 30,
+                            text: "The report concludes that public transport is <span class='error-part'>(A) not only cheaper</span> than private cars <span class='error-part'>(B) but also reduce</span> traffic congestion <span class='error-part'>(C) and air pollution</span> in rapidly growing cities <span class='error-part'>(D) across the region</span>.",
+                            options: ["A", "B", "C", "D"],
+                            correct: 1,
+                            explanation: `<p><strong>(B)</strong> is incorrect. Parallel structure requires <strong>is not only cheaper ... but also reduces ...</strong>.</p>`
+                        }
+                    ]
+                },
+                {
+                    id: 4,
+                    title: "Section IV: Cloze Test",
+                    description: "Read the passage and choose the best word or phrase for each blank.",
+                    passage: `<p class="passage-title">Community Sensors and Clean Air</p>
+                    <p>For years, air pollution was measured mainly by expensive government stations located far apart. These stations produced reliable data, but they could not always capture street-level differences. Recently, inexpensive sensors have become <span class="blank-number">31</span> enough for schools and neighborhood groups to use.</p>
+                    <p>Volunteers place devices near bus stops, playgrounds, and intersections to <span class="blank-number">32</span> local hotspots and compare conditions across districts. The data can reveal how pollution changes from one block to the next.</p>
+                    <p>Before data collection begins, organizers must <span class="blank-number">33</span> each unit against a reference monitor; otherwise, readings may <span class="blank-number">34</span> over time and become difficult to trust.</p>
+                    <p>Most projects publish measurements on open maps where residents can compare neighborhoods. When unusual spikes appear, the numbers are often <span class="blank-number">35</span> to online platforms within minutes.</p>
+                    <p><span class="blank-number">36</span>, raw numbers alone do not solve problems. Communities still need specialists who can <span class="blank-number">37</span> trends and separate short-term events from long-term exposure.</p>
+                    <p>Weather also matters. A windy afternoon can disperse emissions quickly, while calm conditions may make pollution seem worse than average. Without this context, daily results can be <span class="blank-number">38</span>.</p>
+                    <p>Despite these limits, local monitoring has helped parents and teachers advocate for safer routes to school. In several cities, officials used the findings to <span class="blank-number">39</span> idling traffic around campus gates.</p>
+                    <p>The most successful programs combine technology with public meetings, transparent methods, and regular feedback, allowing residents to <span class="blank-number">40</span> the effort after initial funding ends.</p>`,
+                    questions: [
+                        {
+                            id: 31,
+                            text: "Choose the best word for blank 31:",
+                            options: ["affordable", "accidental", "arbitrary", "awkward"],
+                            correct: 0,
+                            explanation: `<p><strong>Affordable</strong> fits the idea that community groups can now buy and use sensors.</p>`
+                        },
+                        {
+                            id: 32,
+                            text: "Choose the best word for blank 32:",
+                            options: ["identify", "ignore", "exchange", "postpone"],
+                            correct: 0,
+                            explanation: `<p>Volunteers place sensors to <strong>identify</strong> hotspots, not ignore or delay them.</p>`
+                        },
+                        {
+                            id: 33,
+                            text: "Choose the best word for blank 33:",
+                            options: ["calibrate", "celebrate", "calculate", "circulate"],
+                            correct: 0,
+                            explanation: `<p><strong>Calibrate</strong> means adjust instruments for accurate measurement.</p>`
+                        },
+                        {
+                            id: 34,
+                            text: "Choose the best word for blank 34:",
+                            options: ["drift", "shrink", "gather", "compete"],
+                            correct: 0,
+                            explanation: `<p>Sensor readings can <strong>drift</strong> over time when devices are not calibrated.</p>`
+                        },
+                        {
+                            id: 35,
+                            text: "Choose the best word for blank 35:",
+                            options: ["uploaded", "uprooted", "upheld", "uplifted"],
+                            correct: 0,
+                            explanation: `<p>Data is sent to platforms, so <strong>uploaded</strong> is the best fit.</p>`
+                        },
+                        {
+                            id: 36,
+                            text: "Choose the best word for blank 36:",
+                            options: ["However", "Likewise", "Therefore", "Meanwhile"],
+                            correct: 0,
+                            explanation: `<p><strong>However</strong> correctly introduces contrast with the previous positive point.</p>`
+                        },
+                        {
+                            id: 37,
+                            text: "Choose the best word for blank 37:",
+                            options: ["interpret", "interrupt", "integrate", "interfere"],
+                            correct: 0,
+                            explanation: `<p>Experts help <strong>interpret</strong> data trends.</p>`
+                        },
+                        {
+                            id: 38,
+                            text: "Choose the best word for blank 38:",
+                            options: ["misleading", "merciful", "modest", "mandatory"],
+                            correct: 0,
+                            explanation: `<p>Without context, results can be <strong>misleading</strong>.</p>`
+                        },
+                        {
+                            id: 39,
+                            text: "Choose the best word for blank 39:",
+                            options: ["reduce", "reserve", "replace", "restore"],
+                            correct: 0,
+                            explanation: `<p>City officials used findings to <strong>reduce</strong> idling traffic near schools.</p>`
+                        },
+                        {
+                            id: 40,
+                            text: "Choose the best word for blank 40:",
+                            options: ["sustain", "suppress", "separate", "simplify"],
+                            correct: 0,
+                            explanation: `<p><strong>Sustain</strong> means keep the program going over time.</p>`
+                        }
+                    ]
+                },
+                {
+                    id: 5,
+                    title: "Section V: Reading Comprehension",
+                    description: "Read the passages carefully and answer the questions that follow.",
+                    passages: [
+                        {
+                            title: "Passage A: Repair Cafes and the Circular Economy",
+                            content: `<p>In many cities, broken appliances used to follow one predictable route: from kitchen counter to trash bin. Over the past decade, however, a different model has appeared. Community repair cafes invite residents to bring damaged items to libraries, schools, and local halls, where volunteers inspect them and attempt repairs. Most sessions are free, though visitors are usually encouraged to donate what they can.</p>
+                            <p>Organizers say the events do more than save money. They also reduce waste by extending the life of products that might otherwise be discarded. A repaired kettle or laptop may seem minor on its own, but thousands of small repairs can delay the need for new manufacturing and reduce pressure on landfills. The model aligns with the broader idea of a circular economy, in which products stay in use for longer periods.</p>
+                            <p>Another benefit is skill sharing. Participants watch volunteers diagnose faults, replace parts, and test devices safely. Over time, some visitors become volunteers themselves. This creates local networks of practical knowledge that are rarely taught in formal education. In neighborhoods where people often feel disconnected, repair events can also strengthen social ties by giving strangers a shared project and a reason to talk.</p>
+                            <p>Yet repair cafes face structural barriers. Modern devices are often difficult to open, and proprietary components can make parts expensive or unavailable. Even when a fix is technically possible, legal and safety concerns may limit what volunteers can do in a public setting. Organizers therefore spend significant effort on liability waivers, safety rules, and clear boundaries about which repairs are appropriate onsite.</p>
+                            <p>Critics argue that repair cafes remain too small to influence national waste patterns. A monthly event serving a few dozen households cannot, by itself, reverse a high-consumption economy. Supporters generally agree with this limitation, but they respond that local projects can change behavior and public expectations. When people experience successful repair firsthand, they may demand products that are easier to maintain and less disposable.</p>
+                            <p>Policy is increasingly part of this conversation. Several governments have introduced right-to-repair measures that require manufacturers to provide spare parts, manuals, or minimum support periods. These rules do not guarantee perfect repairability, but they can lower practical barriers for independent technicians and community groups. Where such policies exist, repair cafes often report higher success rates.</p>
+                            <p>For that reason, many researchers describe repair cafes as both practical service and cultural signal. Their direct environmental impact may be modest, but their educational and social effects can be substantial. By making repair visible, collaborative, and normal, they help communities imagine consumption as a process that includes maintenance rather than immediate replacement.</p>`
+                        },
+                        {
+                            title: "Passage B: Four-Day Workweek Trials",
+                            content: `<p>Over the last few years, companies in multiple countries have tested four-day workweek models. The idea is simple in principle: employees work fewer days while organizations attempt to maintain output. In practice, however, pilot programs vary widely. Some reduce total hours, while others compress the same hours into fewer days. Because designs differ, results must be interpreted carefully.</p>
+                            <p>Many employers launch trials to address burnout and retention problems. After periods of rapid organizational change, managers have found that long schedules can weaken morale and increase turnover. A shorter week is often presented as a way to protect focus and recovery time. In several pilots, employees reported lower stress and better work-life balance, especially when meeting time was reduced and priorities were clarified.</p>
+                            <p>Productivity outcomes are mixed but often stable. Teams that eliminated repetitive reporting and shortened routine meetings sometimes produced similar output in fewer hours. These gains were not automatic. They depended on redesigning workflows, improving documentation, and setting clearer performance metrics. Where managers treated the schedule change as symbolic rather than operational, benefits were usually smaller.</p>
+                            <p>The model is harder to implement in sectors requiring continuous coverage, such as healthcare, transport, and customer support. If service must remain available every day, shorter weeks may require additional hiring, staggered shifts, or more sophisticated staffing software. Without these adjustments, the burden can shift unevenly across teams, creating fairness concerns even when the policy is popular in principle.</p>
+                            <p>Some critics also warn about work intensification. When deadlines remain unchanged but hours decline, employees may feel pressure to work faster or extend effort unofficially. In that case, a nominally shorter week can hide the same workload inside tighter windows. Supporters respond that this risk is real but manageable if organizations monitor workload, not just attendance.</p>
+                            <p>Researchers therefore emphasize context. Occupation type, management quality, digital tools, and labor regulations all influence outcomes. No single schedule fits every industry. Still, the trials have expanded policy debate by challenging the assumption that long hours are always necessary for strong performance. In many cases, the key variable appears to be how work is designed, not only how many days appear on a calendar.</p>
+                            <p>The emerging consensus is cautious rather than absolute. Four-day models can improve wellbeing and maintain performance under the right conditions, but successful adoption requires planning, measurement, and adaptation. Organizations that treat the trial as a system redesign tend to report the most durable results.</p>`
+                        }
+                    ],
+                    questions: [
+                        {
+                            id: 41,
+                            text: "According to Passage A, what distinguishes repair cafes from conventional repair services?",
+                            options: [
+                                "They emphasize volunteer-based learning and community participation",
+                                "They only repair premium electronic brands",
+                                "They require annual paid memberships",
+                                "They guarantee completion of every repair"
+                            ],
+                            correct: 0,
+                            explanation: `<p>Passage A describes repair cafes as collaborative, volunteer-led spaces where people learn while repairing items.</p>`
+                        },
+                        {
+                            id: 42,
+                            text: "Which challenge to repair cafes is explicitly mentioned in Passage A?",
+                            options: [
+                                "Lack of public interest in waste reduction",
+                                "Difficult access to parts and legal liability constraints",
+                                "A ban on repair events in schools",
+                                "Inability to train new volunteers"
+                            ],
+                            correct: 1,
+                            explanation: `<p>The passage highlights proprietary parts and liability/safety concerns as major barriers.</p>`
+                        },
+                        {
+                            id: 43,
+                            text: "In Passage A, 'planned obsolescence' is most closely related to:",
+                            options: [
+                                "designing products to fail or become outdated quickly",
+                                "building products for very long lifespans",
+                                "selling products only in limited markets",
+                                "reducing production costs through local sourcing"
+                            ],
+                            correct: 0,
+                            explanation: `<p>The term refers to product design choices that shorten useful life and encourage replacement.</p>`
+                        },
+                        {
+                            id: 44,
+                            text: "Which statement is NOT supported by Passage A?",
+                            options: [
+                                "Repair cafes can help reduce landfill pressure",
+                                "Right-to-repair policies can improve repair success",
+                                "Repair cafes alone can solve national waste problems",
+                                "Repair activities can strengthen social connections"
+                            ],
+                            correct: 2,
+                            explanation: `<p>The passage explicitly says repair cafes are valuable but too limited to solve waste problems by themselves.</p>`
+                        },
+                        {
+                            id: 45,
+                            text: "What is the main purpose of Passage A?",
+                            options: [
+                                "To compare repair fees across major cities",
+                                "To explain the benefits and limits of repair cafes within a circular-economy approach",
+                                "To argue that consumers should stop buying electronics",
+                                "To provide technical instructions for appliance repair"
+                            ],
+                            correct: 1,
+                            explanation: `<p>The passage is an analytical overview of why repair cafes matter and where their limits remain.</p>`
+                        },
+                        {
+                            id: 46,
+                            text: "According to Passage B, why did many organizations begin four-day workweek pilots?",
+                            options: [
+                                "To permanently lower wages",
+                                "To test whether output could be maintained with reduced schedules",
+                                "To eliminate remote work options",
+                                "To reduce employee training requirements"
+                            ],
+                            correct: 1,
+                            explanation: `<p>Passage B says employers used pilots to address burnout and retention while testing performance effects.</p>`
+                        },
+                        {
+                            id: 47,
+                            text: "Which outcome is presented as common in Passage B?",
+                            options: [
+                                "Productivity increased dramatically in all organizations",
+                                "Employee wellbeing worsened because of commuting",
+                                "Productivity often stayed stable while wellbeing improved in some teams",
+                                "All meetings were removed from weekly schedules"
+                            ],
+                            correct: 2,
+                            explanation: `<p>The passage reports stable productivity in many pilots, with wellbeing gains where workflows improved.</p>`
+                        },
+                        {
+                            id: 48,
+                            text: "What implementation difficulty is emphasized for sectors needing continuous service?",
+                            options: [
+                                "Employees refuse schedule changes",
+                                "Digital tools cannot support shift planning",
+                                "Maintaining coverage requires complex staffing adjustments",
+                                "Labor laws ban any flexible scheduling"
+                            ],
+                            correct: 2,
+                            explanation: `<p>Healthcare, transport, and support roles require daily coverage, so staffing design becomes the main challenge.</p>`
+                        },
+                        {
+                            id: 49,
+                            text: "Which statement is supported by Passage B?",
+                            options: [
+                                "Successful trials depend on job design, metrics, and staffing context",
+                                "Shorter weeks always fail in technical industries",
+                                "All pilots reduce working hours by exactly twenty percent",
+                                "Workload management is irrelevant if morale is high"
+                            ],
+                            correct: 0,
+                            explanation: `<p>The passage repeatedly argues that outcomes depend on implementation details rather than a universal formula.</p>`
+                        },
+                        {
+                            id: 50,
+                            text: "What is the main idea of Passage B?",
+                            options: [
+                                "Four-day schedules are mostly symbolic and ineffective",
+                                "Shorter weeks work only when salaries are reduced",
+                                "Four-day trials show promise but require careful, context-specific redesign",
+                                "One standard schedule should be mandated for all sectors"
+                            ],
+                            correct: 2,
+                            explanation: `<p>The conclusion is cautious: the model can work, but only with planning, measurement, and adaptation.</p>`
+                        }
+                    ]
+                }
+            ]
+        };
+
+        // State
+        let currentSection = 1;
+        let answers = {};
+        let timeLeft = 60 * 60; // 60 minutes in seconds
+        let timerInterval;
+        let isReviewMode = false;
+        let isTrialMode = false;
+        let checkedAnswers = {};
+
+        // DOM Elements
+        const startScreen = document.getElementById('startScreen');
+        const quizScreen = document.getElementById('quizScreen');
+        const resultsScreen = document.getElementById('resultsScreen');
+        const quizContent = document.getElementById('quizContent');
+        const timerDisplay = document.getElementById('timerDisplay');
+        const timerBox = document.getElementById('timerBox');
+        const answeredCount = document.getElementById('answeredCount');
+        const progressFill = document.getElementById('progressFill');
+        const reviewScorePill = document.getElementById('reviewScorePill');
+        const reviewScoreValue = document.getElementById('reviewScoreValue');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const submitBtn = document.getElementById('submitBtn');
+        const questionNav = document.getElementById('questionNav');
+        const trialBadge = document.getElementById('trialBadge');
+
+        // Auto-save interval
+        let autoSaveInterval;
+        let quizStarted = false;
+
+        function saveQuizState() {
+            if (!mextUser || !mextUser.uid) return;
+            if (isReviewMode) return;
+            if (!quizStarted) return;
+            FirebaseHelper.saveQuizState(mextUser.uid, currentQuizId, {
+                answers: answers,
+                checkedAnswers: checkedAnswers,
+                currentSection: currentSection,
+                timeLeft: timeLeft,
+                isTrialMode: isTrialMode
+            });
+        }
+
+        function saveQuizStateSync() {
+            if (!mextUser || !mextUser.uid) return;
+            if (isReviewMode) return;
+            if (!quizStarted) return;
+            FirebaseHelper.saveQuizStateSync(mextUser.uid, currentQuizId, {
+                answers: answers,
+                checkedAnswers: checkedAnswers,
+                currentSection: currentSection,
+                timeLeft: timeLeft,
+                isTrialMode: isTrialMode
+            });
+        }
+
+        function resumeQuizFromState(state) {
+            answers = {};
+            for (const [key, value] of Object.entries(state.answers || {})) {
+                answers[parseInt(key)] = value;
+            }
+            checkedAnswers = {};
+            for (const [key, value] of Object.entries(state.checkedAnswers || {})) {
+                checkedAnswers[parseInt(key)] = value;
+            }
+            timeLeft = state.timeLeft !== undefined ? state.timeLeft : 60 * 60;
+            isTrialMode = state.isTrialMode || false;
+            currentSection = state.currentSection || 1;
+
+            startScreen.classList.add('hidden');
+            quizScreen.classList.remove('hidden');
+
+            if (isTrialMode) {
+                timerBox.classList.add('hidden');
+                trialBadge.classList.remove('hidden');
+            } else {
+                timerBox.classList.remove('hidden');
+                updateTimerDisplay();
+                startTimer();
+            }
+
+            updateProgress();
+            renderSection(currentSection);
+            renderQuestionNav();
+            setupSectionNav();
+            startAutoSave();
+            quizStarted = true;
+        }
+
+        function startAutoSave() {
+            stopAutoSave();
+            autoSaveInterval = setInterval(saveQuizState, 30000);
+        }
+
+        function stopAutoSave() {
+            if (autoSaveInterval) {
+                clearInterval(autoSaveInterval);
+                autoSaveInterval = null;
+            }
+        }
+
+        window.addEventListener('beforeunload', function () {
+            if (quizStarted && !isReviewMode && Object.keys(answers).length > 0) {
+                saveQuizStateSync();
+            }
+        });
+
+        window.addEventListener('pagehide', function () {
+            if (quizStarted && !isReviewMode && Object.keys(answers).length > 0) {
+                saveQuizStateSync();
+            }
+        });
+
+        document.addEventListener('visibilitychange', function () {
+            if (document.visibilityState === 'hidden' && quizStarted && !isReviewMode && Object.keys(answers).length > 0) {
+                saveQuizStateSync();
+            }
+        });
+
+        async function checkSavedState() {
+            if (!mextUser || !mextUser.uid) return;
+            const autoResume = sessionStorage.getItem('autoResume') === 'true';
+            sessionStorage.removeItem('autoResume');
+            try {
+                const savedState = await FirebaseHelper.loadQuizState(mextUser.uid, currentQuizId);
+                if (savedState && Object.keys(savedState.answers || {}).length > 0) {
+                    const mode = savedState.isTrialMode ? 'Trial Mode' : 'Normal Mode';
+                    const answered = Object.keys(savedState.answers).length;
+                    let timeInfo = '';
+                    if (!savedState.isTrialMode && savedState.timeLeft !== undefined) {
+                        const mins = Math.floor(savedState.timeLeft / 60);
+                        const secs = savedState.timeLeft % 60;
+                        timeInfo = ` | Time remaining: ${mins}m ${secs}s`;
+                    }
+                    if (autoResume || confirm(`You have a saved ${mode} session (${answered}/50 answered${timeInfo}).\n\nResume where you left off?`)) {
+                        resumeQuizFromState(savedState);
+                        return;
+                    } else {
+                        await FirebaseHelper.clearQuizState(mextUser.uid, currentQuizId);
+                    }
+                }
+            } catch (error) {
+                console.error('Error checking saved state:', error);
+            }
+        }
+
+        // Initialize
+        function startQuiz(trialMode = false) {
+            isTrialMode = trialMode;
+            startScreen.classList.add('hidden');
+            quizScreen.classList.remove('hidden');
+            
+            if (isTrialMode) {
+                timerBox.classList.add('hidden');
+                trialBadge.classList.remove('hidden');
+            } else {
+                startTimer();
+            }
+            
+            renderSection(1);
+            renderQuestionNav();
+            setupSectionNav();
+            startAutoSave();
+            quizStarted = true;
+            saveQuizState();
+        }
+
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                updateTimerDisplay();
+
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    submitQuiz();
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            timerDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+
+            // Change color based on time remaining
+            if (timeLeft <= 300) { // 5 minutes
+                timerBox.classList.add('danger');
+                timerBox.classList.remove('warning');
+            } else if (timeLeft <= 600) { // 10 minutes
+                timerBox.classList.add('warning');
+            }
+        }
+
+        function setupSectionNav() {
+            document.querySelectorAll('.section-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const section = parseInt(btn.dataset.section);
+                    renderSection(section);
+                });
+            });
+        }
+
+        function renderSection(sectionId) {
+            currentSection = sectionId;
+            const section = quizData.sections.find(s => s.id === sectionId);
+
+            // Update navigation buttons
+            document.querySelectorAll('.section-btn').forEach(btn => {
+                btn.classList.toggle('active', parseInt(btn.dataset.section) === sectionId);
+            });
+
+            // Update prev/next buttons
+            prevBtn.disabled = sectionId === 1;
+            if (sectionId === 5) {
+                nextBtn.classList.add('hidden');
+                submitBtn.classList.remove('hidden');
+            } else {
+                nextBtn.classList.remove('hidden');
+                submitBtn.classList.add('hidden');
+            }
+
+            // Render content
+            let html = `
+                <div class="section-header">
+                    <h2>${section.title}</h2>
+                    <p>${section.description}</p>
+                </div>
+            `;
+
+            // Add passage for cloze test
+            if (section.passage) {
+                html += `<div class="passage-box">${section.passage}</div>`;
+            }
+
+            // Add passages for reading comprehension
+            if (section.passages) {
+                section.passages.forEach((passage, index) => {
+                    html += `
+                        <div class="passage-box">
+                            <div class="passage-title">${passage.title}</div>
+                            ${passage.content}
+                        </div>
+                    `;
+
+                    // Add questions after each passage
+                    const startIdx = index * 5;
+                    const endIdx = startIdx + 5;
+                    const passageQuestions = section.questions.slice(startIdx, endIdx);
+
+                    passageQuestions.forEach(q => {
+                        html += renderQuestion(q, section.id);
+                    });
+                });
+            } else {
+                // Regular questions
+                section.questions.forEach(q => {
+                    html += renderQuestion(q, section.id);
+                });
+            }
+
+            quizContent.innerHTML = html;
+            if (isReviewMode) {
+                quizContent.classList.add('review-mode');
+            }
+
+            // Add event listeners
+            quizContent.querySelectorAll('input[type="radio"]').forEach(input => {
+                input.addEventListener('change', handleAnswer);
+            });
+
+            renderQuestionNav();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function escapeHtml(value) {
+            return String(value || '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+        function stripHtml(value) {
+            return String(value || '')
+                .replace(/<[^>]*>/g, ' ')
+                .replace(/\s+/g, ' ')
+                .trim();
+        }
+
+        function getWrongOptionHint(sectionId) {
+            if (sectionId === 1) return 'This word does not fit the sentence meaning or tone.';
+            if (sectionId === 2) return 'This choice does not match the required grammar pattern.';
+            if (sectionId === 3) return 'This underlined part is acceptable and is not the error.';
+            if (sectionId === 4) return 'This option does not fit the passage context at this blank.';
+            if (sectionId === 5) return 'This option is not best supported by the passage.';
+            return 'This choice does not best fit the question context.';
+        }
+
+        function getSectionTip(sectionId) {
+            if (sectionId === 1) return 'Check collocation and nuance, not just dictionary meaning.';
+            if (sectionId === 2) return 'Identify the grammar trigger first, then eliminate mismatched forms.';
+            if (sectionId === 3) return 'Test agreement, tense, and parallel structure across the full sentence.';
+            if (sectionId === 4) return 'Use surrounding sentences to confirm flow, logic, and tone.';
+            if (sectionId === 5) return 'Choose answers supported by explicit evidence in the passage.';
+            return 'Use context before selecting an answer.';
+        }
+
+        function getDetailedExplanation(question, sectionId) {
+            const explanation = question.explanation || '';
+            const hasDetailedMarkup = explanation.includes('explanation-section');
+            if (hasDetailedMarkup) return explanation;
+
+            const letters = ['A', 'B', 'C', 'D'];
+            const correctIndex = question.correct;
+            const correctLetter = letters[correctIndex] || '';
+            const correctOption = question.options?.[correctIndex] || correctLetter;
+
+            let whyCorrect = stripHtml(explanation);
+            if (!whyCorrect) {
+                if (sectionId === 3) {
+                    whyCorrect = `Part ${correctOption} is the only underlined segment that contains a grammatical mistake in this sentence.`;
+                } else if (sectionId === 5) {
+                    whyCorrect = 'This answer is the strongest match to the information provided in the passage.';
+                } else {
+                    whyCorrect = 'This choice best matches the grammar and meaning required by the sentence.';
+                }
+            }
+
+            const wrongHint = getWrongOptionHint(sectionId);
+            const wrongOptionsHtml = (question.options || [])
+                .map((option, index) => {
+                    if (index === correctIndex) return '';
+                    return `<p><strong>${escapeHtml(option)}</strong> - ${wrongHint}</p>`;
+                })
+                .join('');
+
+            return `
+                <div class="explanation-section">
+                    <div class="section-label">📖 Why "${escapeHtml(correctOption)}" is correct:</div>
+                    <p>${escapeHtml(whyCorrect)}</p>
+                </div>
+                <div class="wrong-options">
+                    <div class="section-label">❌ Why other options are wrong:</div>
+                    ${wrongOptionsHtml}
+                </div>
+                <div class="tip-box">💡 <strong>Tip:</strong> ${getSectionTip(sectionId)}</div>
+            `;
+        }
+
+        function renderQuestion(question, sectionId) {
+            const selectedAnswer = answers[question.id];
+            const isChecked = checkedAnswers[question.id];
+
+            let questionText = question.text;
+            if (sectionId !== 3) { // Not error identification
+                questionText = question.text.replace('_______', '<span class="blank">_______</span>');
+            }
+
+            let html = `
+                <div class="question-block ${isChecked ? 'answer-revealed' : ''}" data-question-id="${question.id}">
+                    <div class="question-text">
+                        <span class="question-number">${question.id}</span>
+                        ${questionText}
+                    </div>
+                    <div class="options-grid">
+            `;
+
+            const letters = ['A', 'B', 'C', 'D'];
+            question.options.forEach((option, index) => {
+                const isSelected = selectedAnswer === index;
+                const isCorrect = index === question.correct;
+
+                let extraClass = '';
+                if (isReviewMode || isChecked) {
+                    if (isCorrect) extraClass = 'correct';
+                    else if (isSelected && !isCorrect) extraClass = 'incorrect';
+                }
+
+                html += `
+                    <label class="option-label ${extraClass}">
+                        <input type="radio" name="q${question.id}" value="${index}" 
+                            ${isSelected ? 'checked' : ''} ${isReviewMode ? 'disabled' : ''}>
+                        <span class="option-letter">${letters[index]}</span>
+                        <span class="option-text">${option}</span>
+                    </label>
+                `;
+            });
+
+            html += `</div>`;
+
+            // Add check answer button for trial mode
+            if (isTrialMode && !isReviewMode) {
+                html += `
+                    <button class="check-answer-btn ${isChecked ? 'checked' : ''}" 
+                            onclick="checkAnswer(${question.id})" 
+                            ${!selectedAnswer && selectedAnswer !== 0 ? 'disabled' : ''}>
+                        ${isChecked ? '✓ Answer Checked' : 'Check Answer'}
+                    </button>
+                `;
+            }
+
+            // Add explanation for review mode
+            html += `
+                <div class="explanation-box">
+                    <div class="explanation-header">
+                        <span class="correct-answer-badge">✓ Correct: ${letters[question.correct]}</span>
+                        <span class="explanation-title">Explanation</span>
+                    </div>
+                    <div class="explanation-content">${getDetailedExplanation(question, sectionId)}</div>
+                </div>
+            `;
+
+            html += `</div>`;
+            return html;
+        }
+
+        function checkAnswer(questionId) {
+            if (answers[questionId] === undefined) return;
+            
+            checkedAnswers[questionId] = true;
+            saveQuizState();
+            
+            // Find the question to check if correct
+            let isCorrect = false;
+            quizData.sections.forEach(section => {
+                const question = section.questions.find(q => q.id === questionId);
+                if (question) {
+                    isCorrect = answers[questionId] === question.correct;
+                }
+            });
+            
+            // Update the question block
+            const questionBlock = document.querySelector(`[data-question-id="${questionId}"]`);
+            if (questionBlock) {
+                questionBlock.classList.add('answer-revealed');
+                
+                // Update the button
+                const btn = questionBlock.querySelector('.check-answer-btn');
+                if (btn) {
+                    btn.classList.add('checked');
+                    btn.textContent = '✓ Answer Checked';
+                }
+                
+                // Mark options
+                const options = questionBlock.querySelectorAll('.option-label');
+                options.forEach((opt, index) => {
+                    const question = quizData.sections
+                        .flatMap(s => s.questions)
+                        .find(q => q.id === questionId);
+                    
+                    if (index === question.correct) {
+                        opt.classList.add('correct');
+                    } else if (index === answers[questionId] && index !== question.correct) {
+                        opt.classList.add('incorrect');
+                    }
+                });
+            }
+            
+            renderQuestionNav();
+        }
+
+        function handleAnswer(e) {
+            const questionId = parseInt(e.target.name.replace('q', ''));
+            const value = parseInt(e.target.value);
+            answers[questionId] = value;
+            updateProgress();
+            renderQuestionNav();
+            saveQuizState();
+            
+            // Enable check button in trial mode
+            if (isTrialMode && !checkedAnswers[questionId]) {
+                const questionBlock = document.querySelector(`[data-question-id="${questionId}"]`);
+                if (questionBlock) {
+                    const btn = questionBlock.querySelector('.check-answer-btn');
+                    if (btn) btn.disabled = false;
+                }
+            }
+        }
+
+        function updateProgress() {
+            const count = Object.keys(answers).length;
+            answeredCount.textContent = count;
+            progressFill.style.width = `${(count / 50) * 100}%`;
+        }
+
+        function renderQuestionNav() {
+            const section = quizData.sections.find(s => s.id === currentSection);
+            let html = '';
+
+            section.questions.forEach(q => {
+                const isAnswered = answers[q.id] !== undefined;
+                const isChecked = checkedAnswers[q.id];
+                
+                let btnClass = 'q-nav-btn';
+                if (isChecked) {
+                    const isCorrect = answers[q.id] === q.correct;
+                    btnClass += isCorrect ? ' checked' : ' checked-wrong';
+                } else if (isAnswered) {
+                    btnClass += ' answered';
+                }
+                
+                html += `
+                    <button class="${btnClass}" 
+                            onclick="scrollToQuestion(${q.id})">
+                        ${q.id}
+                    </button>
+                `;
+            });
+
+            questionNav.innerHTML = html;
+        }
+
+        function scrollToQuestion(id) {
+            const questions = document.querySelectorAll('.question-block');
+            const section = quizData.sections.find(s => s.id === currentSection);
+            const index = section.questions.findIndex(q => q.id === id);
+
+            if (questions[index]) {
+                questions[index].scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
+
+        function previousSection() {
+            if (currentSection > 1) {
+                renderSection(currentSection - 1);
+                saveQuizState();
+            }
+        }
+
+        function nextSection() {
+            if (currentSection < 5) {
+                renderSection(currentSection + 1);
+                saveQuizState();
+            }
+        }
+
+        function submitQuiz() {
+            clearInterval(timerInterval);
+            stopAutoSave();
+            quizStarted = false;
+
+            if (mextUser && mextUser.uid) {
+                FirebaseHelper.clearQuizState(mextUser.uid, currentQuizId);
+            }
+
+            // Calculate time spent
+            const timeSpent = (60 * 60) - timeLeft;
+
+            // Calculate scores
+            let totalCorrect = 0;
+            const sectionScores = [];
+            const sectionData = {
+                vocabulary: { correct: 0, total: 10 },
+                grammar: { correct: 0, total: 10 },
+                errorId: { correct: 0, total: 10 },
+                cloze: { correct: 0, total: 10 },
+                reading: { correct: 0, total: 10 }
+            };
+            const sectionKeys = ['vocabulary', 'grammar', 'errorId', 'cloze', 'reading'];
+
+            quizData.sections.forEach((section, index) => {
+                let sectionCorrect = 0;
+                section.questions.forEach(q => {
+                    if (answers[q.id] === q.correct) {
+                        sectionCorrect++;
+                        totalCorrect++;
+                    }
+                });
+                sectionScores.push({
+                    name: section.title.split(':')[0],
+                    score: sectionCorrect,
+                    total: section.questions.length
+                });
+                sectionData[sectionKeys[index]].correct = sectionCorrect;
+            });
+
+            // Save to Firebase if user is logged in
+            if (mextUser && mextUser.uid) {
+                saveResultsToFirebase(totalCorrect, sectionData, timeSpent);
+            }
+
+            // Show results
+            quizScreen.classList.add('hidden');
+            resultsScreen.classList.remove('hidden');
+
+            document.getElementById('finalScore').textContent = totalCorrect;
+
+            // Score message
+            const percentage = (totalCorrect / 50) * 100;
+            let message = '';
+            if (percentage >= 80) message = '🎉 Excellent! Outstanding performance!';
+            else if (percentage >= 60) message = '👍 Good job! Keep practicing!';
+            else if (percentage >= 40) message = '📚 Fair attempt. More study needed.';
+            else message = '💪 Keep working hard! You can improve!';
+
+            document.getElementById('scoreMessage').textContent = message;
+
+            // Section breakdown
+            let breakdownHtml = '';
+            sectionScores.forEach(s => {
+                breakdownHtml += `
+                    <div class="breakdown-item">
+                        <div class="section-name">${s.name}</div>
+                        <div class="section-score">${s.score}/${s.total}</div>
+                    </div>
+                `;
+            });
+            document.getElementById('scoreBreakdown').innerHTML = breakdownHtml;
+
+            // Log analytics event
+            analytics.logEvent('quiz_complete', {
+                quiz_id: currentQuizId,
+                score: totalCorrect,
+                percentage: percentage,
+                time_spent: timeSpent
+            });
+        }
+
+        // Save results to Firebase
+        async function saveResultsToFirebase(score, sectionData, timeSpent) {
+            try {
+                const userRef = db.collection('users').doc(mextUser.uid);
+                const userDoc = await userRef.get();
+                const userData = userDoc.exists ? userDoc.data() : {};
+
+                // Get current best score for this quiz
+                const currentBest = userData.quizAttempts?.[currentQuizId]?.bestScore || 0;
+                const newBest = Math.max(currentBest, score);
+
+                // Prepare section score updates
+                const sectionUpdates = {};
+                for (const [key, data] of Object.entries(sectionData)) {
+                    const currentTotal = userData.stats?.sectionScores?.[key]?.total || 0;
+                    const currentCorrect = userData.stats?.sectionScores?.[key]?.correct || 0;
+                    sectionUpdates[`stats.sectionScores.${key}.total`] = currentTotal + data.total;
+                    sectionUpdates[`stats.sectionScores.${key}.correct`] = currentCorrect + data.correct;
+                }
+
+                // Update user document with latest attempt
+                await userRef.update({
+                    [`quizAttempts.${currentQuizId}.completed`]: true,
+                    [`quizAttempts.${currentQuizId}.score`]: score,
+                    [`quizAttempts.${currentQuizId}.bestScore`]: newBest,
+                    [`quizAttempts.${currentQuizId}.lastAttempt`]: firebase.firestore.FieldValue.serverTimestamp(),
+                    [`quizAttempts.${currentQuizId}.attempts`]: firebase.firestore.FieldValue.increment(1),
+                    [`quizAttempts.${currentQuizId}.savedAnswers`]: answers,
+                    'stats.totalAttempts': firebase.firestore.FieldValue.increment(1),
+                    'stats.totalCompleted': firebase.firestore.FieldValue.increment(1),
+                    'stats.totalTimeSpent': firebase.firestore.FieldValue.increment(timeSpent),
+                    ...sectionUpdates
+                });
+
+                // Save to history subcollection for historical tracking
+                const historyRef = db.collection('users').doc(mextUser.uid)
+                    .collection('quizHistory').doc(currentQuizId)
+                    .collection('attempts');
+
+                await historyRef.add({
+                    score: score,
+                    timeSpent: timeSpent,
+                    sectionData: sectionData,
+                    savedAnswers: answers,
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                });
+
+                console.log('Results and history saved to Firebase successfully!');
+            } catch (error) {
+                console.error('Error saving results to Firebase:', error);
+            }
+        }
+
+        function reviewAnswers() {
+            isReviewMode = true;
+            resultsScreen.classList.add('hidden');
+            quizScreen.classList.remove('hidden');
+
+            // Hide timer during review
+            timerBox.style.display = 'none';
+            setReviewScore(document.getElementById('finalScore').textContent);
+
+            // Update navigation
+            submitBtn.classList.add('hidden');
+            nextBtn.classList.remove('hidden');
+
+            quizContent.classList.add('review-mode');
+            renderSection(1);
+            setupSectionNav();
+        }
+
+        function retryQuiz() {
+            stopAutoSave();
+            quizStarted = false;
+
+            // Clear saved progress and increment attempt count in Firebase
+            if (mextUser && mextUser.uid) {
+                FirebaseHelper.clearQuizState(mextUser.uid, currentQuizId);
+                db.collection('users').doc(mextUser.uid).update({
+                    'stats.totalAttempts': firebase.firestore.FieldValue.increment(1),
+                    [`quizAttempts.${currentQuizId}.lastAttempt`]: firebase.firestore.FieldValue.serverTimestamp()
+                }).catch(err => console.error('Error updating attempt count:', err));
+            }
+
+            // Reset state
+            answers = {};
+            checkedAnswers = {};
+            timeLeft = 60 * 60;
+            currentSection = 1;
+            isReviewMode = false;
+            isTrialMode = false;
+
+            // Reset UI
+            timerBox.style.display = 'flex';
+            timerBox.classList.remove('warning', 'danger', 'hidden');
+            trialBadge.classList.add('hidden');
+            clearReviewScore();
+            updateTimerDisplay();
+            updateProgress();
+
+            // Show quiz
+            resultsScreen.classList.add('hidden');
+            quizScreen.classList.remove('hidden');
+            quizContent.classList.remove('review-mode');
+
+            startTimer();
+            renderSection(1);
+        }
+
+        function goToDashboard() {
+            window.location.href = '../index.html';
+        }
+
+        // Check if coming from dashboard for review mode
+        async function checkReviewMode() {
+            const reviewMode = sessionStorage.getItem('reviewMode');
+            const reviewQuizId = sessionStorage.getItem('reviewQuizId');
+            const reviewAttemptId = sessionStorage.getItem('reviewAttemptId');
+
+            if (reviewMode === 'true' && reviewQuizId && mextUser) {
+                // Clear the flags
+                sessionStorage.removeItem('reviewMode');
+                sessionStorage.removeItem('reviewQuizId');
+                sessionStorage.removeItem('reviewAttemptId');
+
+                // Load saved answers from Firebase
+                try {
+                    let savedAnswers = null;
+                    let reviewScore = null;
+
+                    if (reviewAttemptId) {
+                        // Load specific attempt from history subcollection
+                        const attemptDoc = await db.collection('users').doc(mextUser.uid)
+                            .collection('quizHistory').doc(reviewQuizId)
+                            .collection('attempts').doc(reviewAttemptId).get();
+
+                        if (attemptDoc.exists) {
+                            const attemptData = attemptDoc.data();
+                            savedAnswers = attemptData.savedAnswers;
+                            reviewScore = attemptData.score;
+                            console.log('Loaded historical attempt:', reviewAttemptId);
+                        }
+                    } else {
+                        // Load latest attempt from main document
+                        const userDoc = await db.collection('users').doc(mextUser.uid).get();
+                        if (userDoc.exists) {
+                            const userData = userDoc.data();
+                            const attempt = userData.quizAttempts?.[reviewQuizId];
+                            savedAnswers = attempt?.savedAnswers;
+                            reviewScore = attempt?.score ?? attempt?.bestScore;
+                        }
+                    }
+
+                    if (savedAnswers) {
+                        // Convert string keys back to numbers if needed
+                        answers = {};
+                        for (const [key, value] of Object.entries(savedAnswers)) {
+                            answers[parseInt(key)] = value;
+                        }
+
+                        // Hide start screen, show quiz in review mode
+                        startScreen.classList.add('hidden');
+                        quizScreen.classList.remove('hidden');
+
+                        isReviewMode = true;
+                        timerBox.style.display = 'none';
+                        setReviewScore(reviewScore);
+                        submitBtn.classList.add('hidden');
+                        quizContent.classList.add('review-mode');
+
+                        updateProgress();
+                        renderSection(1);
+                        setupSectionNav();
+
+                        console.log('Loaded saved answers for review');
+                    } else {
+                        console.log('No saved answers found for review');
+                        alert('No saved answers found for this attempt.');
+                        window.location.href = '../index.html';
+                    }
+                } catch (error) {
+                    console.error('Error loading saved answers:', error);
+                    alert('Error loading saved answers: ' + error.message);
+                }
+            }
+        }
+
+        function setReviewScore(score) {
+            if (score === null || score === undefined) {
+                reviewScoreValue.textContent = '--/50';
+            } else {
+                reviewScoreValue.textContent = `${score}/50`;
+            }
+            reviewScorePill.classList.remove('hidden');
+        }
+
+        function clearReviewScore() {
+            reviewScorePill.classList.add('hidden');
+            reviewScoreValue.textContent = '--/50';
+        }
+
+        // Check if user is logged in, if not redirect to login
+        if (!mextUser) {
+            console.log('No user session found. For full features, please login from the main page.');
+        } else {
+            checkReviewMode().then(() => {
+                if (!isReviewMode) {
+                    checkSavedState();
+                }
+            });
+        }
+    </script>
+</body>
+
+</html>

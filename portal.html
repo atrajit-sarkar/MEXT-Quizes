@@ -2041,6 +2041,15 @@
                 duration: 60,
                 path: 'quiz-12/index.html',
                 available: true
+            },
+            {
+                id: 'quiz-13',
+                title: 'Mock Examination 13',
+                description: 'Full-length practice exam',
+                questions: 50,
+                duration: 60,
+                path: 'quiz-13/index.html',
+                available: true
             }
         ];
         const nextQuiz = nextPath ? quizzes.find((quiz) => quiz.path === nextPath) : null;
@@ -2131,8 +2140,8 @@
                 if (!currentUser || !dashboard.classList.contains('active')) return;
                 let changed = false;
                 // Sync quiz progress
-                for (let i = 1; i <= 12; i++) {
-                    const qId = `quiz-${i}`;
+                for (const quiz of quizzes) {
+                    const qId = quiz.id;
                     try {
                         const stored = localStorage.getItem(`quizState_${currentUser.uid}_${qId}`);
                         if (stored) {
@@ -2264,8 +2273,8 @@
                         userData = doc.data();
                         // Re-check quiz + practice progress from localStorage (sync)
                         const localProgress = {};
-                        for (let i = 1; i <= 12; i++) {
-                            const qId = `quiz-${i}`;
+                        for (const quiz of quizzes) {
+                            const qId = quiz.id;
                             try {
                                 const stored = localStorage.getItem(`quizState_${currentUser.uid}_${qId}`);
                                 if (stored) {
